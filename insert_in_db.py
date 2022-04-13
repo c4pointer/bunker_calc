@@ -3,18 +3,26 @@
 # created by neo
 # Version-1.0
 
+import csv
+
+import sqlite3
+
+import re
+
+import os
+
+from main import cur, conn
 
 import csv
-from tkinter.filedialog import askdirectory, askopenfilenames, askopenfiles
+
 from tkinter.messagebox import showerror, showinfo, askokcancel
-import sqlite3
-import re, os
-from myapp import cur, conn
+
+from tkinter.filedialog import askdirectory, askopenfilenames, askopenfiles
 
 
 r = re.compile('[^a-zA-Z-0-9]')
 
-import csv
+
 
 
 ## ADMIN panel of App
@@ -34,6 +42,7 @@ def admin_start():
 def sort_tanks():
 
     table_name=[]
+    
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
     for tables in cur:
         table_name.append(tables)
@@ -73,9 +82,9 @@ def create_tk(arg):
     if new_tank:
         new_tank = r.sub('', new_tank)
         new_tank=new_tank.replace('-','_')
-    cur.execute("CREATE TABLE IF NOT EXISTS '"+new_tank+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INTEGER DEFAULT 0,PRIMARY KEY(sound_id)) ;")
+    cur.execute("CREATE TABLE IF NOT EXISTS '"+new_tank+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
     conn.commit()
-    #ALTER TABLE Bunker_calc.4P AUTO_INCREMENT=0;  ##tO SET INITIAL VALUE OF SOUNDING
+
 
 def delete_tk(tk_name):
     
@@ -99,8 +108,6 @@ def edit_row(tk, sound, volume): # add data to tank database
 	
 
 def show_all_in_tb(arg): # show all data in specific tank database
-    global all_sound
-    all_sound=[]
 
     global all_vol
     all_vol=[]
@@ -110,17 +117,24 @@ def show_all_in_tb(arg): # show all data in specific tank database
 
     global all_temp
     all_temp=[]
+    
+    global all_state
+    all_state=[]
+    
+    global all_type
+    all_type=[]
 
-    i=0
-    for i in range(i,1000):
-        cur.execute("SELECT sound_id, volume, density,temperature FROM `%s` WHERE sound_id=%s;" %(arg, i))
+    for i in range(1000):
+        cur.execute("SELECT sound_id, volume, density,temperature, state, type FROM `%s` WHERE sound_id=%s;" %(arg, i))
         for data in cur:
             all_vol.append( str(str(int(data[0]))+"= "+str(float(data[1]))) )
             all_dens.append(str(str(int(data[0]))+"= "+str(float(data[2]))) )
             all_temp.append(str(str(int(data[0]))+"= "+str(int(data[3]))) )
+            all_state.append(str(str(int(data[0])) + "= " + str(int(data[4]))))
+            all_type.append(str(str(int(data[0])) + "= " + str(int(data[5]))))
            
-        i += 1
-    return all_sound, all_vol, all_dens, all_temp
+
+    return  all_vol, all_dens, all_temp, all_state, all_type
 
 def import_data(tk):
     file_choose = askopenfilenames(
@@ -148,7 +162,8 @@ def import_data(tk):
                                 )
                                 )
             if show_info == True:
-                cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
+                cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
+                    temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
                 conn.commit()
                 show_info=askokcancel(
                                 "Import again",

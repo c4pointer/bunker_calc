@@ -4,9 +4,9 @@
 # Version-1.0
 
 import sqlite3
-import os, re
-
-from myapp import cur, conn
+import os
+import re
+from main import cur, conn
 
 r = re.compile('[^a-zA-Z-0-9]')
 
@@ -14,13 +14,14 @@ def mdo_select_tank(tk_name, new_state):
     try:
         cur.execute("ALTER TABLE `%s` DROP COLUMN state" % tk_name)
         cur.execute(
-            "ALTER TABLE `%s` ADD state FLOAT DEFAULT %s" %(tk_name, new_state) 
+            "ALTER TABLE `%s` ADD state INT DEFAULT %s" %(tk_name, new_state) 
             )
         conn.commit()
         
     except Exception as e :
         print(f"DB Connection error: {e}" )
-    
+
+
 
 def mdo_show():
     table_name=[]

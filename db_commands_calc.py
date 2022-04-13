@@ -4,19 +4,10 @@
 # Version-1.0
 import os
 import sqlite3
-from tkinter import *
-from myapp import cur, conn
-
-
-
-
-
-
-######################################################
-#######                                     ##########
-#######         Calculation section         ##########
-#######                                     ##########
-######################################################
+from tkinter import (Label, Button, Checkbutton,
+    Frame, Listbox, Tk, IntVar, Menu, UNDERLINE, StringVar,
+    Entry)
+from main import cur, conn
 
 
 def select_DefDens(tk_name):
@@ -60,3 +51,36 @@ def def_dens_modify(tk_name, new_val):
         
     except Exception as e :
         print(f"DB Connection error: {e}" )
+
+
+def type_select_tank(tk_names, new_type):
+
+    try:
+        # try to know what type of tank is it from
+        # and if "new_type" == 0 then add new table type
+        if new_type == 0:
+            cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
+            cur.execute(
+                "ALTER TABLE `%s` ADD type INT DEFAULT %s" %(tk_names, new_type) 
+                )
+            conn.commit()
+        else:
+            new_type_tk_add(tk_names, new_type)
+        
+    except Exception as e :
+        print(f"DB Connection error: {e}")
+        
+def new_type_tk_add(tk, t):
+    try:
+        cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk)
+        cur.execute(
+            "ALTER TABLE `%s` ADD type INT DEFAULT %s" %(tk, t) 
+            )
+       
+        cur.execute("ALTER TABLE `%s` DROP COLUMN volume" % tk)
+        cur.execute(
+            "ALTER TABLE `%s` ADD volume FLOAT DEFAULT 0" % tk
+            )
+        conn.commit()
+    except Exception as error:
+        print(f"DB Connection error on string 87: {error}")

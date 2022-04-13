@@ -1,7 +1,7 @@
 import math
 
 # Lenth
-a=1.42
+a=1.45
 
 
 # bredth
@@ -15,5 +15,5 @@ c=float(input("Input sounding value in centimeters :" ))/100
 
 print(c)
 
-volume = round(((a*b)*c), 245)
+volume = round(((a*b)*c), 2)
 print(volume)
