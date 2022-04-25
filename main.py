@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # created by neo
-# Version-1.0
+# Version-1.1
 
 import sqlite3
 
