@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-# created by neo
+# created by Zubak Oleg
 # Version-1.1
 
 import sqlite3
