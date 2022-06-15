@@ -99,8 +99,8 @@ class BunkerCalc(MDApp):
         db_editing.calculation(self.y.text, self.x.text)
         self.z.text = db_editing.volume_in_m3[0]
         r = (self.root.ids.tabs.get_tab_list())
-        for i in range(len(r)):
-            print(i)
+        #for i in range(len(r)):
+        #    print(i)
 
 
 BunkerCalc().run()
