@@ -1,6 +1,4 @@
 appdirs==1.4.4
-attrs==21.4.0
-buildozer==1.4.0.dev0
 certifi==2022.5.18.1
 charset-normalizer==2.0.12
 colorama==0.4.4
@@ -38,7 +36,6 @@ virtualenv==20.14.1
 zipp==3.8.0
 appdirs==1.4.4
 attrs==21.4.0
-buildozer==1.4.0.dev0
 certifi==2022.5.18.1
 charset-normalizer==2.0.12
 colorama==0.4.4
