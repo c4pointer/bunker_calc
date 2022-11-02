@@ -5,4 +5,4 @@ bin
 .bunker_venv
 .buildozer
 my_log.txt
-buildozer.spec
+#buildozer.spec
