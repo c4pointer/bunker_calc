@@ -2,7 +2,7 @@
  .vscode
 __pycache__
 bin
-.bunker_venv
+#.bunker_venv
 .buildozer
 my_log.txt
 #buildozer.spec

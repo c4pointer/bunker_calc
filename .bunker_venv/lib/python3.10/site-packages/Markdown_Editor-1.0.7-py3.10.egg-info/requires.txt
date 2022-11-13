@@ -1,0 +1,4 @@
+Markdown
+Pygments
+bottle
+pymdown-extensions<8

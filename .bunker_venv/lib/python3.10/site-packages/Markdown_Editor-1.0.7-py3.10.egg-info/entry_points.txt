@@ -1,0 +1,3 @@
+[console_scripts]
+markdown_edit = markdown_edit:main
+
