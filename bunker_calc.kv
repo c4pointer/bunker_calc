@@ -1,10 +1,10 @@
 <BunkerCalc>
 MDScreen:
 
-    MDToolbar:
-        title: "MDTopAppBar"
-        left_action_items: [["menu", lambda x: x]]
-        pos_hint: {"top": 1}
+    #MDToolbar:
+        #title: "MDTopAppBar"
+        #left_action_items: [["menu", lambda x: x]]
+        #pos_hint: {"top": 1}
 
     # Will always be at the bottom of the screen.
     MDBottomAppBar:
@@ -38,17 +38,34 @@ MDScreen:
         size_hint_x: None
         width: 200
 
-    # MDFloatingActionButton:
-        # id:calc
-        # text: 'Calculate'
-        # pos_hint: {'center_x': 0.5, 'center_y': 0.395}
-        # icon: "calculator"
-        # md_bg_color: ("#465d5a")
-        #on_press: app.callback_Calc(*args)
-
-    MDFlatButton:
-        id: calc
+    MDFloatingActionButton:
+        id:calc
         text: 'Calculate'
         pos_hint: {'center_x': 0.5, 'center_y': 0.395}
+        icon: "calculator"
         md_bg_color: ("#465d5a")
         on_press: app.callback_Calc(*args)
+
+    #MDFlatButton:
+        #id: calc
+        #text: 'Calculate'
+        #pos_hint: {'center_x': 0.5, 'center_y': 0.395}
+        #md_bg_color: ("#465d5a")
+        #on_press: app.callback_Calc(*args)
+
+    # Close Button
+    
+    MDFloatingActionButton:
+        id: close
+        text: 'Exit'
+        pos_hint: {'center_x': 0.5, 'center_y': 0.285}
+        icon: "close"
+        md_bg_color: ("#f00c5a")
+        on_press: app.stop()
+
+    #MDFlatButton:
+        #id: close
+        #text: 'Close'
+        #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
+        #md_bg_color: ("#f00c5a")
+        #on_press: app.stop()

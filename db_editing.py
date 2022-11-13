@@ -34,6 +34,9 @@ cur = conn.cursor()
 
 
 def calculation(tk_name, sound):
+    '''
+    Takes value from DB
+    '''
     global volume_in_m3
     volume_in_m3 = []
     try:
