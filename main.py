@@ -101,5 +101,5 @@ class BunkerCalc(MDApp):
         r = (self.root.ids.tabs.get_tab_list())
 
 
-
-BunkerCalc().run()
+if __name__ == "__main__":
+    BunkerCalc().run()

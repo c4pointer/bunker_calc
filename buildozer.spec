@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = BunkerCalc
 
 # (str) Package name
 package.name = main.py
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = org.main
 
 # (str) Source code where the main.py live
 source.dir = .
