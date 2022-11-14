@@ -1,11 +1,13 @@
 <BunkerCalc>
-MDScreen:
-
-    #MDToolbar:
-        #title: "MDTopAppBar"
-        #left_action_items: [["menu", lambda x: x]]
-        #pos_hint: {"top": 1}
-
+BoxLayout:
+    orientation: "vertical"
+    MDToolbar:
+        title: "Menu"
+        left_action_items: [["menu", lambda x: x]]
+        pos_hint: {"top": 1}
+    MDTabs:
+        id: tabs
+        on_tab_switch: app.on_tab_switch(*args)
     # Will always be at the bottom of the screen.
     MDBottomAppBar:
 
@@ -15,13 +17,9 @@ MDScreen:
             type: "bottom"
             left_action_items: [["alpha-c-box", lambda x: x]]
             mode: "end"
-
-
-    MDTabs:
-        id: tabs
-        on_tab_switch: app.on_tab_switch(*args)
-
+        
 <Tab>
+        
     MDLabel:
         id: label
         halign: "center"
@@ -41,7 +39,7 @@ MDScreen:
     MDFloatingActionButton:
         id:calc
         text: 'Calculate'
-        pos_hint: {'center_x': 0.5, 'center_y': 0.395}
+        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
         icon: "calculator"
         md_bg_color: ("#465d5a")
         on_press: app.callback_Calc(*args)
@@ -58,7 +56,7 @@ MDScreen:
     MDFloatingActionButton:
         id: close
         text: 'Exit'
-        pos_hint: {'center_x': 0.5, 'center_y': 0.285}
+        pos_hint: {'center_x': 0.5, 'center_y': 0.2}
         icon: "close"
         md_bg_color: ("#f00c5a")
         on_press: app.stop()

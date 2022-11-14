@@ -2,18 +2,19 @@
 # -*- coding: utf-8 -*-
 # created by neo
 # Version-1.0
-import os
+# import os
 import sqlite3
 
-file_location_detect = os.getcwd()
-try:
-    name_off_app = "BunkerCalc"
-    conn = sqlite3.connect(
-        (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
-except sqlite3.OperationalError as e:
-    name_off_app = "BunkerCalc"
-    conn = sqlite3.connect(
-        (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
+# file_location_detect = os.getcwd()
+# try:
+#     name_off_app = "BunkerCalc"
+#     conn = sqlite3.connect(
+#         (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
+# except sqlite3.OperationalError as e:
+#     name_off_app = "BunkerCalc"
+#     conn = sqlite3.connect(
+#         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
+conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
 
 

@@ -1,6 +1,8 @@
 import db_reading
 import db_editing
 
+import kivy
+
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.tab import MDTabsBase
@@ -10,9 +12,9 @@ from kivymd.uix.button import MDFlatButton
 from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 
-import threading
+# import threading
 import sqlite3
-import os
+# import os
 
 # file_location_detect = os.getcwd()
 # try:
@@ -51,9 +53,9 @@ class BunkerCalc(MDApp):
 
         # screen = Screen()
 
-        screen = Builder.load_file("bunkercalc.kv")
+        # screen = Builder.load_file("bunkercalc.kv")
 
-        return screen
+        # return screen
 
     def name_of_tank(self):
         self.names = []
@@ -97,8 +99,13 @@ class BunkerCalc(MDApp):
     def callback_Calc(self, er):
 
         db_editing.calculation(self.y.text, self.x.text)
-        self.z.text = db_editing.volume_in_m3[0]
-        r = (self.root.ids.tabs.get_tab_list())
+        try:
+        
+            self.z.text = db_editing.volume_in_m3[0]
+        except IndexError as e:
+            self.z.text = str(e)
+        # r = (self.root.ids.tabs.get_tab_list())
+        # print(r)
 
 
 if __name__ == "__main__":
