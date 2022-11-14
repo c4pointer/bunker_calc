@@ -9,11 +9,11 @@ file_location_detect = os.getcwd()
 try:
     name_off_app = "BunkerCalc"
     conn = sqlite3.connect(
-        (file_location_detect+'/Documents/myapp/Bunker_calc.db'), check_same_thread=False)
+        (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
 except sqlite3.OperationalError as e:
     name_off_app = "BunkerCalc"
     conn = sqlite3.connect(
-        (file_location_detect+'/Bunker_calc.db'), check_same_thread=False)
+        (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 cur = conn.cursor()
 
 
