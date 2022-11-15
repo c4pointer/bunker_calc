@@ -1,7 +1,7 @@
 <BunkerCalc>
 BoxLayout:
     orientation: "vertical"
-    MDToolbar:
+    MDTopAppBar:
         title: "Menu"
         left_action_items: [["menu", lambda x: x]]
         pos_hint: {"top": 1}
@@ -10,14 +10,13 @@ BoxLayout:
         on_tab_switch: app.on_tab_switch(*args)
     # Will always be at the bottom of the screen.
     MDBottomAppBar:
-
-        MDToolbar:
+        MDTopAppBar:
             title: "by Oleg Zubak"
             icon: "fuel"
             type: "bottom"
             left_action_items: [["alpha-c-box", lambda x: x]]
             mode: "end"
-        
+
 <Tab>
         
     MDLabel:
@@ -60,10 +59,11 @@ BoxLayout:
         icon: "close"
         md_bg_color: ("#f00c5a")
         on_press: app.stop()
-
+ 
     #MDFlatButton:
         #id: close
         #text: 'Close'
         #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
         #md_bg_color: ("#f00c5a")
         #on_press: app.stop()
+    

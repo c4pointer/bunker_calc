@@ -77,7 +77,7 @@ class BunkerCalc(MDApp):
     def add_tab(self):
 
         for i in (self.names):
-            self.root.ids.tabs.add_widget(Tab(text=f"{i}"))
+            self.root.ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
 
     def on_tab_switch(
         self, instance_tabs, instance_tab, instance_tab_label, tab_text
