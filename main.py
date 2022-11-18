@@ -74,7 +74,7 @@ class BunkerCalc(MDApp):
         :param tab_text: text or name icon of tab;
         '''
 
-        instance_tab.ids.sound_field.hint_text = "Sounding value :"
+        instance_tab.ids.sound_field.hint_text = "Sounding value (cm):"
 
         self.sound_value= instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
@@ -84,7 +84,7 @@ class BunkerCalc(MDApp):
 
         db_editing.calculation(self.tank_name.text, self.sound_value.text)
         try:
-            self.result.text = db_editing.volume_in_m3[0]
+            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
         except IndexError as e:
             self.result.text = str(e)
         # r = (self.root.ids.tabs.get_tab_list())

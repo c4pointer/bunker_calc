@@ -23,7 +23,8 @@ Screen:
     MDLabel:
         id: label
         halign: "center"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        font_size: "60dp"
 
         # Enter sound value of each tank
     MDTextField:
@@ -31,10 +32,13 @@ Screen:
         helper_text: "do not input ullage!"
         helper_text_mode: "on_focus"
         icon_right: "fuel"
+        # Maximal lenth of input sounding
+        max_text_length: 4
         icon_left_color: app.theme_cls.primary_color
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-        size_hint_x: None
-        width: 200
+        pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+        size_hint: None, None
+        size: 200,1
+        # width: 200
         on_text_validate : app.callback_Calc(*args)
 
     MDFloatingActionButton:
