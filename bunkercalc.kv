@@ -1,21 +1,22 @@
-<BunkerCalc>
-BoxLayout:
-    orientation: "vertical"
-    MDTopAppBar:
-        title: "Menu"
-        left_action_items: [["menu", lambda x: x]]
-        pos_hint: {"top": 1}
-    MDTabs:
-        id: tabs
-        on_tab_switch: app.on_tab_switch(*args)
-    # Will always be at the bottom of the screen.
-    MDBottomAppBar:
+Screen:
+    #<BunkerCalc>
+    BoxLayout:
+        orientation: "vertical"
         MDTopAppBar:
-            title: "by Oleg Zubak"
-            icon: "fuel"
-            type: "bottom"
-            left_action_items: [["alpha-c-box", lambda x: x]]
-            mode: "end"
+            title: "Menu"
+            left_action_items: [["menu", lambda x: x]]
+            pos_hint: {"top": 1}
+        MDTabs:
+            id: tabs
+            on_tab_switch: app.on_tab_switch(*args)
+        # Will always be at the bottom of the screen.
+        MDBottomAppBar:
+            MDTopAppBar:
+                title: "by Oleg Zubak"
+                icon: "fuel"
+                type: "bottom"
+                left_action_items: [["alpha-c-box", lambda x: x]]
+                mode: "end"
 
 <Tab>
         
@@ -27,13 +28,14 @@ BoxLayout:
         # Enter sound value of each tank
     MDTextField:
         id: sound_field
-        helper_text: "remember about ullage measurment"
+        helper_text: "do not input ullage!"
         helper_text_mode: "on_focus"
         icon_right: "fuel"
-        icon_right_color: app.theme_cls.primary_color
+        icon_left_color: app.theme_cls.primary_color
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         size_hint_x: None
         width: 200
+        on_text_validate : app.callback_Calc(*args)
 
     MDFloatingActionButton:
         id:calc

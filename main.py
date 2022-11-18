@@ -12,20 +12,8 @@ from kivymd.uix.button import MDFlatButton
 from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 
-# import threading
 import sqlite3
-# import os
 
-# file_location_detect = os.getcwd()
-# try:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/Documents/myapp/Bunker_calc.db'), check_same_thread=False)
-# except sqlite3.OperationalError as e:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/Bunker_calc.db'), check_same_thread=False)
-# cur = conn.cursor()
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -51,11 +39,7 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Light"
 
-        # screen = Screen()
 
-        # screen = Builder.load_file("bunkercalc.kv")
-
-        # return screen
 
     def name_of_tank(self):
         self.names = []
@@ -92,18 +76,17 @@ class BunkerCalc(MDApp):
 
         instance_tab.ids.sound_field.hint_text = "Sounding value :"
 
-        self.x = instance_tab.ids.sound_field
-        self.y = instance_tab_label
-        self.z = instance_tab.ids.label
+        self.sound_value= instance_tab.ids.sound_field
+        self.tank_name = instance_tab_label
+        self.result = instance_tab.ids.label
 
     def callback_Calc(self, er):
 
-        db_editing.calculation(self.y.text, self.x.text)
+        db_editing.calculation(self.tank_name.text, self.sound_value.text)
         try:
-        
-            self.z.text = db_editing.volume_in_m3[0]
+            self.result.text = db_editing.volume_in_m3[0]
         except IndexError as e:
-            self.z.text = str(e)
+            self.result.text = str(e)
         # r = (self.root.ids.tabs.get_tab_list())
         # print(r)
 
