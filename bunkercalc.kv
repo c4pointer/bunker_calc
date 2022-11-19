@@ -1,49 +1,29 @@
-<DrawerClickableItem@MDNavigationDrawerItem>
-    focus_color: "#e7e4c0"
-    text_color: "#4a4939"
-    icon_color: "#4a4939"
-    ripple_color: "#c5bdd2"
-    selected_color: "#0c6c4d"
+ScreenManager:
+    TabScreen:
+    TotalScreen:
 
-
-<DrawerLabelItem@MDNavigationDrawerItem>
-    text_color: "#4a4939"
-    icon_color: "#4a4939"
-    focus_behavior: False
-    selected_color: "#4a4939"
-    _no_ripple_effect: True
-
-MDScreen:
-
-        
-    MDNavigationLayout:
-
-        MDNavigationDrawer:
-            md_bg_color: app.theme_cls.primary_color
-            id: nav_drawer
-            scrim_color: 0, 0, 0, .8
-            radius: (0, 16, 16, 0)
-            MDNavigationDrawerMenu:
-    
-                        
-
+<TabScreen>:
+    name: 'tab_screen'
     MDBoxLayout:
         orientation: "vertical"
         MDTopAppBar:
             title: "Menu"
             elevation:4
             pos_hint: {"top": 1}
-            md_bg_color: "#e7e4c0"
+            #md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["menu", lambda x: nav_drawer.set_state("toggle")]]
+            left_action_items: [["menu", lambda x: x]]
 
-   
         MDTabs:
             id: tabs
             on_tab_switch: app.on_tab_switch(*args)
-            
-            
 
+        MDFlatButton:
+            id : btn_tab
+            text: "Tabs"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+            on_press: root.manager.current= "total_screen"
+            
         # Will always be at the bottom of the screen.
         MDBottomAppBar:
             MDTopAppBar:
@@ -52,16 +32,17 @@ MDScreen:
                 type: "bottom"
                 left_action_items: [["alpha-c-box", lambda x: x]]
                 mode: "end"
-        
-       # MDScreenManager:
+<TotalScreen>:
+    name:'total_screen'
+    MDFlatButton:
+        id : btn_total
+        text: "Total result"
+        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+        on_press: root.manager.current= "tab_screen"
 
-            #MDScreen:
 
-                
-
-                        
 <Tab>
-        
+
     MDLabel:
         id: label
         halign: "center"
@@ -99,7 +80,7 @@ MDScreen:
         #on_press: app.callback_Calc(*args)
 
     # Close Button
-    
+
     MDFloatingActionButton:
         id: close
         text: 'Exit'
@@ -107,11 +88,11 @@ MDScreen:
         icon: "close"
         md_bg_color: ("#f56c5a")
         on_press: app.stop()
- 
+
     #MDFlatButton:
         #id: close
         #text: 'Close'
         #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
         #md_bg_color: ("#f00c5a")
         #on_press: app.stop()
-    
+

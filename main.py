@@ -9,17 +9,22 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import ScreenManager, Screen
+
 import sqlite3
 
 # Window resizing. To be deleted before compiling
 from kivy.core.window import Window
-Window.size=(700,800)
+Window.size=(360,600)
+
+class TabScreen(Screen):
+    pass
+
+class TotalScreen(Screen):
+    pass
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
-
-# class Tab(MDLabel, MDTabsBase):
-#     '''Class implementing content for a tab.'''
 
 
 # class Store_Values():
@@ -27,21 +32,26 @@ class Tab(MDFloatLayout, MDTabsBase):
 #     def __init__(self, sound, tk_name):
 #         self.sound = sound
 #         self.tk_name = tk_name
-class ContentNavigationDrawer(MDBoxLayout):
-    pass
+
+sm=ScreenManager()
+sm.add_widget(TabScreen(name='tab_screen'))
+sm.add_widget(TotalScreen(name='total_screen'))
 class BunkerCalc(MDApp):
+    
 
     def build(self):
 
         # Theme and colors
         self.theme_cls.primary_palette = "Gray"
-        self.theme_cls.primary_hue = "500"
+        self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
+
+
    
-    def on_start(self):
-            self.name_of_tank()
-            self.add_tab()
-            
+
+
+
+
     def name_of_tank(self):
         # Extract from DB names of each tank
         self.names = []
@@ -54,7 +64,8 @@ class BunkerCalc(MDApp):
     def add_tab(self):
 
         for i in (self.names):
-            self.root.ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+            print(i)
+            self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
 
     def on_tab_switch(
         self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -69,7 +80,7 @@ class BunkerCalc(MDApp):
 
         instance_tab.ids.sound_field.hint_text = "Sounding value (cm):"
         instance_tab.ids.sound_field.text_color_normal = 1,1,0.8,1
-        
+
         self.sound_value= instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
@@ -86,6 +97,12 @@ class BunkerCalc(MDApp):
             self.result.text = str("Wrong sounding value!")
             self.result.font_size= "20dp"
 
+    def on_start(self):
+
+        self.name_of_tank()
+
+        self.add_tab()
 
 if __name__ == "__main__":
     BunkerCalc().run()
+
