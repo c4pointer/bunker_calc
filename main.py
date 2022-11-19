@@ -1,15 +1,13 @@
 import db_reading
 import db_editing
 
-
-
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.tab import MDTabsBase
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.button import MDFlatButton
-# from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 import sqlite3
 
@@ -29,8 +27,8 @@ class Tab(MDFloatLayout, MDTabsBase):
 #     def __init__(self, sound, tk_name):
 #         self.sound = sound
 #         self.tk_name = tk_name
-
-
+class ContentNavigationDrawer(MDBoxLayout):
+    pass
 class BunkerCalc(MDApp):
 
     def build(self):
@@ -39,20 +37,19 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.primary_hue = "500"
         self.theme_cls.theme_style = "Dark"
-
-
-
+   
+    def on_start(self):
+            self.name_of_tank()
+            self.add_tab()
+            
     def name_of_tank(self):
+        # Extract from DB names of each tank
         self.names = []
         db_reading.extract_names()
 
         self.tank_name = db_reading.name_of_tank
         for i in self.tank_name:
             self.names.append(i[0])
-
-    def on_start(self):
-            self.name_of_tank()
-            self.add_tab()
 
     def add_tab(self):
 

@@ -1,26 +1,42 @@
-Screen:
-    #<BunkerCalc>
-    BoxLayout:
-        orientation: "vertical"
+MDScreen:
 
-        MDTopAppBar:
-            title: "Menu"
-            left_action_items: [["menu", lambda x: x]]
-            pos_hint: {"top": 1}
-        BoxLayout:
-            orientation: "vertical"
-            MDTabs:
-                id: tabs
-                on_tab_switch: app.on_tab_switch(*args)
-        # Will always be at the bottom of the screen.
-        MDBottomAppBar:
-            MDTopAppBar:
-                title: "by Oleg Zubak"
-                icon: "fuel"
-                type: "bottom"
-                left_action_items: [["alpha-c-box", lambda x: x]]
-                mode: "end"
-                
+        
+    MDNavigationLayout:
+        
+        MDScreenManager:
+
+            MDScreen:
+
+                MDTopAppBar:
+                    title: "Menu"
+                    elevation:4
+                    pos_hint: {"top": 1}
+                    md_bg_color: "#e7e4c0"
+                    specific_text_color: "#4a4939"
+                    left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+
+                MDTabs:
+                    id: tabs
+                    on_tab_switch: app.on_tab_switch(*args)
+                    pos_hint: {'top':0.9}
+
+                # Will always be at the bottom of the screen.
+                MDBottomAppBar:
+                    MDTopAppBar:
+                        title: "by Oleg Zubak"
+                        icon: "fuel"
+                        type: "bottom"
+                        left_action_items: [["alpha-c-box", lambda x: x]]
+                        mode: "end"
+                MDNavigationDrawer:
+                    md_bg_color: app.theme_cls.primary_color
+                    id: nav_drawer
+                    scrim_color: 0, 0, 0, .8
+                    radius: (0, 16, 16, 0)
+                        #ContentNavigationDrawer:
+
+        
+                        
 <Tab>
         
     MDLabel:
