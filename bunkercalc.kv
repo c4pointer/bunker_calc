@@ -2,13 +2,16 @@ Screen:
     #<BunkerCalc>
     BoxLayout:
         orientation: "vertical"
+
         MDTopAppBar:
             title: "Menu"
             left_action_items: [["menu", lambda x: x]]
             pos_hint: {"top": 1}
-        MDTabs:
-            id: tabs
-            on_tab_switch: app.on_tab_switch(*args)
+        BoxLayout:
+            orientation: "vertical"
+            MDTabs:
+                id: tabs
+                on_tab_switch: app.on_tab_switch(*args)
         # Will always be at the bottom of the screen.
         MDBottomAppBar:
             MDTopAppBar:
@@ -17,27 +20,26 @@ Screen:
                 type: "bottom"
                 left_action_items: [["alpha-c-box", lambda x: x]]
                 mode: "end"
-
+                
 <Tab>
         
     MDLabel:
         id: label
         halign: "center"
         pos_hint: {'center_x': 0.5, 'center_y': 0.7}
-        font_size: "60dp"
 
         # Enter sound value of each tank
     MDTextField:
         id: sound_field
         helper_text: "do not input ullage!"
         helper_text_mode: "on_focus"
-        icon_right: "fuel"
+        icon_left: "fuel"
         # Maximal lenth of input sounding
         max_text_length: 4
         icon_left_color: app.theme_cls.primary_color
         pos_hint: {'center_x': 0.5, 'center_y': 0.55}
         size_hint: None, None
-        size: 200,1
+        size: 300,1
         # width: 200
         on_text_validate : app.callback_Calc(*args)
 
@@ -46,6 +48,7 @@ Screen:
         text: 'Calculate'
         pos_hint: {'center_x': 0.5, 'center_y': 0.35}
         icon: "calculator"
+        theme_icon_color: "Secondary"
         md_bg_color: ("#465d5a")
         on_press: app.callback_Calc(*args)
 
@@ -63,7 +66,7 @@ Screen:
         text: 'Exit'
         pos_hint: {'center_x': 0.5, 'center_y': 0.2}
         icon: "close"
-        md_bg_color: ("#f00c5a")
+        md_bg_color: ("#f56c5a")
         on_press: app.stop()
  
     #MDFlatButton:
