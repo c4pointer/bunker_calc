@@ -12,17 +12,17 @@ ScreenManager:
             pos_hint: {"top": 1}
             #md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["menu", lambda x: x]]
+            left_action_items: [["menu", lambda x: app.dropdown(x)]]
 
         MDTabs:
             id: tabs
             on_tab_switch: app.on_tab_switch(*args)
 
-        MDFlatButton:
-            id : btn_tab
-            text: "Tabs"
-            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-            on_press: root.manager.current= "total_screen"
+#        MDFlatButton:
+#            id : btn_tab
+#            text: "Tabs"
+#            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+#            on_press: root.manager.current= "total_screen"
             
         # Will always be at the bottom of the screen.
         MDBottomAppBar:
@@ -34,11 +34,11 @@ ScreenManager:
                 mode: "end"
 <TotalScreen>:
     name:'total_screen'
-    MDFlatButton:
-        id : btn_total
-        text: "Total result"
-        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-        on_press: root.manager.current= "tab_screen"
+#    MDFlatButton:
+#        id : btn_total
+#        text: "Total result"
+#        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+#        on_press: root.manager.current= "tab_screen"
 
 
 <Tab>

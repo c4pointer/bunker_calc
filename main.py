@@ -10,6 +10,7 @@ from kivymd.icon_definitions import md_icons
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.screen import MDScreen
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivymd.uix.menu import MDDropdownMenu
 
 import sqlite3
 
@@ -46,11 +47,32 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
 
+    def dropdown(self, instance):
+        self.menu_items=[
+            {
+            "viewclass":"OneLineListItem",
+            "text": "Tanks Sounding",
+            "on_release":lambda x="Tanks Sounding":self.screen1()
+        },
+        {
+            "viewclass": "OneLineListItem",
+            "text": "Total Result",
+            "on_release": lambda x="Total Result":self.screen2()
+        }
+        ]
+        self.menu=MDDropdownMenu(
+            items=self.menu_items,
+            width_mult=4
+        )
+        self.menu.caller=instance
+        self.menu.open()
 
-   
+    def screen2(self):
+        self.root.current = "total_screen"
 
+    def screen1(self):
 
-
+        self.root.current = "tab_screen"
 
     def name_of_tank(self):
         # Extract from DB names of each tank
