@@ -13,7 +13,7 @@ import sqlite3
 
 # Window resizing. To be deleted before compiling
 from kivy.core.window import Window
-Window.size=(360,600)
+Window.size=(700,800)
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
@@ -74,12 +74,13 @@ class BunkerCalc(MDApp):
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
 
-    def callback_Calc(self, er):
+    def callback_Calc(self, sound):
 
         db_editing.calculation(self.tank_name.text, self.sound_value.text)
         try:
             self.result.font_size= "60dp"
             self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+
         except IndexError as e:
             # Printing on display the error and change the font-size
             self.result.text = str("Wrong sounding value!")

@@ -1,41 +1,64 @@
+<DrawerClickableItem@MDNavigationDrawerItem>
+    focus_color: "#e7e4c0"
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    ripple_color: "#c5bdd2"
+    selected_color: "#0c6c4d"
+
+
+<DrawerLabelItem@MDNavigationDrawerItem>
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    focus_behavior: False
+    selected_color: "#4a4939"
+    _no_ripple_effect: True
+
 MDScreen:
 
         
     MDNavigationLayout:
+
+        MDNavigationDrawer:
+            md_bg_color: app.theme_cls.primary_color
+            id: nav_drawer
+            scrim_color: 0, 0, 0, .8
+            radius: (0, 16, 16, 0)
+            MDNavigationDrawerMenu:
+    
+                        
+
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Menu"
+            elevation:4
+            pos_hint: {"top": 1}
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items: [["menu", lambda x: nav_drawer.set_state("toggle")]]
+
+   
+        MDTabs:
+            id: tabs
+            on_tab_switch: app.on_tab_switch(*args)
+            
+            
+
+        # Will always be at the bottom of the screen.
+        MDBottomAppBar:
+            MDTopAppBar:
+                title: "by Oleg Zubak"
+                icon: "fuel"
+                type: "bottom"
+                left_action_items: [["alpha-c-box", lambda x: x]]
+                mode: "end"
         
-        MDScreenManager:
+       # MDScreenManager:
 
-            MDScreen:
+            #MDScreen:
 
-                MDTopAppBar:
-                    title: "Menu"
-                    elevation:4
-                    pos_hint: {"top": 1}
-                    md_bg_color: "#e7e4c0"
-                    specific_text_color: "#4a4939"
-                    left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                
 
-                MDTabs:
-                    id: tabs
-                    on_tab_switch: app.on_tab_switch(*args)
-                    pos_hint: {'top':0.9}
-
-                # Will always be at the bottom of the screen.
-                MDBottomAppBar:
-                    MDTopAppBar:
-                        title: "by Oleg Zubak"
-                        icon: "fuel"
-                        type: "bottom"
-                        left_action_items: [["alpha-c-box", lambda x: x]]
-                        mode: "end"
-                MDNavigationDrawer:
-                    md_bg_color: app.theme_cls.primary_color
-                    id: nav_drawer
-                    scrim_color: 0, 0, 0, .8
-                    radius: (0, 16, 16, 0)
-                        #ContentNavigationDrawer:
-
-        
                         
 <Tab>
         
@@ -62,7 +85,7 @@ MDScreen:
     MDFloatingActionButton:
         id:calc
         text: 'Calculate'
-        pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+        pos_hint: {'center_x': 0.5, 'center_y': 0.4}
         icon: "calculator"
         theme_icon_color: "Secondary"
         md_bg_color: ("#465d5a")
@@ -80,7 +103,7 @@ MDScreen:
     MDFloatingActionButton:
         id: close
         text: 'Exit'
-        pos_hint: {'center_x': 0.5, 'center_y': 0.2}
+        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
         icon: "close"
         md_bg_color: ("#f56c5a")
         on_press: app.stop()
