@@ -34,17 +34,41 @@ ScreenManager:
                 mode: "end"
 <TotalScreen>:
     name:'total_screen'
-    MDLabel:
-        id: total
-        halign: 'center'
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            title: "Menu"
+            elevation:4
+            pos_hint: {"top": 1}
+            #md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items: [["menu", lambda x: app.dropdown(x)]]
 
-    MDFlatButton:
-        id : btn_total
-        text: "Go back"
-        md_bg_color: 1,0,0,1
-        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-        on_press: root.manager.current= "tab_screen"
-
+        MDLabel:
+            id: total
+            halign: 'center'
+            font_size: "50dp"
+#            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        MDFloatingActionButton:
+            id: close
+            text: 'Exit'
+            pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+            icon: "close"
+            md_bg_color: ("#f56c5a")
+            on_press: app.stop()
+        MDFlatButton:
+            id : btn_total
+            text: "Go back"
+            md_bg_color: 1,.5,.4,1
+#            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.manager.current= "tab_screen"
+        MDBottomAppBar:
+            MDTopAppBar:
+                title: "by Oleg Zubak"
+                icon: "fuel"
+                type: "bottom"
+                left_action_items: [["alpha-c-box", lambda x: x]]
+                mode: "end"
 
 
 <Tab>

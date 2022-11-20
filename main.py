@@ -1,32 +1,19 @@
-import db_reading
-import db_editing
-
-from kivymd.app import MDApp
-from kivymd.uix.label import MDLabel
-from kivymd.uix.tab import MDTabsBase
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.floatlayout import MDFloatLayout
-from kivymd.icon_definitions import md_icons
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.screen import MDScreen
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivymd.uix.menu import MDDropdownMenu
-
-import sqlite3
-
 # Window resizing. To be deleted before compiling
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
-
+from functools import reduce
+import operator
 import db_editing
 import db_reading
 
-Window.size = (360, 600)
+Window.size = (400, 600)
 
-total_list={}
+total_list = {}
+
 
 class TabScreen(Screen):
     pass
@@ -34,8 +21,6 @@ class TabScreen(Screen):
 
 class TotalScreen(Screen):
     pass
-
-
 
 
 class Tab(MDFloatLayout, MDTabsBase):
@@ -48,6 +33,9 @@ class Tab(MDFloatLayout, MDTabsBase):
 #         self.sound = sound
 #         self.tk_name = tk_name
 
+
+# Here we declare 2 screens for our App
+# One for input all meassurments, other one for total result
 sm = ScreenManager()
 sm.add_widget(TabScreen(name='tab_screen'))
 sm.add_widget(TotalScreen(name='total_screen'))
@@ -62,7 +50,10 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
 
-    def dropdown(self, instance):
+    def dropdown(self, x):
+        """
+        Create a dropdown menu for navigate beetwen the screens
+        """
         self.menu_items = [
             {
                 "viewclass": "OneLineListItem",
@@ -79,16 +70,40 @@ class BunkerCalc(MDApp):
             items=self.menu_items,
             width_mult=4
         )
-        self.menu.caller = instance
+        self.menu.caller = x
         self.menu.open()
 
-    def screen2(self):
 
+    def calculate_total(self):
+        #Calculate the total m3 in our "total_list"
+        self.total_result=[]
+        self.sum=0
+        for i in (self.names):
+            try:
+                if len(total_list[i]) > 0 :
+
+                    self.total_result.append(total_list[i])
+
+            except KeyError as err:
+                pass
+
+        for i in self.total_result:
+
+            self.sum += float(i)
+        return self.sum
+
+
+    def screen2(self):
+        """
+        Go to total screen where is shown total figure
+        At each time when "total_screen" is pressed is recalculated
+        total figure
+        """
         self.root.current = "total_screen"
-        self.root.get_screen("total_screen").ids.total.text=str(total_list)
+        self.calculate_total()
+        self.root.get_screen("total_screen").ids.total.text = str(round(self.sum,3)) + str(" m3")
 
     def screen1(self):
-
         self.root.current = "tab_screen"
 
     def name_of_tank(self):
@@ -115,7 +130,6 @@ class BunkerCalc(MDApp):
         :param instance_tab_label: <kivymd.uix.tab.MDTabsLabel object>;
         :param tab_text: text or name icon of tab;
         '''
-
         instance_tab.ids.sound_field.hint_text = "Sounding value (cm):"
         instance_tab.ids.sound_field.text_color_normal = 1, 1, 0.8, 1
 
@@ -129,7 +143,7 @@ class BunkerCalc(MDApp):
         try:
             self.result.font_size = "60dp"
             self.result.text = str(db_editing.volume_in_m3[0])
-            total_list[self.tank_name.text]=(self.result.text)
+            total_list[self.tank_name.text] = (self.result.text)
             self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
 
 
