@@ -13,7 +13,6 @@ import db_reading
 
 total_list = {}
 
-
 class TabScreen(Screen):
     pass
 

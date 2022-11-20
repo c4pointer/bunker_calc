@@ -34,33 +34,32 @@ ScreenManager:
                 mode: "end"
 <TotalScreen>:
     name:'total_screen'
-    MDBoxLayout:
+    MDTopAppBar:
+        title: "Menu"
+        elevation:4
+        pos_hint: {"top": 1}
+        #md_bg_color: "#e7e4c0"
+        specific_text_color: "#4a4939"
+        left_action_items: [["menu", lambda x: app.dropdown(x)]]
+    MDFloatLayout:
         orientation: "vertical"
-        MDTopAppBar:
-            title: "Menu"
-            elevation:4
-            pos_hint: {"top": 1}
-            #md_bg_color: "#e7e4c0"
-            specific_text_color: "#4a4939"
-            left_action_items: [["menu", lambda x: app.dropdown(x)]]
-
         MDLabel:
             id: total
             halign: 'center'
             font_size: "50dp"
-#            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         MDFloatingActionButton:
             id: close
             text: 'Exit'
-            pos_hint: {'center_x': 0.5, 'center_y': 0.35}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             icon: "close"
             md_bg_color: ("#f56c5a")
             on_press: app.stop()
         MDFlatButton:
             id : btn_total
             text: "Go back"
-            md_bg_color: 1,.5,.4,1
-#            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            md_bg_color: .3,.5,.4,1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.3}
             on_press: root.manager.current= "tab_screen"
         MDBottomAppBar:
             MDTopAppBar:
@@ -125,4 +124,3 @@ ScreenManager:
         #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
         #md_bg_color: ("#f00c5a")
         #on_press: app.stop()
-
