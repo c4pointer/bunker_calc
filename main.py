@@ -1,16 +1,15 @@
 # Window resizing. To be deleted before compiling
-from kivy.core.window import Window
+# from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
-from functools import reduce
-import operator
+
 import db_editing
 import db_reading
 
-Window.size = (400, 600)
+# Window.size = (400, 600)
 
 total_list = {}
 
