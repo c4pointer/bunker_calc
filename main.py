@@ -85,8 +85,6 @@ class BunkerCalc(MDApp):
     def screen2(self):
 
         self.root.current = "total_screen"
-
-
         self.root.get_screen("total_screen").ids.total.text=str(total_list)
 
     def screen1(self):
