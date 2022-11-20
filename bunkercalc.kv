@@ -34,11 +34,19 @@ ScreenManager:
                 mode: "end"
 <TotalScreen>:
     name:'total_screen'
-#    MDFlatButton:
-#        id : btn_total
-#        text: "Total result"
-#        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-#        on_press: root.manager.current= "tab_screen"
+
+    MDFlatButton:
+        id : btn_total
+        text: "Go back"
+        md_bg_color: 1,0,0,1
+        pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+        on_press: root.manager.current= "tab_screen"
+
+
+
+
+
+
 
 
 <Tab>
