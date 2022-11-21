@@ -1,5 +1,5 @@
 name: Build
-on: [push, pull_request]
+on: [push]
 
 jobs:
   # Build job. Builds app for Android with Buildozer
@@ -15,7 +15,7 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          workdir: test_app
+          workdir: master
           buildozer_version: stable
 
       - name: Upload artifacts
