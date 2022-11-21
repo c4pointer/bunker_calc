@@ -9,8 +9,8 @@ jobs:
 
     steps:
 
-      - name: buildozer init
-        run: buildozer init
+      - name: buildozer init 
+        run: buildozer init -y
      
 
       - name: Checkout
