@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: buildozer init
+        run: buildozer init
+     
+
       - name: Checkout
         uses: actions/checkout@v2
 
