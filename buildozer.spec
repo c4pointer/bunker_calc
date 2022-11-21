@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = My Application
+title = BunkerCalc
 
 # (str) Package name
 package.name = myapp
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,db
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 0.2
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
