@@ -10,7 +10,7 @@ jobs:
     steps:
 
       - name: buildozer init 
-        run: buildozer init --yes
+        run: !buildozer init --yes
      
 
       - name: Checkout
