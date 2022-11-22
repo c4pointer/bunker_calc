@@ -7,7 +7,7 @@ ScreenManager:
     MDBoxLayout:
         orientation: "vertical"
         MDTopAppBar:
-            title: "Viking Ocean"
+            id: top_menu
             elevation:4
             pos_hint: {"top": 1}
             #md_bg_color: "#e7e4c0"
@@ -27,6 +27,7 @@ ScreenManager:
         # Will always be at the bottom of the screen.
         MDBottomAppBar:
             MDTopAppBar:
+                id: bottom_bar
                 title: "by Oleg Zubak"
                 icon: "fuel"
                 type: "bottom"
@@ -35,7 +36,7 @@ ScreenManager:
 <TotalScreen>:
     name:'total_screen'
     MDTopAppBar:
-        title: "Menu"
+        id: total_menu
         elevation:4
         pos_hint: {"top": 1}
         #md_bg_color: "#e7e4c0"

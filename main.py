@@ -13,6 +13,8 @@ import db_reading
 
 total_list = {}
 
+vessels=("Viking Ocean",)
+
 class TabScreen(Screen):
     pass
 
@@ -103,7 +105,12 @@ class BunkerCalc(MDApp):
 
     def screen1(self):
         self.root.current = "tab_screen"
+    def vessel_name(self):
+        self.vessel=self.root.get_screen("tab_screen").ids.top_menu.title=vessels[0]
+        self.set_vessel_name()
 
+    def set_vessel_name(self):
+        self.root.get_screen("total_screen").ids.total_menu.title=str(self.vessel)
     def name_of_tank(self):
         # Extract from DB names of each tank
         self.names = []
@@ -155,7 +162,7 @@ class BunkerCalc(MDApp):
         self.name_of_tank()
 
         self.add_tab()
-
+        self.vessel_name()
 
 if __name__ == "__main__":
     BunkerCalc().run()
