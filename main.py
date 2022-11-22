@@ -119,11 +119,41 @@ class BunkerCalc(MDApp):
         self.tank_name = db_reading.name_of_tank
         for i in self.tank_name:
             self.names.append(i[0])
+    def mdo_tank_extract(self):
+        self.mdo_names=[]
+        db_reading.sort_tanks_mdo()
+        self.mdo_tanks=db_reading.table_names_md
+        for i in self.mdo_tanks:
+            self.mdo_names.append([i][0])
+
 
     def add_tab(self):
 
         for i in (self.names):
+
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+        for i,t in enumerate(self.name):
+
+            print((set(self.mdo_tanks).intersection(self.names)))
+
+                    # self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
+
+
+
+
+
+            # if str(i[o]) in self.names:
+            #     print("goor")
+            # try:
+            #     if d == self.names[i]:
+            #         print("good")
+            #         self.root.get_screen("tab_screen").ids.tabs.md_bg_color="red"
+            # except IndexError:
+            #     pass
+        #
+        # print(self.mdo_tanks[0][0])
+        # print(self.mdo_tanks[1][0])
+        # print(self.mdo_tanks[2][0])
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -160,9 +190,11 @@ class BunkerCalc(MDApp):
     def on_start(self):
 
         self.name_of_tank()
-
+        self.mdo_tank_extract()
         self.add_tab()
         self.vessel_name()
+
+
 
 if __name__ == "__main__":
     BunkerCalc().run()

@@ -26,10 +26,10 @@ cur = conn.cursor()
 
 
 def extract_names():
-    '''
+    """
     Here we connect to our DB and select all tank names
     that we will display in ListBox
-    '''
+    """
     global name_of_tank
     name_of_tank = []
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -58,24 +58,24 @@ def extract_names():
 #     return table_names
 
 
-# def sort_tanks_mdo():
+def sort_tanks_mdo():
 
-#     table_name_md = []
-#     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-#     for tables in cur:
-#         table_name_md.append(tables)
+    table_name_md = []
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    for tables in cur:
+        table_name_md.append(tables)
 
-#     global table_names_md
-#     table_names_md = []
-#     for row in table_name_md:
-#         x0 = str(row).strip('\'(),')
-#         cur.execute(" SELECT  state=='"+str(0) +
-#                     "' FROM '"+x0+"' WHERE sound_id = 0")
-#         for q in cur:
-#             x1 = str(q).strip('\'(),')
-#             if float(x1) == 0:
-#                 table_names_md.append(row)
-#     return table_names_md
+    global table_names_md
+    table_names_md = []
+    for row in table_name_md:
+        x0 = str(row).strip('\'(),')
+        cur.execute(" SELECT  state=='"+str(0) +
+                    "' FROM '"+x0+"' WHERE sound_id = 0")
+        for q in cur:
+            x1 = str(q).strip('\'(),')
+            if float(x1) == 0:
+                table_names_md.append(row)
+    return table_names_md
 
 
 # def create_tk(arg):
