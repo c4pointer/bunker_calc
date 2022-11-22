@@ -138,7 +138,7 @@ class BunkerCalc(MDApp):
 
 
 
-            self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
+            #self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
 
             # if str(i[o]) in self.names:
             #     print("goor")
