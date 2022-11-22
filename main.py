@@ -1,6 +1,7 @@
 # Window resizing. To be deleted before compiling
 # from kivy.core.window import Window
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
@@ -8,12 +9,13 @@ from kivymd.uix.tab import MDTabsBase
 
 import db_editing
 import db_reading
-
+from collections import ChainMap
 # Window.size = (400, 600)
 
 total_list = {}
 
-vessels=("Viking Ocean",)
+vessels = ("Viking Ocean",)
+
 
 class TabScreen(Screen):
     pass
@@ -73,25 +75,21 @@ class BunkerCalc(MDApp):
         self.menu.caller = x
         self.menu.open()
 
-
     def calculate_total(self):
-        #Calculate the total m3 in our "total_list"
-        self.total_result=[]
-        self.sum=0
+        # Calculate the total m3 in our "total_list"
+        self.total_result = []
+        self.sum = 0
         for i in (self.names):
             try:
-                if len(total_list[i]) > 0 :
-
+                if len(total_list[i]) > 0:
                     self.total_result.append(total_list[i])
 
             except KeyError as err:
                 pass
 
         for i in self.total_result:
-
             self.sum += float(i)
         return self.sum
-
 
     def screen2(self):
         """
@@ -101,16 +99,18 @@ class BunkerCalc(MDApp):
         """
         self.root.current = "total_screen"
         self.calculate_total()
-        self.root.get_screen("total_screen").ids.total.text = str(round(self.sum,3)) + str(" m3")
+        self.root.get_screen("total_screen").ids.total.text = str(round(self.sum, 3)) + str(" m3")
 
     def screen1(self):
         self.root.current = "tab_screen"
+
     def vessel_name(self):
-        self.vessel=self.root.get_screen("tab_screen").ids.top_menu.title=vessels[0]
+        self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
 
     def set_vessel_name(self):
-        self.root.get_screen("total_screen").ids.total_menu.title=str(self.vessel)
+        self.root.get_screen("total_screen").ids.total_menu.title = str(self.vessel)
+
     def name_of_tank(self):
         # Extract from DB names of each tank
         self.names = []
@@ -119,28 +119,26 @@ class BunkerCalc(MDApp):
         self.tank_name = db_reading.name_of_tank
         for i in self.tank_name:
             self.names.append(i[0])
+
     def mdo_tank_extract(self):
-        self.mdo_names=[]
+        self.mdo_names = []
         db_reading.sort_tanks_mdo()
-        self.mdo_tanks=db_reading.table_names_md
+        self.mdo_tanks = db_reading.table_names_md
         for i in self.mdo_tanks:
-            self.mdo_names.append([i][0])
+            self.mdo_names.append(i[0])
 
 
     def add_tab(self):
-
+        names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
+        print((names_for_do))
         for i in (self.names):
-
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
-        for i,t in enumerate(self.name):
 
-            print((set(self.mdo_tanks).intersection(self.names)))
-
-                    # self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
+        # print(list(ChainMap(self.mdo_names, self.names)))
 
 
 
-
+            self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
 
             # if str(i[o]) in self.names:
             #     print("goor")
@@ -193,7 +191,6 @@ class BunkerCalc(MDApp):
         self.mdo_tank_extract()
         self.add_tab()
         self.vessel_name()
-
 
 
 if __name__ == "__main__":
