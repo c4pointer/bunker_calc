@@ -134,24 +134,6 @@ class BunkerCalc(MDApp):
         for i in (self.names):
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
 
-        # print(list(ChainMap(self.mdo_names, self.names)))
-
-
-
-            #self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{j[0]} mdo"))
-
-            # if str(i[o]) in self.names:
-            #     print("goor")
-            # try:
-            #     if d == self.names[i]:
-            #         print("good")
-            #         self.root.get_screen("tab_screen").ids.tabs.md_bg_color="red"
-            # except IndexError:
-            #     pass
-        #
-        # print(self.mdo_tanks[0][0])
-        # print(self.mdo_tanks[1][0])
-        # print(self.mdo_tanks[2][0])
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -186,7 +168,6 @@ class BunkerCalc(MDApp):
             self.result.font_size = "20dp"
 
     def on_start(self):
-
         self.name_of_tank()
         self.mdo_tank_extract()
         self.add_tab()
