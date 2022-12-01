@@ -168,7 +168,7 @@ class BunkerCalc(MDApp):
             self.result.font_size = "20dp"
 
     def on_start(self):
-        if total_list:
+        if len(total_list) !=0 :
             for i , d in enumerate(total_list):
                 print(i[d])
                 db_reading.check_prev(i[d])

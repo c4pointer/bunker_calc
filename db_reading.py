@@ -29,7 +29,7 @@ def check_prev(new_tank):
     conn.commit()
 
 # r = re.compile('[^a-zA-Z-0-9]')
-check_prev()
+
 # ADMIN panel of App
 
 
