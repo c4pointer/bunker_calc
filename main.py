@@ -168,6 +168,11 @@ class BunkerCalc(MDApp):
             self.result.font_size = "20dp"
 
     def on_start(self):
+        if total_list:
+            for i , d in enumerate(total_list):
+                print(i[d])
+                db_reading.check_prev(i[d])
+
         self.name_of_tank()
         self.mdo_tank_extract()
         self.add_tab()
