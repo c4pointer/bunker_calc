@@ -176,7 +176,7 @@ class BunkerCalc(MDApp):
                 for i  in (total_list):
                     # print(total_list[i])
                     db_reading.check_prev(i, self.sound_value.text, volume )
-                    print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0c]} ")
+                    print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} ")
 
         except IndexError as e:
             # Printing on display the error and change the font-size
