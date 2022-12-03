@@ -104,6 +104,7 @@ class BunkerCalc(MDApp):
     def screen1(self):
         self.root.current = "tab_screen"
 
+
     def vessel_name(self):
         self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
@@ -130,7 +131,6 @@ class BunkerCalc(MDApp):
 
     def add_tab(self):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
-        print((names_for_do))
         for i in (self.names):
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
 
@@ -158,9 +158,25 @@ class BunkerCalc(MDApp):
         try:
             self.result.font_size = "60dp"
             self.result.text = str(db_editing.volume_in_m3[0])
-            total_list[self.tank_name.text] = (self.result.text)
-            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
 
+            # Define below row for take into prev function use
+            volume = self.result.text
+
+            total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+                        
+            
+            
+            print(total_list)
+            
+
+            # Insert data to prev DB for prev values extarcting on start
+            if len(total_list) >0 :
+                # print(total_list)
+                for i  in (total_list):
+                    # print(total_list[i])
+                    db_reading.check_prev(i, self.sound_value.text, volume )
+                    print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0c]} ")
 
         except IndexError as e:
             # Printing on display the error and change the font-size
@@ -168,10 +184,11 @@ class BunkerCalc(MDApp):
             self.result.font_size = "20dp"
 
     def on_start(self):
-        if len(total_list) !=0 :
-            for i , d in enumerate(total_list):
-                print(i[d])
-                db_reading.check_prev(i[d])
+        # if len(total_list) >0 :
+        #     print(total_list)
+        #     for i  in (total_list):
+        #         # print(total_list[i])
+        #         db_reading.check_prev(i)
 
         self.name_of_tank()
         self.mdo_tank_extract()

@@ -20,13 +20,18 @@ import sqlite3
 conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
 
-def check_prev(new_tank):
+def check_prev(new_tank, val, volume):
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
     cur = connection.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS '"+new_tank +
+    cur.execute("CREATE TABLE IF NOT EXISTS '"+new_tank+
                 "' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
+    
     conn.commit()
+    cur.execute("INSERT INTO '"+ new_tank +
+                "' (sound_id,volume,density,temperature) VALUES (%s,%s,0.9555,15);" % (val, volume))
+    conn.commit()
+    
 
 # r = re.compile('[^a-zA-Z-0-9]')
 
