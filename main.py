@@ -167,15 +167,14 @@ class BunkerCalc(MDApp):
                         
             
             
-            print(total_list)
+           # print(total_list)
             
 
             # Insert data to prev DB for prev values extarcting on start
             if len(total_list) >0 :
                 # print(total_list)
                 for i  in (total_list):
-                    # print(total_list[i])
-                    db_reading.check_prev(i, self.sound_value.text, volume )
+                    db_reading.check_prev(i, total_list[i][1], total_list[i][0] )
                     print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} ")
 
         except IndexError as e:
