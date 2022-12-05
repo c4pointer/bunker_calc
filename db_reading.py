@@ -20,7 +20,7 @@ import sqlite3
 conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
 
-def check_prev(tank, val, volume):
+def check_prev(tank, val, volume, prev):
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
     cur = connection.cursor()
@@ -28,14 +28,14 @@ def check_prev(tank, val, volume):
                 "' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
     
     connection.commit()
-    add(tank,val, volume)
+    add(tank,val, volume, prev)
 
 
-def add(t,v,volume):
+def add(t,v,volume, prev):
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
     cur = connection.cursor()
-    cur.execute("DELETE FROM '"+t+"' WHERE sound_id=(?);", (v,))
+    cur.execute("DELETE FROM '"+t+"' WHERE sound_id=(?);", (prev,))
     cur.execute("INSERT INTO '"+ t +
             "' (sound_id,volume,density,temperature) VALUES (?,?,0.9555,15) ;", (v,volume))
     connection.commit()

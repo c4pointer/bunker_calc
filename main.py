@@ -174,7 +174,7 @@ class BunkerCalc(MDApp):
             if len(total_list) >0 :
                 # print(total_list)
                 for i  in (total_list):
-                    db_reading.check_prev(i, total_list[i][1], total_list[i][0] )
+                    db_reading.check_prev(i, total_list[i][1], total_list[i][0], total_list[i][-1])
                     print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} ")
 
         except IndexError as e:
