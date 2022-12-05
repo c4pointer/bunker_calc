@@ -166,16 +166,13 @@ class BunkerCalc(MDApp):
             self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                         
             
-            
-           # print(total_list)
-            
 
             # Insert data to prev DB for prev values extarcting on start
             if len(total_list) >0 :
                 # print(total_list)
                 for i  in (total_list):
-                    db_reading.check_prev(i, total_list[i][1], total_list[i][0], total_list[i][-1])
-                    print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} ")
+                    db_reading.add_to_prevdb(i, total_list[i][1], total_list[i][0])
+                    # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
 
         except IndexError as e:
             # Printing on display the error and change the font-size
