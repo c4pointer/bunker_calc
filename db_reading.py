@@ -28,7 +28,7 @@ def add_to_prevdb(tank, val, volume):
                 "' (sound_id INT ,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL) ;")
     
     connection.commit()
-    add(tank,val, volume)
+    update(tank,val, volume)
 
 
 def update(t,v,volume):
@@ -45,11 +45,15 @@ def update(t,v,volume):
             "' SET  sound_id = ?, volume=? WHERE rowid=1;", (v, volume))
     connection.commit()
     connection.close()
-    # print(t)
-    # print(v)
-    # print(volume)
 
 
+
+def extract_prev(e, text):
+    # cur.execute("SELECT * from '"+ e +
+    #         "' ;")
+  
+    print(text)
+    
 
 # r = re.compile('[^a-zA-Z-0-9]')
 
