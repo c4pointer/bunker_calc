@@ -136,11 +136,19 @@ class BunkerCalc(MDApp):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         for i in (self.names):
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
-            db_reading.extract_prev(i,self.result.text)
+            # db_reading.extract_prev(i,self.result.text)
 
-        # print((db_reading.prev_label_text["1P"]))   
+        # self.first_tab_name=str(db_reading.prev_label_text["1P"])
         
-        self.root.get_screen('tab_screen').ids.tabs.label = db_reading.prev_label_text['1P']
+        # self.root.get_screen('tab_screen').ids.tabs.text  ="eeeee"
+        # db_reading.prev_label_text['1P']
+        self.first_tab_name()
+
+    def first_tab_name(self):
+        for i in (self.names):
+            db_reading.extract_prev(i,self.result.text)
+        self.f_tab_name=str(db_reading.prev_label_text["1P"])
+        print(self.f_tab_name)
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -161,7 +169,8 @@ class BunkerCalc(MDApp):
 
         if len(total_list)==0:
             try:
-                self.result.text = str(db_reading.prev_label_text[self.tank_name.text])
+                self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text])
+                self.result.font_size = "30dp"
             except :
                 pass
 
