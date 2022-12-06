@@ -5,6 +5,7 @@
 
 # import csv
 import sqlite3
+# from main import prev_label_text
 # import re
 # import os
 
@@ -19,7 +20,7 @@ import sqlite3
 #         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
-
+prev_label_text = {}
 def add_to_prevdb(tank, val, volume):
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
@@ -49,10 +50,19 @@ def update(t,v,volume):
 
 
 def extract_prev(e, text):
-    # cur.execute("SELECT * from '"+ e +
-    #         "' ;")
-  
-    print(text)
+    
+    
+    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    
+    cur = connection.cursor()
+    cur.execute("SELECT * from '"+ e +
+            "' ;")
+    for i in cur:
+        prev_label_text[e]=(i[1])
+    
+    connection.close()
+
+    
     
 
 # r = re.compile('[^a-zA-Z-0-9]')

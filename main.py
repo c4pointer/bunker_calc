@@ -14,6 +14,9 @@ from collections import ChainMap
 
 total_list = {}
 
+
+prev_label_text = {}
+
 vessels = ("Viking Ocean",)
 
 
@@ -133,9 +136,11 @@ class BunkerCalc(MDApp):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         for i in (self.names):
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
-            #db_reading.extract_prev(i,self.result.text)
-            self.result.text= self.names[0]
-            
+            db_reading.extract_prev(i,self.result.text)
+
+        # print((db_reading.prev_label_text["1P"]))   
+        
+        self.root.get_screen('tab_screen').ids.tabs.label = db_reading.prev_label_text['1P']
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -153,7 +158,12 @@ class BunkerCalc(MDApp):
         self.sound_value = instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
-        self.result.text = self.tank_name.text
+
+        if len(total_list)==0:
+            try:
+                self.result.text = str(db_reading.prev_label_text[self.tank_name.text])
+            except :
+                pass
 
     def callback_Calc(self, sound):
 
@@ -184,11 +194,10 @@ class BunkerCalc(MDApp):
 
     def on_start(self):
 
-
         self.name_of_tank()
         self.mdo_tank_extract()
-        self.add_tab()
         self.vessel_name()
+        self.add_tab()
 
 
 
