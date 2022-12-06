@@ -1,5 +1,6 @@
  .buildozer
- .vscode/
+ /.vscode
+.vscode
 __pycache__
 /bin
 .bunker_venv
