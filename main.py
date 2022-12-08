@@ -143,11 +143,11 @@ class BunkerCalc(MDApp):
 
         # self.first_tab_name()
 
-    def first_tab_name(self):
-        for i in (self.names):
-            db_reading.extract_prev(i,self.result.text)
-            if str(i) =="1P":
-                self.root.get_screen('tab_screen').ids.tabs.tab.label.background_color="#ffffff"
+    # def first_tab_name(self):
+    #     for i in (self.names):
+    #         db_reading.extract_prev(i,self.result.text)
+    #         if str(i) =="1P":
+    #             self.root.get_screen('tab_screen').ids.tabs.tab.label.background_color="#ffffff"
 
 
     def on_tab_switch(
