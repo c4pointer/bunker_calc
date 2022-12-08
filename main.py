@@ -6,6 +6,7 @@ from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
+from kivymd.uix.label import MDLabel
 
 import db_editing
 import db_reading
@@ -134,15 +135,20 @@ class BunkerCalc(MDApp):
 
     def add_tab(self):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
+        
         for i in (self.names):
+            db_reading.extract_prev(i)
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
-        self.first_tab_name()
+        self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
+
+        # self.first_tab_name()
 
     def first_tab_name(self):
         for i in (self.names):
             db_reading.extract_prev(i,self.result.text)
-        self.f_tab_name=str(db_reading.prev_label_text["1P"])
-        print(self.f_tab_name)
+            if str(i) =="1P":
+                self.root.get_screen('tab_screen').ids.tabs.tab.label.background_color="#ffffff"
+
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text

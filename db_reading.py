@@ -49,7 +49,7 @@ def update(t,v,volume):
 
 
 
-def extract_prev(e, text):
+def extract_prev(e):
     
     
     connection= sqlite3.connect(('bunker_calc_prev.db'))
