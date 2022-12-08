@@ -21,6 +21,8 @@ prev_label_text = {}
 vessels = ("Viking Ocean",)
 
 
+
+
 class TabScreen(Screen):
     pass
 
@@ -136,11 +138,13 @@ class BunkerCalc(MDApp):
 
     def add_tab(self):
         # names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
-        
+        self.tab_iterator = int(0)
         for i in (self.names):
             db_reading.extract_prev(i)
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
+
+
 
 
     def on_tab_switch(
@@ -159,9 +163,19 @@ class BunkerCalc(MDApp):
         self.sound_value = instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
+        
+        if self.tab_iterator == 1:
+            self.root.get_screen('tab_screen').ids.tabs.remove_widget(
+                self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
+                )
+        print(self.tab_iterator)
+        self.tab_iterator += 1
+        print(len(self.root.get_screen('tab_screen').ids.tabs.get_tab_list()))
+        print(self.tab_iterator)
 
-        if len(total_list)==0:
+        if len(total_list)==1:
             try:
+
                 self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text])
                 self.result.font_size = "30dp"
             except :
@@ -195,7 +209,7 @@ class BunkerCalc(MDApp):
             self.result.font_size = "20dp"
 
     def on_start(self):
-
+        
         self.name_of_tank()
         self.mdo_tank_extract()
         self.vessel_name()
