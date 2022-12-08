@@ -90,9 +90,10 @@ class BunkerCalc(MDApp):
 
             except KeyError as err:
                 pass
-
+        
         for i in self.total_result:
-            self.sum += float(i)
+            print(i[0])
+            self.sum += float(i[0])
         return self.sum
 
     def screen2(self):
@@ -141,14 +142,6 @@ class BunkerCalc(MDApp):
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
 
-        # self.first_tab_name()
-
-    # def first_tab_name(self):
-    #     for i in (self.names):
-    #         db_reading.extract_prev(i,self.result.text)
-    #         if str(i) =="1P":
-    #             self.root.get_screen('tab_screen').ids.tabs.tab.label.background_color="#ffffff"
-
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -174,7 +167,7 @@ class BunkerCalc(MDApp):
             except :
                 pass
 
-    def callback_Calc(self, sound):
+    def callback_Calc(self, *args):
 
         db_editing.calculation(self.tank_name.text, self.sound_value.text)
         try:
@@ -183,7 +176,7 @@ class BunkerCalc(MDApp):
 
             # Define below row for take into prev function use
             volume = self.result.text
-
+        
             total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
             self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                         
