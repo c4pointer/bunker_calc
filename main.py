@@ -173,7 +173,7 @@ class BunkerCalc(MDApp):
         print(len(self.root.get_screen('tab_screen').ids.tabs.get_tab_list()))
         print(self.tab_iterator)
 
-        if len(total_list)==1:
+        if len(total_list)==0:
             try:
 
                 self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text])
