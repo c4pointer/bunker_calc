@@ -5,6 +5,7 @@
 
 # import csv
 import sqlite3
+# from main import prev_label_text
 # import re
 # import os
 
@@ -19,6 +20,50 @@ import sqlite3
 #         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
+prev_label_text = {}
+def add_to_prevdb(tank, val, volume):
+    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    
+    cur = connection.cursor()
+    cur.execute("CREATE TABLE IF NOT EXISTS '"+tank+
+                "' (sound_id INT ,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL) ;")
+    
+    connection.commit()
+    update(tank,val, volume)
+
+
+def update(t,v,volume):
+    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    
+    cur = connection.cursor()
+    cur.execute("SELECT * from '"+ t +
+            "' ;")
+    if len(list(cur)) <= 0:
+        cur.execute("INSERT INTO '"+ t +
+            "' (sound_id, volume) VALUES (?,?)  ;", (v,volume))
+
+    cur.execute("UPDATE '"+ t +
+            "' SET  sound_id = ?, volume=? WHERE rowid=1;", (v, volume))
+    connection.commit()
+    connection.close()
+
+
+
+def extract_prev(e):
+    
+    
+    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    
+    cur = connection.cursor()
+    cur.execute("SELECT * from '"+ e +
+            "' ;")
+    for i in cur:
+        prev_label_text[e]=(i[1])
+    
+    connection.close()
+
+    
+    
 
 # r = re.compile('[^a-zA-Z-0-9]')
 

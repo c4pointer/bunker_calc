@@ -6,6 +6,7 @@ from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
+from kivymd.uix.label import MDLabel
 
 import db_editing
 import db_reading
@@ -13,6 +14,9 @@ from collections import ChainMap
 # Window.size = (400, 600)
 
 total_list = {}
+
+
+prev_label_text = {}
 
 vessels = ("Viking Ocean",)
 
@@ -104,6 +108,7 @@ class BunkerCalc(MDApp):
     def screen1(self):
         self.root.current = "tab_screen"
 
+
     def vessel_name(self):
         self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
@@ -130,9 +135,19 @@ class BunkerCalc(MDApp):
 
     def add_tab(self):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
-        print((names_for_do))
+        
         for i in (self.names):
+            db_reading.extract_prev(i)
             self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+        self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
+
+        # self.first_tab_name()
+
+    def first_tab_name(self):
+        for i in (self.names):
+            db_reading.extract_prev(i,self.result.text)
+            if str(i) =="1P":
+                self.root.get_screen('tab_screen').ids.tabs.tab.label.background_color="#ffffff"
 
 
     def on_tab_switch(
@@ -152,17 +167,27 @@ class BunkerCalc(MDApp):
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
 
-        print(total_list)
-
     def callback_Calc(self, sound):
 
         db_editing.calculation(self.tank_name.text, self.sound_value.text)
         try:
             self.result.font_size = "60dp"
             self.result.text = str(db_editing.volume_in_m3[0])
-            total_list[self.tank_name.text] = (self.result.text)
-            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
 
+            # Define below row for take into prev function use
+            volume = self.result.text
+
+            total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+                        
+            
+
+            # Insert data to prev DB for prev values extarcting on start
+            if len(total_list) >0 :
+                # print(total_list)
+                for i  in (total_list):
+                    db_reading.add_to_prevdb(i, total_list[i][1], total_list[i][0])
+                    # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
 
         except IndexError as e:
             # Printing on display the error and change the font-size
@@ -173,8 +198,9 @@ class BunkerCalc(MDApp):
 
         self.name_of_tank()
         self.mdo_tank_extract()
-        self.add_tab()
         self.vessel_name()
+        self.add_tab()
+
 
 
 if __name__ == "__main__":
