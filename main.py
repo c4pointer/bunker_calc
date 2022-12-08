@@ -18,7 +18,7 @@ total_list = {}
 
 prev_label_text = {}
 
-vessels = ("Viking Ocean",)
+vessels = ("m/v 'Viking Ocean'",)
 
 
 
