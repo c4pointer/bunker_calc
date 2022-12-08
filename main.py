@@ -134,7 +134,7 @@ class BunkerCalc(MDApp):
 
 
     def add_tab(self):
-        names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
+        # names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         
         for i in (self.names):
             db_reading.extract_prev(i)
