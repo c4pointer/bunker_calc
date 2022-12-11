@@ -7,6 +7,7 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.label import MDLabel
+from kivy.properties import StringProperty
 
 import db_editing
 import db_reading
@@ -19,8 +20,6 @@ total_list = {}
 prev_label_text = {}
 
 vessels = ("Viking Ocean",)
-
-
 
 
 class TabScreen(Screen):
@@ -57,6 +56,15 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
+        
+    
+    def on_start(self):
+        
+        self.name_of_tank()
+        self.mdo_tank_extract()
+        self.vessel_name()
+        self.add_tab()
+
 
     def dropdown(self, x):
         """
@@ -134,17 +142,28 @@ class BunkerCalc(MDApp):
         self.mdo_tanks = db_reading.table_names_md
         for i in self.mdo_tanks:
             self.mdo_names.append(i[0])
-
+        # print(self.mdo_names)
 
     def add_tab(self):
-        # names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
-        self.tab_iterator = int(0)
+        names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
+        # print(names_for_do)
+        self.tab_iterator = 0
         for i in (self.names):
             db_reading.extract_prev(i)
-            self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+            
+            if not i in names_for_do:
+            
+                self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+            for do in names_for_do :
+                if do == i:
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
+    
         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
-
-
+        # self.root.get_screen('tab_screen').ids.sound_field.text=db_reading.prev_label_text[self.tank_name.text]
+        # afetr add text to label of first tab we delete here the last widget that is non correct 
+        self.root.get_screen('tab_screen').ids.tabs.remove_widget(
+            self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
+            )
 
 
     def on_tab_switch(
@@ -164,26 +183,18 @@ class BunkerCalc(MDApp):
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
         
-        if self.tab_iterator == 1:
-            self.root.get_screen('tab_screen').ids.tabs.remove_widget(
-                self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
-                )
-        print(self.tab_iterator)
-        self.tab_iterator += 1
-        print(len(self.root.get_screen('tab_screen').ids.tabs.get_tab_list()))
-        print(self.tab_iterator)
-
+        
+        #if no any entries are inserted we show below text to user
         if len(total_list)==0:
             try:
-
-                self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text])
+                self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text.strip(' mdo')])
                 self.result.font_size = "30dp"
             except :
                 pass
 
     def callback_Calc(self, *args):
 
-        db_editing.calculation(self.tank_name.text, self.sound_value.text)
+        db_editing.calculation(self.tank_name.text.strip(' mdo'), self.sound_value.text)
         try:
             self.result.font_size = "60dp"
             self.result.text = str(db_editing.volume_in_m3[0])
@@ -207,13 +218,6 @@ class BunkerCalc(MDApp):
             # Printing on display the error and change the font-size
             self.result.text = str("Wrong sounding value!")
             self.result.font_size = "20dp"
-
-    def on_start(self):
-        
-        self.name_of_tank()
-        self.mdo_tank_extract()
-        self.vessel_name()
-        self.add_tab()
 
 
 
