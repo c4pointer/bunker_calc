@@ -8,6 +8,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.label import MDLabel
 from kivy.properties import StringProperty
+from admin import AdminPanel
 
 import db_editing
 import db_reading
@@ -59,7 +60,7 @@ class BunkerCalc(MDApp):
         
     
     def on_start(self):
-        
+        AdminPanel.show()
         self.name_of_tank()
         self.mdo_tank_extract()
         self.vessel_name()
