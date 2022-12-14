@@ -60,12 +60,15 @@ class BunkerCalc(MDApp):
         
     
     def on_start(self):
-        AdminPanel.show()
+
         self.name_of_tank()
         self.mdo_tank_extract()
         self.vessel_name()
         self.add_tab()
+    
 
+    def admin(self, x ):
+        AdminPanel.show()
 
     def dropdown(self, x):
         """
