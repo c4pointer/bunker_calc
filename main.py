@@ -162,7 +162,10 @@ class BunkerCalc(MDApp):
                 if do == i:
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
     
-        self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text]}"))
+        self.root.get_screen('tab_screen').ids.tabs.add_widget(
+            Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text.strip(' mdo')][0]} m3, at \
+        {db_reading.prev_label_text[self.tank_name.text.strip(' mdo')][1]} cm")
+        )
         # self.root.get_screen('tab_screen').ids.sound_field.text=db_reading.prev_label_text[self.tank_name.text]
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -191,7 +194,9 @@ class BunkerCalc(MDApp):
         #if no any entries are inserted we show below text to user
         if len(total_list)==0:
             try:
-                self.result.text = str("Previous quantity:\n")+str(db_reading.prev_label_text[self.tank_name.text.strip(' mdo')])
+                self.result.text = str("Previous quantity:\n")+\
+                str(db_reading.prev_label_text[self.tank_name.text.strip(' mdo')][0])+ \
+                str(" m3, at ") + str(db_reading.prev_label_text[self.tank_name.text.strip(' mdo')][1])+ str("cm")
                 self.result.font_size = "30dp"
             except :
                 pass
