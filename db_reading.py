@@ -58,8 +58,8 @@ def extract_prev(e):
     cur.execute("SELECT * from '"+ e +
             "' ;")
     for i in cur:
-        prev_label_text[e]=(i[1])
-    
+        prev_label_text[e]=((i[1]),(i[0]))
+
     connection.close()
 
     
