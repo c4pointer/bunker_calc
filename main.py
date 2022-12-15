@@ -163,8 +163,8 @@ class BunkerCalc(MDApp):
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
     
         self.root.get_screen('tab_screen').ids.tabs.add_widget(
-            Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[self.tank_name.text.strip(' mo')][0]} m3, at \
-            {db_reading.prev_label_text[self.tank_name.text.strip(' mo')][1]} cm")
+            Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
+            {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
         )
         
         # self.root.get_screen('tab_screen').ids.sound_field.text=db_reading.prev_label_text[self.tank_name.text]
@@ -196,8 +196,8 @@ class BunkerCalc(MDApp):
         if len(total_list)==0:
             try:
                 self.result.text = str("Previous quantity:\n")+\
-                str(db_reading.prev_label_text[self.tank_name.text.strip(' mo')][0])+ \
-                str(" m3, at ") + str(db_reading.prev_label_text[self.tank_name.text.strip(' mo')][1])+ str("cm")
+                str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
+                str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str("cm")
                 self.result.font_size = "30dp"
                 db_editing.type_sel(tab_text)
                 # if db_editing.type_of_tank[0] == 1:
@@ -210,8 +210,8 @@ class BunkerCalc(MDApp):
 
     def callback_Calc(self, *args):
 
-        db_editing.calculation(self.tank_name.text.strip(' mo'), self.sound_value.text)
-        db_editing.type_sel(self.tank_name.text.strip(' mo'))
+        db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
+        db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         if db_editing.type_of_tank[0] == 1:
             self.sound_value.text
             print(self.sound_value.text)
@@ -219,17 +219,15 @@ class BunkerCalc(MDApp):
             self.result.font_size = "60dp"
             if db_editing.type_of_tank[0] == 1:
                 self.result.text=str(self.sound_value.text)
-                total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+                total_list[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
                 self.result.text = str(self.sound_value.text) + str(" m3")
-                print(str(self.tank_name.text.strip(' mo')))
+                print(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
             else:
                 self.result.font_size = "60dp"
                 self.result.text = str(db_editing.volume_in_m3[0])
 
                 # Define below row for take into prev function use
-                print(str(self.tank_name.text.strip(' mo')))
-            
-                total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+                total_list[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
                 self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
