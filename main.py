@@ -204,16 +204,26 @@ class BunkerCalc(MDApp):
     def callback_Calc(self, *args):
 
         db_editing.calculation(self.tank_name.text.strip(' mdo'), self.sound_value.text)
+        db_editing.type_sel(self.tank_name.text.strip(' mdo'))
+        if db_editing.type_of_tank[0] == 1:
+            self.sound_value.text
+            print(self.sound_value.text)
         try:
             self.result.font_size = "60dp"
-            self.result.text = str(db_editing.volume_in_m3[0])
+            if db_editing.type_of_tank[0] == 1:
+                self.result.text=str(self.sound_value.text)
+                total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+                self.result.text = str(self.sound_value.text) + str(" m3")
+            else:
+                self.result.font_size = "60dp"
+                self.result.text = str(db_editing.volume_in_m3[0])
 
-            # Define below row for take into prev function use
-            volume = self.result.text
-        
-            total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
-            self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
-                        
+                # Define below row for take into prev function use
+                volume = self.result.text
+            
+                total_list[self.tank_name.text] = ((self.result.text), self.sound_value.text)
+                self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+                            
             
 
             # Insert data to prev DB for prev values extarcting on start

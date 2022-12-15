@@ -47,11 +47,19 @@ def calculation(tk_name, sound):
             x = str(data)
             x = x.strip('(),')
             volume_in_m3.append(x)
-
         return volume_in_m3
-        conn.close()
+        
     except Exception as e:
         print(f"Erorr: {e}")
+
+def type_sel(tank):
+    global type_of_tank
+    type_of_tank=[]
+    cur.execute("SELECT type FROM '"+tank+"' WHERE sound_id='0';")
+    for i in cur:
+        type_of_tank.append(i[0])
+    
+    return type_of_tank
 
 
 # def def_dens_modify(tk_name, new_val):
@@ -67,23 +75,23 @@ def calculation(tk_name, sound):
 #         print(f"DB Connection error: {e}")
 
 
-def type_select_tank(tk_names, new_type):
+# def type_select_tank(tk_names, new_type):
 
-    try:
-        # try to know what type of tank is it from
-        # and if "new_type" == 0 then add new table type
-        if new_type == 0:
-            cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
-            cur.execute(
-                "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (
-                    tk_names, new_type)
-            )
-            conn.commit()
-        else:
-            new_type_tk_add(tk_names, new_type)
+#     try:
+#         # try to know what type of tank is it from
+#         # and if "new_type" == 0 then add new table type
+#         if new_type == 0:
+#             cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
+#             cur.execute(
+#                 "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (
+#                     tk_names, new_type)
+#             )
+#             conn.commit()
+#         else:
+#             new_type_tk_add(tk_names, new_type)
 
-    except Exception as e:
-        print(f"DB Connection error: {e}")
+#     except Exception as e:
+#         print(f"DB Connection error: {e}")
 
 
 # def new_type_tk_add(tk, t):
