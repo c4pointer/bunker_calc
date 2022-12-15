@@ -67,23 +67,23 @@ def calculation(tk_name, sound):
 #         print(f"DB Connection error: {e}")
 
 
-# def type_select_tank(tk_names, new_type):
+def type_select_tank(tk_names, new_type):
 
-#     try:
-#         # try to know what type of tank is it from
-#         # and if "new_type" == 0 then add new table type
-#         if new_type == 0:
-#             cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
-#             cur.execute(
-#                 "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (
-#                     tk_names, new_type)
-#             )
-#             conn.commit()
-#         else:
-#             new_type_tk_add(tk_names, new_type)
+    try:
+        # try to know what type of tank is it from
+        # and if "new_type" == 0 then add new table type
+        if new_type == 0:
+            cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
+            cur.execute(
+                "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (
+                    tk_names, new_type)
+            )
+            conn.commit()
+        else:
+            new_type_tk_add(tk_names, new_type)
 
-#     except Exception as e:
-#         print(f"DB Connection error: {e}")
+    except Exception as e:
+        print(f"DB Connection error: {e}")
 
 
 # def new_type_tk_add(tk, t):

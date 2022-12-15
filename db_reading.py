@@ -20,8 +20,14 @@ import sqlite3
 #         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
+
+# Create empty dict for placing here data from previous DB for Showing on start App
 prev_label_text = {}
+
 def add_to_prevdb(tank, val, volume):
+    """
+    Function for Create Prev DB  tables and inserting data into there
+    """
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
     cur = connection.cursor()
@@ -33,6 +39,9 @@ def add_to_prevdb(tank, val, volume):
 
 
 def update(t,v,volume):
+    """
+    Update data in Prev DB
+    """
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
     cur = connection.cursor()
@@ -50,7 +59,10 @@ def update(t,v,volume):
 
 
 def extract_prev(e):
-    
+    """
+    Make a query for extracting data from DB table and inserting into
+    empty Dict from beggining of this file
+    """
     
     connection= sqlite3.connect(('bunker_calc_prev.db'))
     
