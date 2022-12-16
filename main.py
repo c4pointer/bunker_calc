@@ -57,16 +57,6 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
-    
-    def on_start(self):
-
-        self.name_of_tank()
-        self.mdo_tank_extract()
-        self.vessel_name()
-        self.add_tab()
-    
-
-
     def dropdown(self, x):
         """
         Create a dropdown menu for navigate beetwen the screens
@@ -164,7 +154,6 @@ class BunkerCalc(MDApp):
             {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
         )
         
-        # self.root.get_screen('tab_screen').ids.sound_field.text=db_reading.prev_label_text[self.tank_name.text]
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
             self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
@@ -197,11 +186,7 @@ class BunkerCalc(MDApp):
                 str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str("cm")
                 self.result.font_size = "30dp"
                 db_editing.type_sel(tab_text)
-                # if db_editing.type_of_tank[0] == 1:
-                #     self.result.text = str("Previous quantity:\n")+\
-                #     str(db_reading.prev_label_text[self.tank_name.text.strip(' mdo')][0])+ \
-                #     str(" m3")
-                #     self.result.font_size = "30dp"
+
             except :
                 pass
 
@@ -240,6 +225,15 @@ class BunkerCalc(MDApp):
             # Printing on display the error and change the font-size
             self.result.text = str("Wrong sounding value!")
             self.result.font_size = "20dp"
+    
+    def on_start(self):
+
+        self.name_of_tank()
+        self.mdo_tank_extract()
+        self.vessel_name()
+        self.add_tab()
+    
+
 
 
 
