@@ -8,7 +8,6 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.label import MDLabel
 from kivy.properties import StringProperty
-# from admin import AdminPanel
 
 import db_editing
 import db_reading
@@ -67,8 +66,6 @@ class BunkerCalc(MDApp):
         self.add_tab()
     
 
-    # def admin(self, x ):
-    #     AdminPanel.show()
 
     def dropdown(self, x):
         """
