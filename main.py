@@ -14,8 +14,11 @@ import db_reading
 from collections import ChainMap
 # Window.size = (400, 600)
 
-total_list = {}
+total_list_hfo= {}
+total_list_mdo= {}
 
+names_hfo =[]
+names_mdo =[]
 
 prev_label_text = {}
 
@@ -82,20 +85,36 @@ class BunkerCalc(MDApp):
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
-        self.total_result = []
-        self.sum = 0
+        self.total_result_hfo = []
+        self.total_result_mdo = []
+        # HFO
+        self.sum_hfo = 0
         for i in (self.names):
             try:
                 if len(total_list[i]) > 0:
-                    self.total_result.append(total_list[i])
+                    self.total_result_hfo.append(total_list_hfo[i])
 
             except KeyError as err:
                 pass
         
-        for i in self.total_result:
+        for i in self.total_result_hfo:
             print(i[0])
-            self.sum += float(i[0])
-        return self.sum
+            self.sum_hfo += float(i[0])
+        
+        # MDO
+        self.sum_mdo = 0
+        for d in (list(set(self.mdo_names).intersection(set(self.names)))):
+            try:
+                if len(total_list_mdo[i]) > 0:
+                    self.total_result_mdo.append(total_list_mdo[i])
+
+            except KeyError as err:
+                pass
+        
+        for i in self.total_result_mdo:
+            print(i[0])
+            self.sum_mdo += float(i[0])
+        return self.sum_mdo, self.sum_hfo
 
     def screen2(self):
         """
@@ -179,7 +198,7 @@ class BunkerCalc(MDApp):
         
         
         #if no any entries are inserted we show below text to user
-        if len(total_list)==0:
+        if len(total_list_mdo)==0:
             try:
                 self.result.text = str("Previous quantity:\n")+\
                 str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
@@ -191,34 +210,40 @@ class BunkerCalc(MDApp):
                 pass
 
     def callback_Calc(self, *args):
-
+        
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+        db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         if db_editing.type_of_tank[0] == 1:
-            self.sound_value.text
-            print(self.sound_value.text)
+            
+            print(f"Type of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
+        if db_editing.state_of_tank[0] ==1:
+            print(f"State of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
+            
         try:
             self.result.font_size = "60dp"
             if db_editing.type_of_tank[0] == 1:
                 self.result.text=str(self.sound_value.text)
-                total_list[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
                 self.result.text = str(self.sound_value.text) + str(" m3")
-                print(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+
             else:
                 self.result.font_size = "60dp"
                 self.result.text = str(db_editing.volume_in_m3[0])
 
                 # Define below row for take into prev function use
-                total_list[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
                 self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
 
             # Insert data to prev DB for prev values extarcting on start
-            if len(total_list) >0 :
-                # print(total_list)
-                for i  in (total_list):
-                    db_reading.add_to_prevdb(i, total_list[i][1], total_list[i][0])
+            if len(total_list_hfo) >0 :
+                print(total_list_hfo)
+                print("\n")
+                print(total_list_mdo)
+                for i  in (total_list_hfo):
+                    db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0])
                     # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
 
         except IndexError as e:

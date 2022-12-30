@@ -53,6 +53,10 @@ def calculation(tk_name, sound):
         print(f"Erorr: {e}")
 
 def type_sel(tank):
+    """
+    Sort tank if the tank don`t have Sounding Table,
+    then we just take the inputed value in textfield
+    """
     global type_of_tank
     type_of_tank=[]
     cur.execute("SELECT type FROM '"+tank+"' WHERE sound_id='0';")
@@ -60,6 +64,20 @@ def type_sel(tank):
         type_of_tank.append(i[0])
     
     return type_of_tank
+
+
+def state_sel(tank):
+    """
+    Sort tank if the tank by state
+    If state == 1 than means that tank is for MDO total result caclc`s
+    """
+    global state_of_tank
+    state_of_tank=[]
+    cur.execute("SELECT state FROM '"+tank+"' WHERE sound_id='0';")
+    for i in cur:
+        state_of_tank.append(i[0])
+    
+    return state_of_tank
 
 
 # def def_dens_modify(tk_name, new_val):
