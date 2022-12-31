@@ -45,10 +45,15 @@ ScreenManager:
     MDFloatLayout:
         orientation: "vertical"
         MDLabel:
-            id: total
+            id: total_hfo
             halign: 'center'
             font_size: "50dp"
-            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.8}
+        MDLabel:
+            id: total_mdo
+            halign: 'center'
+            font_size: "50dp"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.63}
         MDFloatingActionButton:
             id: close
             text: 'Exit'
