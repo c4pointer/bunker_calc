@@ -16,10 +16,10 @@ from collections import ChainMap
 
 total_list_hfo= {}
 total_list_mdo= {}
-
+def_dens = int(str("15"))
 names_hfo =[]
 names_mdo =[]
-
+def_temp = int(str("15"))
 prev_label_text = {}
 
 vessels = ("m/v 'Viking Ocean'",)
@@ -54,34 +54,34 @@ sm.add_widget(TotalScreen(name='total_screen'))
 class BunkerCalc(MDApp):
 
     def build(self):
-
+        
         # Theme and colors
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
-    # def dropdown(self, x):
-    #     """
-    #     Create a dropdown menu for navigate beetwen the screens
-    #     """
-    #     self.menu_items = [
-    #         {
-    #             "viewclass": "OneLineListItem",
-    #             "text": "Tanks Sounding",
-    #             "on_release": lambda x="Tanks Sounding": self.screen1()
-    #         },
-    #         {
-    #             "viewclass": "OneLineListItem",
-    #             "text": "Total Result",
-    #             "on_release": lambda x="Total Result": self.screen2()
-    #         }
-    #     ]
-    #     self.menu = MDDropdownMenu(
-    #         items=self.menu_items,
-    #         width_mult=4
-    #     )
-    #     self.menu.caller = x
-    #     self.menu.open()
+    def dropdown(self, x):
+        """
+        Create a dropdown menu for navigate beetwen the screens
+        """
+        self.menu_items = [
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Tanks Sounding",
+                "on_release": lambda x="Tanks Sounding": self.screen2()
+            },
+            {
+                "viewclass": "OneLineListItem",
+                "text": "Total Result",
+                "on_release": lambda x="Total Result": self.screen2()
+            }
+        ]
+        self.menu = MDDropdownMenu(
+            items=self.menu_items,
+            width_mult=4
+        )
+        self.menu.caller = x
+        self.menu.open()
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
@@ -99,7 +99,6 @@ class BunkerCalc(MDApp):
                 pass
         
         for i in self.total_result_hfo:
-            print(i[0])
             self.sum_hfo += float(i[0])
         
         # MDO
@@ -113,7 +112,6 @@ class BunkerCalc(MDApp):
                 pass
         
         for i in self.total_result_mdo:
-            print(i[0])
             self.sum_mdo += float(i[0])
         return self.sum_mdo, self.sum_hfo
 
@@ -209,7 +207,7 @@ class BunkerCalc(MDApp):
                 self.result.text = str("Previous quantity:\n")+\
                 str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
                 str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str(" cm")
-                self.result.font_size = "30dp"
+                self.result.font_size = "24dp"
                 db_editing.type_sel(tab_text)
 
             except :
@@ -232,18 +230,21 @@ class BunkerCalc(MDApp):
             print(f"State of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
             
             try:
-                self.result.font_size = "60dp"
+                self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                    if not self.temperature:
+                        self.temperature = def_temp
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
-                    self.result.font_size = "60dp"
+                    self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-
+                    if not self.temperature:
+                        self.temperature = def_temp
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -264,18 +265,21 @@ class BunkerCalc(MDApp):
         # Calculate if tank is NOT MDO but is HFO
         else:
             try:
-                self.result.font_size = "60dp"
+                self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                    if not self.temperature:
+                        self.temperature = def_temp
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
-                    self.result.font_size = "60dp"
+                    self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-
+                    if not self.temperature:
+                        self.temperature = def_temp
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -294,6 +298,9 @@ class BunkerCalc(MDApp):
                 self.result.text = str("Wrong sounding value!")
                 self.result.font_size = "20dp"
         
+    def my_value(self, value):  # <<<<<<<<<<< Value from Temp slider
+        self.temperature = str(int(round(value,0)))
+        print(self.root.get_screen('tab_screen').ids.temp_slider.get_value())
     def on_start(self):
 
         self.name_of_tank()

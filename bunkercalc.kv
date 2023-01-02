@@ -13,7 +13,7 @@ ScreenManager:
             # anchor_title: "center"
             md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["menu", lambda x: (x)]]
+            left_action_items: [["menu", lambda x: app.dropdown(x)]]
             right_action_items: [["menu", lambda x:app.screen2()]]
 
             MDLabel:
@@ -64,12 +64,12 @@ ScreenManager:
         MDLabel:
             id: total_hfo
             halign: 'center'
-            font_size: "50dp"
+            font_size: "30dp"
             pos_hint: {'center_x': 0.5, 'center_y': 0.8}
         MDLabel:
             id: total_mdo
             halign: 'center'
-            font_size: "50dp"
+            font_size: "30dp"
             pos_hint: {'center_x': 0.5, 'center_y': 0.63}
         MDFloatingActionButton:
             id: close
@@ -95,10 +95,19 @@ ScreenManager:
 
 <Tab>
 
+
+# MDBoxLayout:
+#     # pos_hint: {"center_x": .95}
     MDLabel:
         id: label
         halign: "center"
         pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+
+    # MDProgressBar:
+    #     id : progress
+    #     orientation: "vertical"
+    #     value: 50
+    #     pos_hint: {"center_x": .95}
 
 
         # Enter sound value of each tank
@@ -142,9 +151,26 @@ ScreenManager:
         md_bg_color: ("#f56c5a")
         on_press: app.stop()
 
-    #MDFlatButton:
-        #id: close
-        #text: 'Close'
-        #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
-        #md_bg_color: ("#f00c5a")
-        #on_press: app.stop()
+        #MDFlatButton:
+            #id: close
+            #text: 'Close'
+            #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
+            #md_bg_color: ("#f00c5a")
+            #on_press: app.stop()
+    # MDBoxLayout:
+    #     # pos_hint: {"center_x": .95}
+    MDLabel:
+        text:'Temp:\n' + str(int(temp_slider.value))
+        pos_hint: {"center_x": .42}
+        halign: "right"
+    MDSlider: 
+        id: temp_slider
+        hint: True
+        orientation: "vertical"
+        hint_bg_color: "white"
+        min: 0
+        max: 100
+        on_value: app.my_value(self.value)  # <<<<<<<<<<<
+        value: 15
+        thumb_color_inactive: "red"
+        pos_hint: {"center_x": .95}
