@@ -10,9 +10,18 @@ ScreenManager:
             id: top_menu
             elevation:4
             pos_hint: {"top": 1}
-            # md_bg_color: "#e7e4c0"
+            # anchor_title: "center"
+            md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["menu", lambda x: app.dropdown(x)]]
+            left_action_items: [["menu", lambda x: (x)]]
+            right_action_items: [["menu", lambda x:app.screen2()]]
+
+            MDLabel:
+                id: right_action
+                halign: "right"
+                theme_text_color: "Custom"
+                text_color: "#4a4939"
+                
 
         MDTabs:
             id: tabs
@@ -41,7 +50,15 @@ ScreenManager:
         pos_hint: {"top": 1}
         #md_bg_color: "#e7e4c0"
         specific_text_color: "#4a4939"
-        left_action_items: [["menu", lambda x: app.dropdown(x)]]
+        left_action_items: [["menu", lambda x:(x)]]
+        right_action_items: [["menu", lambda x:app.screen2()]]
+
+        MDLabel:
+            id: right_action
+            halign: "right"
+            theme_text_color: "Custom"
+            text_color: "#4a4939"
+
     MDFloatLayout:
         orientation: "vertical"
         MDLabel:

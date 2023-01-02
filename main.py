@@ -60,28 +60,28 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
-    def dropdown(self, x):
-        """
-        Create a dropdown menu for navigate beetwen the screens
-        """
-        self.menu_items = [
-            {
-                "viewclass": "OneLineListItem",
-                "text": "Tanks Sounding",
-                "on_release": lambda x="Tanks Sounding": self.screen1()
-            },
-            {
-                "viewclass": "OneLineListItem",
-                "text": "Total Result",
-                "on_release": lambda x="Total Result": self.screen2()
-            }
-        ]
-        self.menu = MDDropdownMenu(
-            items=self.menu_items,
-            width_mult=4
-        )
-        self.menu.caller = x
-        self.menu.open()
+    # def dropdown(self, x):
+    #     """
+    #     Create a dropdown menu for navigate beetwen the screens
+    #     """
+    #     self.menu_items = [
+    #         {
+    #             "viewclass": "OneLineListItem",
+    #             "text": "Tanks Sounding",
+    #             "on_release": lambda x="Tanks Sounding": self.screen1()
+    #         },
+    #         {
+    #             "viewclass": "OneLineListItem",
+    #             "text": "Total Result",
+    #             "on_release": lambda x="Total Result": self.screen2()
+    #         }
+    #     ]
+    #     self.menu = MDDropdownMenu(
+    #         items=self.menu_items,
+    #         width_mult=4
+    #     )
+    #     self.menu.caller = x
+    #     self.menu.open()
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
@@ -123,20 +123,24 @@ class BunkerCalc(MDApp):
         At each time when "total_screen" is pressed is recalculated
         total figure
         """
-        self.root.current = "total_screen"
-        self.calculate_total()
-        self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO")
-        self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO")
-
-    def screen1(self):
-        self.root.current = "tab_screen"
+        if self.root.current != "total_screen":
+            self.root.current = "total_screen"
+            self.calculate_total()
+            self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
+            self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO")
+            self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO")
+        else:
+            self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+            self.root.current = "tab_screen"
 
 
     def vessel_name(self):
+        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
 
     def set_vessel_name(self):
+        # self.root.get_screen("tab_screen").ids.top_menu.title.halign = 'right'
         self.root.get_screen("total_screen").ids.total_menu.title = str(self.vessel)
 
     def name_of_tank(self):
@@ -200,11 +204,11 @@ class BunkerCalc(MDApp):
         
         
         #if no any entries are inserted we show below text to user
-        if len(total_list_mdo)==0:
+        if len(total_list_mdo)==0 and len(total_list_hfo)==0:
             try:
                 self.result.text = str("Previous quantity:\n")+\
                 str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
-                str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str("cm")
+                str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str(" cm")
                 self.result.font_size = "30dp"
                 db_editing.type_sel(tab_text)
 
