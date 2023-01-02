@@ -219,7 +219,7 @@ class BunkerCalc(MDApp):
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
 
-
+        # print(self.root.get_screen('tab_screen').ids.slider_lbl.text==("45"))
         # if db_editing.type_of_tank[0] == 1:
             
         #     print(f"Type of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
@@ -233,16 +233,15 @@ class BunkerCalc(MDApp):
                 self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    if not self.temperature:
-                        self.temperature = def_temp
+                    self.noname()
+                    # Define below row for take into prev function use
                     total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-                    if not self.temperature:
-                        self.temperature = def_temp
+                    self.noname()
                     # Define below row for take into prev function use
                     total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
@@ -254,6 +253,7 @@ class BunkerCalc(MDApp):
                     print(total_list_hfo)
                     print("\n")
                     print(total_list_mdo)
+                    print("********\n")
                     for i  in (total_list_mdo):
                         db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0])
 
@@ -268,16 +268,16 @@ class BunkerCalc(MDApp):
                 self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    if not self.temperature:
-                        self.temperature = def_temp
+                    self.noname()
+                    # Define below row for take into prev function use
                     total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-                    if not self.temperature:
-                        self.temperature = def_temp
+                    self.noname()
+
                     # Define below row for take into prev function use
                     total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
@@ -289,6 +289,7 @@ class BunkerCalc(MDApp):
                     print(total_list_hfo)
                     print("\n")
                     print(total_list_mdo)
+                    print("*************\n")
                     for i  in (total_list_hfo):
                         db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0])
                         # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
@@ -298,9 +299,24 @@ class BunkerCalc(MDApp):
                 self.result.text = str("Wrong sounding value!")
                 self.result.font_size = "20dp"
         
-    def my_value(self, value):  # <<<<<<<<<<< Value from Temp slider
-        self.temperature = str(int(round(value,0)))
-        print(self.root.get_screen('tab_screen').ids.temp_slider.get_value())
+    def my_value(self, object_property, value):  # <<<<<<<<<<< Value from Temp slider
+        self.slider_value={}
+        self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]= str(int(round(value,0)))
+
+    def noname(self):
+        try:
+            if len(self.slider_value) !=0 :
+                self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+
+                print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+        except KeyError as error:
+            self.temperature = def_temp
+            print("do  other")
+            # print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+        except AttributeError as error2:
+            self.temperature = def_temp
+        return self.temperature
+        
     def on_start(self):
 
         self.name_of_tank()

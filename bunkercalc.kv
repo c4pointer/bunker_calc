@@ -1,8 +1,10 @@
 ScreenManager:
+    id: manag
     TabScreen:
     TotalScreen:
 
 <TabScreen>:
+    id: tab_screen
     name: 'tab_screen'
     MDBoxLayout:
         orientation: "vertical"
@@ -160,7 +162,8 @@ ScreenManager:
     # MDBoxLayout:
     #     # pos_hint: {"center_x": .95}
     MDLabel:
-        text:'Temp:\n' + str(int(temp_slider.value))
+        id: slider_lbl
+        text: str(round(int(temp_slider.value),0))
         pos_hint: {"center_x": .42}
         halign: "right"
     MDSlider: 
@@ -170,7 +173,7 @@ ScreenManager:
         hint_bg_color: "white"
         min: 0
         max: 100
-        on_value: app.my_value(self.value)  # <<<<<<<<<<<
+        on_value: app.my_value(*args)  # <<<<<<<<<<<
         value: 15
         thumb_color_inactive: "red"
         pos_hint: {"center_x": .95}
