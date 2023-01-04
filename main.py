@@ -1,5 +1,4 @@
-# Window resizing. To be deleted before compiling
-# from kivy.core.window import Window
+
 from kivy.uix.screenmanager import Screen
 from kivy.uix.screenmanager import ScreenManager
 from kivymd.app import MDApp
@@ -7,12 +6,16 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.label import MDLabel
-from kivy.properties import StringProperty
+from collections import ChainMap
 
+# import file from project
 import db_editing
 import db_reading
-from collections import ChainMap
-# Window.size = (400, 600)
+import calculations
+
+# Window resizing. To be deleted or commented before compiling
+from kivy.core.window import Window
+Window.size = (400, 700)
 
 total_list_hfo= {}
 total_list_mdo= {}
@@ -143,9 +146,9 @@ class BunkerCalc(MDApp):
             self.calculate_total()
             self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
             self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                + str(f"\n {self.hfo_tons[0]} MT")
+                + str(f"\n {self.hfo_tons[0]} MT HFO")
             self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                + str(f"\n {self.mdo_tons[0]} MT")
+                + str(f"\n {self.mdo_tons[0]} MT MDO")
         else:
             self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.root.current = "tab_screen"
