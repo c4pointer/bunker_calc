@@ -18,20 +18,20 @@ conn = sqlite3.connect('bunker_calc.db')
 cur = conn.cursor()
 
 
-# def select_DefDens(tk_name):
-#     cur.execute("SELECT density FROM '%s'" % (tk_name))
-#     global density
-#     density = 0
-#     for dens in cur:
-#         if len(dens) > 0:
-#             y = str(dens)
-#             density = y.strip('(),')
-#         elif dens == 0:
-#             density = ("zero set")
-#         else:
-#             density = ("Error")
+def select_DefDens(tk_name):
+    cur.execute("SELECT density FROM '%s' WHERE sound_id='1'" % (tk_name))
+    global density
+    density = 0
+    for dens in cur:
+        if len(dens) > 0:
+            y = str(dens)
+            density = y.strip('(),')
+        elif dens == 0:
+            density = ("zero set")
+        else:
+            density = ("Error")
 
-#     return density
+    return density
 
 
 def calculation(tk_name, sound):

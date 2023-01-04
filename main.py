@@ -16,7 +16,7 @@ from collections import ChainMap
 
 total_list_hfo= {}
 total_list_mdo= {}
-def_dens = int(str("15"))
+def_dens = float(str("0.9000"))
 names_hfo =[]
 names_mdo =[]
 def_temp = int(str("15"))
@@ -214,11 +214,11 @@ class BunkerCalc(MDApp):
                 pass
 
     def callback_Calc(self, *args):
-        
+        print(self.root.get_screen('tab_screen').ids.grt)
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-
+        db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         # print(self.root.get_screen('tab_screen').ids.slider_lbl.text==("45"))
         # if db_editing.type_of_tank[0] == 1:
             
@@ -227,23 +227,22 @@ class BunkerCalc(MDApp):
         # If tank is in MDO state than we make calcs for it and append to
         # "total_list_mdo" for displaing in Totoal result screnn
         if db_editing.state_of_tank[0] ==1:
-            print(f"State of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
             
             try:
                 self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    self.noname()
+                    self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-                    self.noname()
+                    self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -268,18 +267,18 @@ class BunkerCalc(MDApp):
                 self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
-                    self.noname()
+                    self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
-                    self.noname()
+                    self.temp_dens_extraction()
 
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -303,19 +302,27 @@ class BunkerCalc(MDApp):
         self.slider_value={}
         self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]= str(int(round(value,0)))
 
-    def noname(self):
+    def temp_dens_extraction(self):
         try:
             if len(self.slider_value) !=0 :
                 self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
 
                 print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+            # Density selecting
+            if def_dens != float(0.9000):
+                print("Default dens"+ str(def_dens))
+                pass
+            else:
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                print(self.def_dens)
         except KeyError as error:
             self.temperature = def_temp
-            print("do  other")
+            self.def_dens = def_dens
             # print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
         except AttributeError as error2:
             self.temperature = def_temp
-        return self.temperature
+            self.def_dens = def_dens
+        return self.temperature, self.def_dens
         
     def on_start(self):
 

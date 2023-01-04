@@ -97,6 +97,20 @@ ScreenManager:
 
 <Tab>
 
+    MDTextField:
+        id: density_field
+        helper_text: "Density (def: 0.9000)"
+        hint_text: "Density (def: 0.9000)"
+        helper_text_mode: "on_focus"
+        # icon_left: "fuel"
+        # Maximal lenth of input sounding
+        max_text_length: 6
+        icon_left_color: app.theme_cls.primary_color
+        pos_hint: {'center_x': 0.5, 'center_y': 0.9}
+        size_hint: 0.4, None
+        #size: 300,1
+        # width: 200
+        # on_text_validate : app.callback_Calc(*args)
 
 # MDBoxLayout:
 #     # pos_hint: {"center_x": .95}
@@ -159,21 +173,37 @@ ScreenManager:
             #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
             #md_bg_color: ("#f00c5a")
             #on_press: app.stop()
-    # MDBoxLayout:
-    #     # pos_hint: {"center_x": .95}
-    MDLabel:
-        id: slider_lbl
-        text: str(round(int(temp_slider.value),0))
-        pos_hint: {"center_x": .42}
-        halign: "right"
-    MDSlider: 
-        id: temp_slider
-        hint: True
-        orientation: "vertical"
-        hint_bg_color: "white"
-        min: 0
-        max: 100
-        on_value: app.my_value(*args)  # <<<<<<<<<<<
-        value: 15
-        thumb_color_inactive: "red"
-        pos_hint: {"center_x": .95}
+    MDBoxLayout:
+        pos_hint: {"center_x": .84}
+        size_hint: None, .94
+
+        # MDTextField:
+        #     id: density_field
+        #     helper_text: "do not input ullage!"
+        #     helper_text_mode: "on_focus"
+        #     # icon_left: "fuel"
+        #     # Maximal lenth of input sounding
+        #     max_text_length: 4
+        #     icon_left_color: app.theme_cls.primary_color
+        #     pos_hint: {'center_x': 0.95, 'center_y': 0.98}
+        #     size_hint: None, None
+        #     #size: 300,1
+        #     # width: 200
+        #     # on_text_validate : app.callback_Calc(*args)
+       
+        MDLabel:
+            id: slider_lbl
+            text: "Temp:\n"+str(round(float(temp_slider.value),0))
+            # pos_hint: {"center_x": .42}
+            halign: "right"
+        MDSlider: 
+            id: temp_slider
+            hint: True
+            orientation: "vertical"
+            hint_bg_color: "white"
+            min: 0
+            max: 100
+            on_value: app.my_value(*args)  # <<<<<<<<<<<
+            value: 15
+            thumb_color_inactive: "red"
+            # pos_hint: {"center_x": .95}

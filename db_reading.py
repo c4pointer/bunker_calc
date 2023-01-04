@@ -79,8 +79,6 @@ def extract_prev(e):
 
 # r = re.compile('[^a-zA-Z-0-9]')
 
-# ADMIN panel of App
-
 
 def extract_names():
     """
