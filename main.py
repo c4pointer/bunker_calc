@@ -16,7 +16,7 @@ from collections import ChainMap
 
 total_list_hfo= {}
 total_list_mdo= {}
-def_dens = float(str("0.9000"))
+# def_dens = float(str("0.9000"))
 names_hfo =[]
 names_mdo =[]
 def_temp = int(str("15"))
@@ -60,6 +60,7 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
+
     def dropdown(self, x):
         """
         Create a dropdown menu for navigate beetwen the screens
@@ -83,11 +84,13 @@ class BunkerCalc(MDApp):
         self.menu.caller = x
         self.menu.open()
 
+
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
         self.total_result_hfo = []
         self.total_result_mdo = []
-
+        self.mdo_tons = []
+        self.hfo_tons = []
         # HFO
         self.sum_hfo = 0
         for i in (self.names):
@@ -98,8 +101,13 @@ class BunkerCalc(MDApp):
             except KeyError as err:
                 pass
         
+
+
         for i in self.total_result_hfo:
             self.sum_hfo += float(i[0])
+            # float(i[2]) temperature
+            tons_hfo = float(i[0])*float(i[3])
+            self.hfo_tons.append(tons_hfo)    
         
         # MDO
         self.sum_mdo = 0
@@ -113,7 +121,16 @@ class BunkerCalc(MDApp):
         
         for i in self.total_result_mdo:
             self.sum_mdo += float(i[0])
-        return self.sum_mdo, self.sum_hfo
+            # float(i[2]) temperature
+            tons_mdo = float(i[0])*float(i[3])
+            self.mdo_tons.append(tons_mdo)
+        
+        if len(self.hfo_tons) ==0 :
+            self.hfo_tons.append(float(0))
+        if len(self.mdo_tons) ==0:
+            self.mdo_tons.append(float(0))
+        return self.sum_mdo, self.sum_hfo, self.hfo_tons, self.mdo_tons
+
 
     def screen2(self):
         """
@@ -125,8 +142,10 @@ class BunkerCalc(MDApp):
             self.root.current = "total_screen"
             self.calculate_total()
             self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
-            self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO")
-            self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO")
+            self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
+                + str(f"\n {self.hfo_tons[0]} MT")
+            self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
+                + str(f"\n {self.mdo_tons[0]} MT")
         else:
             self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.root.current = "tab_screen"
@@ -137,9 +156,11 @@ class BunkerCalc(MDApp):
         self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
 
+
     def set_vessel_name(self):
         # self.root.get_screen("tab_screen").ids.top_menu.title.halign = 'right'
         self.root.get_screen("total_screen").ids.total_menu.title = str(self.vessel)
+
 
     def name_of_tank(self):
         # Extract from DB names of each tank
@@ -150,6 +171,7 @@ class BunkerCalc(MDApp):
         for i in self.tank_name:
             self.names.append(i[0])
 
+
     def mdo_tank_extract(self):
         self.mdo_names = []
         db_reading.sort_tanks_mdo()
@@ -157,6 +179,7 @@ class BunkerCalc(MDApp):
         for i in self.mdo_tanks:
             self.mdo_names.append(i[0])
         # print(self.mdo_names)
+
 
     def add_tab(self):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
@@ -199,7 +222,7 @@ class BunkerCalc(MDApp):
         self.sound_value = instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
-        
+        self.dens_new = instance_tab.ids.density_field
         
         #if no any entries are inserted we show below text to user
         if len(total_list_mdo)==0 and len(total_list_hfo)==0:
@@ -213,12 +236,13 @@ class BunkerCalc(MDApp):
             except :
                 pass
 
+
     def callback_Calc(self, *args):
-        print(self.root.get_screen('tab_screen').ids.grt)
+
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-        db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+        # db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         # print(self.root.get_screen('tab_screen').ids.slider_lbl.text==("45"))
         # if db_editing.type_of_tank[0] == 1:
             
@@ -309,19 +333,28 @@ class BunkerCalc(MDApp):
 
                 print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
             # Density selecting
-            if def_dens != float(0.9000):
-                print("Default dens"+ str(def_dens))
-                pass
-            else:
+            if len(self.dens_new.text) == 0:
                 self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-                print(self.def_dens)
+                
+            else:
+                self.def_dens = self.dens_new.text
+                
         except KeyError as error:
+            if len(self.dens_new.text) == 0:
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                
+            else:
+                self.def_dens = self.dens_new.text
             self.temperature = def_temp
-            self.def_dens = def_dens
-            # print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+
         except AttributeError as error2:
+            if len(self.dens_new.text) == 0:
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                
+            else:
+                self.def_dens = self.dens_new.text
             self.temperature = def_temp
-            self.def_dens = def_dens
+            
         return self.temperature, self.def_dens
         
     def on_start(self):
