@@ -5,20 +5,6 @@
 
 # import csv
 import sqlite3
-
-# from main import prev_label_text
-# import re
-# import os
-
-# file_location_detect = os.getcwd()
-# try:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
-# except sqlite3.OperationalError as e:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 conn = sqlite3.connect("viking_ocean.db")
 cur = conn.cursor()
 

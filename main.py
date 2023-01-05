@@ -11,7 +11,7 @@ from collections import ChainMap
 # import file from project
 import db_editing
 import db_reading
-import calculations
+import vol_coorection
 
 import os
 import sqlite3
@@ -21,7 +21,7 @@ import sqlite3
 
 total_list_hfo= {}
 total_list_mdo= {}
-# def_dens = float(str("0.9000"))
+
 names_hfo =[]
 names_mdo =[]
 def_temp = int(str("15"))
@@ -34,17 +34,18 @@ try:
     for entries in scan_dir:
         if not entries.name.endswith('_prev.db') and entries.is_file:
             if entries.name.endswith(".db"):
-                vessels.append(str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title())
+                parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
+                vessels.append(parsed_vessel)
+    
 
     # conn = sqlite3.connect(
     #     (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
 except sqlite3.OperationalError as e:
-    pass
-    # name_off_app = "BunkerCalc"
+    print(f"Error in DB choosing code")
     # conn = sqlite3.connect(
     #     (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 
-print(str(vessels).capitalize())
+# print(str(parsed_vessel))
 
 
 class TabScreen(Screen):
@@ -264,11 +265,6 @@ class BunkerCalc(MDApp):
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-        # db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-        # print(self.root.get_screen('tab_screen').ids.slider_lbl.text==("45"))
-        # if db_editing.type_of_tank[0] == 1:
-            
-        #     print(f"Type of tank {str(self.tank_name.text.removesuffix('mdo')).strip(' ')} is: {self.sound_value.text} \n")
 
         # If tank is in MDO state than we make calcs for it and append to
         # "total_list_mdo" for displaing in Totoal result screnn
@@ -284,7 +280,6 @@ class BunkerCalc(MDApp):
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
-                    self.result.font_size = "30dp"
                     self.result.text = str(db_editing.volume_in_m3[0])
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
@@ -352,13 +347,16 @@ class BunkerCalc(MDApp):
         try:
             if len(self.slider_value) !=0 :
                 self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+                print(f"Temperature = {self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]}")
+                print(f"Density = {self.dens_new.text}")
+                # print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
 
-                print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
             # Density selecting
             if len(self.dens_new.text) == 0:
                 self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
                 
             else:
+
                 self.def_dens = self.dens_new.text
                 
         except KeyError as error:
