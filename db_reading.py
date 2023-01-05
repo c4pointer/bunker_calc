@@ -5,6 +5,7 @@
 
 # import csv
 import sqlite3
+
 # from main import prev_label_text
 # import re
 # import os
@@ -18,7 +19,7 @@ import sqlite3
 #     name_off_app = "BunkerCalc"
 #     conn = sqlite3.connect(
 #         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
-conn = sqlite3.connect('bunker_calc.db')
+conn = sqlite3.connect("viking_ocean.db")
 cur = conn.cursor()
 
 # Create empty dict for placing here data from previous DB for Showing on start App
@@ -42,7 +43,7 @@ def update(t,v,volume):
     """
     Update data in Prev DB
     """
-    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    connection= sqlite3.connect(('viking_ocean_prev.db'))
     
     cur = connection.cursor()
     cur.execute("SELECT * from '"+ t +
@@ -64,7 +65,7 @@ def extract_prev(e):
     empty Dict from beggining of this file
     """
     
-    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    connection= sqlite3.connect(('viking_ocean_prev.db'))
     
     cur = connection.cursor()
     cur.execute("SELECT * from '"+ e +

@@ -13,6 +13,8 @@ import db_editing
 import db_reading
 import calculations
 
+import os
+import sqlite3
 # Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
 # Window.size = (400, 700)
@@ -25,7 +27,23 @@ names_mdo =[]
 def_temp = int(str("15"))
 prev_label_text = {}
 
-vessels = ("m/v 'Viking Ocean'",)
+file_location_detect = os.getcwd()
+try:
+    scan_dir=os.scandir(file_location_detect)
+    for entries in scan_dir:
+        if entries.is_file:
+            if entries.name.endswith(".db"):
+                print(entries)
+
+    # conn = sqlite3.connect(
+    #     (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
+except sqlite3.OperationalError as e:
+    pass
+    # name_off_app = "BunkerCalc"
+    # conn = sqlite3.connect(
+    #     (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
+
+vessels = ("viking_ocean.db",)
 
 
 class TabScreen(Screen):

@@ -4,7 +4,7 @@
 # Version-1.0
 # import os
 import sqlite3
-
+from main import vessels
 # file_location_detect = os.getcwd()
 # try:
 #     name_off_app = "BunkerCalc"
@@ -14,7 +14,7 @@ import sqlite3
 #     name_off_app = "BunkerCalc"
 #     conn = sqlite3.connect(
 #         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
-conn = sqlite3.connect('bunker_calc.db')
+conn = sqlite3.connect("viking_ocean.db")
 cur = conn.cursor()
 
 
