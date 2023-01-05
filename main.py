@@ -347,16 +347,14 @@ class BunkerCalc(MDApp):
         try:
             if len(self.slider_value) !=0 :
                 self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
-                print(f"Temperature = {self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]}")
-                print(f"Density = {self.dens_new.text}")
-                # print(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
-
+            else:
+                self.temperature = def_temp
             # Density selecting
             if len(self.dens_new.text) == 0:
                 self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                print(f"Converted Density = {((float(self.dens_new.text)/2)*1000)*2}")
                 
             else:
-
                 self.def_dens = self.dens_new.text
                 
         except KeyError as error:
@@ -374,7 +372,21 @@ class BunkerCalc(MDApp):
             else:
                 self.def_dens = self.dens_new.text
             self.temperature = def_temp
-            
+
+        except ValueError as error3:
+            if len(self.dens_new.text) == 0:
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                
+            else:
+                self.def_dens = self.dens_new.text
+            self.temperature = def_temp
+
+        converted_density = ((float(self.def_dens)/2)*1000)*2
+        
+        vol_coorection.vol_correction_factor_calc(converted_density, self.result.text, self.temperature)
+
+        print(f"Real volume = {vol_coorection.result} ")
+        
         return self.temperature, self.def_dens
         
     def on_start(self):
