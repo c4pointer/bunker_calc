@@ -42,16 +42,15 @@ ScreenManager:
 #            on_press: root.manager.current= "total_screen"
             
         # Will always be at the bottom of the screen.
-    MDBoxLayout:
-        orientation: "horizontal"
-        MDBottomAppBar:
-            MDTopAppBar:
-                id: bottom_bar
-                title: "by Oleg Zubak"
-                icon: "fuel"
-                type: "bottom"
-                left_action_items: [["alpha-c-box", lambda x: x]]
-                mode: "end"
+
+    MDBottomAppBar:
+        MDTopAppBar:
+            id: bottom_bar
+            title: "by Oleg Zubak"
+            icon: "fuel"
+            type: "bottom"
+            left_action_items: [["alpha-c-box", lambda x: x]]
+            mode: "end"
 <TotalScreen>:
     name:'total_screen'
     MDTopAppBar:
