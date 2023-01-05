@@ -14,8 +14,8 @@ import db_reading
 import calculations
 
 # Window resizing. To be deleted or commented before compiling
-from kivy.core.window import Window
-Window.size = (400, 700)
+# from kivy.core.window import Window
+# Window.size = (400, 700)
 
 total_list_hfo= {}
 total_list_mdo= {}
