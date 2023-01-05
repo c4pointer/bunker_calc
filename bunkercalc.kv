@@ -44,14 +44,7 @@ ScreenManager:
             
         # Will always be at the bottom of the screen.
 
-    MDBottomAppBar:
-        MDTopAppBar:
-            id: bottom_bar
-            title: "by Oleg Zubak"
-            icon: "fuel"
-            type: "bottom"
-            left_action_items: [["alpha-c-box", lambda x: x]]
-            mode: "end"
+    
 <TotalScreen>:
     name:'total_screen'
     MDTopAppBar:
@@ -60,12 +53,12 @@ ScreenManager:
         pos_hint: {"top": 1}
         #md_bg_color: "#e7e4c0"
         specific_text_color: "#4a4939"
-        left_action_items: [["menu", lambda x:(x)]]
-        right_action_items: [["menu", lambda x:app.screen2()]]
+        right_action_items: [["menu", lambda x:(x)]]
+        left_action_items: [["menu", lambda x:app.screen2()]]
 
         MDLabel:
             id: right_action
-            halign: "right"
+            halign: "left"
             theme_text_color: "Custom"
             text_color: "#4a4939"
 
@@ -123,7 +116,7 @@ ScreenManager:
         max_text_length: 6
         icon_left_color: app.theme_cls.primary_color
         pos_hint: {'center_x': 0.5, 'center_y': 0.9}
-        size_hint: .5, .15
+        size_hint: .5, None
         #size: 300,1
         # width: 200
         # on_text_validate : app.callback_Calc(*args)
@@ -133,7 +126,7 @@ ScreenManager:
         id: label
         halign: "center"
         pos_hint: { 'center_y': 0.75}
-        size_hint: .9, .2
+        size_hint: .9, None
 
         # Enter sound value of each tank
     MDTextField:
@@ -145,7 +138,7 @@ ScreenManager:
         max_text_length: 4
         icon_left_color: app.theme_cls.primary_color
         pos_hint: {'center_x': 0.5, 'center_y': 0.55}
-        size_hint: .5, .15
+        size_hint: .5, None
         # size: .1, .2
         # width: 200
         on_text_validate : app.callback_Calc(*args)
@@ -211,3 +204,11 @@ ScreenManager:
             thumb_color_inactive: "red"
             pos_hint: { "center_x": .2, "center_y": .55}
             size_hint_y: .8
+    MDBottomAppBar:
+        MDTopAppBar:
+            id: bottom_bar
+            title: "by Oleg Zubak"
+            icon: "fuel"
+            type: "bottom"
+            left_action_items: [["alpha-c-box", lambda x: x]]
+            mode: "center"

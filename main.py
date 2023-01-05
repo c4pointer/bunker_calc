@@ -27,13 +27,14 @@ names_mdo =[]
 def_temp = int(str("15"))
 prev_label_text = {}
 
+vessels =[]
 file_location_detect = os.getcwd()
 try:
     scan_dir=os.scandir(file_location_detect)
     for entries in scan_dir:
-        if entries.is_file:
+        if not entries.name.endswith('_prev.db') and entries.is_file:
             if entries.name.endswith(".db"):
-                print(entries)
+                vessels.append(str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title())
 
     # conn = sqlite3.connect(
     #     (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
@@ -43,7 +44,7 @@ except sqlite3.OperationalError as e:
     # conn = sqlite3.connect(
     #     (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
 
-vessels = ("viking_ocean.db",)
+print(str(vessels).capitalize())
 
 
 class TabScreen(Screen):

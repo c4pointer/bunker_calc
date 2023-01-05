@@ -12,4 +12,5 @@ test.py
 .idea
 venv
 bunker_calc_prev.db
+kivy
 
