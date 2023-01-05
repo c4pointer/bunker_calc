@@ -276,14 +276,14 @@ class BunkerCalc(MDApp):
                     self.result.text=str(self.sound_value.text)
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.text = str(db_editing.volume_in_m3[0])
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -310,7 +310,7 @@ class BunkerCalc(MDApp):
                     self.result.text=str(self.sound_value.text)
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
@@ -319,7 +319,7 @@ class BunkerCalc(MDApp):
                     self.temp_dens_extraction()
 
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.result.text), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -386,8 +386,8 @@ class BunkerCalc(MDApp):
         vol_coorection.vol_correction_factor_calc(converted_density, self.result.text, self.temperature)
 
         print(f"Real volume = {vol_coorection.result} ")
-        
-        return self.temperature, self.def_dens
+        self.real_volume = vol_coorection.result
+        return self.temperature, self.def_dens, self.real_volume
         
     def on_start(self):
 
