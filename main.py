@@ -27,6 +27,7 @@ names_mdo =[]
 def_temp = int(str("15"))
 prev_label_text = {}
 
+# Store the all ships
 vessels =[]
 file_location_detect = os.getcwd()
 try:
@@ -37,15 +38,8 @@ try:
                 parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
                 vessels.append(parsed_vessel)
     
-
-    # conn = sqlite3.connect(
-    #     (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
 except sqlite3.OperationalError as e:
     print(f"Error in DB choosing code")
-    # conn = sqlite3.connect(
-    #     (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
-
-# print(str(parsed_vessel))
 
 
 class TabScreen(Screen):
@@ -60,15 +54,6 @@ class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
 
-# class Store_Values():
-
-#     def __init__(self, sound, tk_name):
-#         self.sound = sound
-#         self.tk_name = tk_name
-
-
-# Here we declare 2 screens for our App
-# One for input all meassurments, other one for total result
 sm = ScreenManager()
 sm.add_widget(TabScreen(name='tab_screen'))
 sm.add_widget(TotalScreen(name='total_screen'))
@@ -128,7 +113,7 @@ class BunkerCalc(MDApp):
 
         for i in self.total_result_hfo:
             self.sum_hfo += float(i[4])
-            # float(i[2]) temperature
+
             tons_hfo =round(float(i[0]),2)
             self.hfo_tons.append(tons_hfo)    
         
@@ -175,6 +160,7 @@ class BunkerCalc(MDApp):
 
 
     def vessel_name(self):
+        
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
         self.set_vessel_name()
@@ -353,7 +339,7 @@ class BunkerCalc(MDApp):
             # Density selecting
             if len(self.dens_new.text) == 0:
                 self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-                print(f"Converted Density = {((float(self.dens_new.text)/2)*1000)*2}")
+    
                 
             else:
                 self.def_dens = self.dens_new.text
@@ -385,9 +371,8 @@ class BunkerCalc(MDApp):
         converted_density = ((float(self.def_dens)/2)*1000)*2
         
         vol_coorection.vol_correction_factor_calc(converted_density, self.result.text, self.temperature)
-
-        print(f"Real volume = {vol_coorection.result} ")
         self.real_volume = vol_coorection.result
+
         return self.temperature, self.def_dens, self.real_volume
         
     def on_start(self):
