@@ -127,9 +127,9 @@ class BunkerCalc(MDApp):
 
 
         for i in self.total_result_hfo:
-            self.sum_hfo += float(i[0])
+            self.sum_hfo += float(i[4])
             # float(i[2]) temperature
-            tons_hfo = float(i[0])*float(i[3])
+            tons_hfo =round(float(i[0]),2)
             self.hfo_tons.append(tons_hfo)    
         
         # MDO
@@ -143,9 +143,9 @@ class BunkerCalc(MDApp):
                 pass
         
         for i in self.total_result_mdo:
-            self.sum_mdo += float(i[0])
+            self.sum_mdo += float(i[4])
             # float(i[2]) temperature
-            tons_mdo = float(i[0])*float(i[3])
+            tons_mdo=round(float(i[0]),2)
             self.mdo_tons.append(tons_mdo)
         
         if len(self.hfo_tons) ==0 :
@@ -265,7 +265,7 @@ class BunkerCalc(MDApp):
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-
+        volume = str(db_editing.volume_in_m3[0]) 
         # If tank is in MDO state than we make calcs for it and append to
         # "total_list_mdo" for displaing in Totoal result screnn
         if db_editing.state_of_tank[0] ==1:
@@ -276,14 +276,14 @@ class BunkerCalc(MDApp):
                     self.result.text=str(self.sound_value.text)
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
                     self.result.text = str(db_editing.volume_in_m3[0])
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
@@ -295,6 +295,7 @@ class BunkerCalc(MDApp):
                     print(total_list_mdo)
                     print("********\n")
                     for i  in (total_list_mdo):
+                        "     "
                         db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0])
 
             except IndexError as e:
@@ -310,7 +311,7 @@ class BunkerCalc(MDApp):
                     self.result.text=str(self.sound_value.text)
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                     self.result.text = str(self.sound_value.text) + str(" m3")
 
                 else:
@@ -319,7 +320,7 @@ class BunkerCalc(MDApp):
                     self.temp_dens_extraction()
 
                     # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens)
+                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                     self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                             
             
