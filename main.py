@@ -12,6 +12,7 @@ from collections import ChainMap
 import db_editing
 import db_reading
 import vol_coorection
+import drop_vessel_list
 
 import os
 import sqlite3
@@ -77,12 +78,12 @@ class BunkerCalc(MDApp):
             {
                 "viewclass": "OneLineListItem",
                 "text": "Tanks Sounding",
-                "on_release": lambda x="Tanks Sounding": self.screen2()
+                "on_release": lambda x= 'lambda':self.screen2()
             },
             {
                 "viewclass": "OneLineListItem",
                 "text": "Total Result",
-                "on_release": lambda x="Total Result": self.screen2()
+                "on_release": lambda x= 'lambda':self.screen2()
             }
         ]
         self.menu = MDDropdownMenu(
@@ -159,17 +160,37 @@ class BunkerCalc(MDApp):
             self.root.current = "tab_screen"
 
 
-    def vessel_name(self):
-        
+    def vessel_name(self,i):
+        print(i)
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
-        self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = vessels[0]
-        self.set_vessel_name()
+        self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
+        self.set_vessel_name(i)
 
 
-    def set_vessel_name(self):
+    def set_vessel_name(self, i):
+        print(i)
         # self.root.get_screen("tab_screen").ids.top_menu.title.halign = 'right'
         self.root.get_screen("total_screen").ids.total_menu.title = str(self.vessel)
+    def choose_vessel(self,x):
+        """
+        Create a dropdown menu for navigate beetwen the screens
+        """
+        for i in vessels:
+            menu_items = [
+                {
+                    "viewclass": "OneLineListItem",
+                    "text": f"{i}",
+                    "on_release": lambda x="lambda": self.vessel_name(i)
+                },
 
+            ]
+        menu = MDDropdownMenu(
+            items=menu_items,
+            width_mult=4
+        )
+        menu.caller = x
+        menu.open()
+        
 
     def name_of_tank(self):
         # Extract from DB names of each tank
@@ -379,7 +400,7 @@ class BunkerCalc(MDApp):
 
         self.name_of_tank()
         self.mdo_tank_extract()
-        self.vessel_name()
+        # self.vessel_name()
         self.add_tab()
     
 
