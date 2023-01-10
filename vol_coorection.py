@@ -18,6 +18,9 @@ def vol_correction_factor_calc(conv_dens, volume_value, temp):
                     else:
                         pass
                         #need to make here an allert message
+    except UnboundLocalError as e:
+        print("Value to big")
+    try:
         if float(conv_dens) <= 771 :
             c=0.4388
         else:

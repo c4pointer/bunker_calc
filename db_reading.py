@@ -15,7 +15,7 @@ def add_to_prevdb(tank, val, volume):
     """
     Function for Create Prev DB  tables and inserting data into there
     """
-    connection= sqlite3.connect(('bunker_calc_prev.db'))
+    connection= sqlite3.connect(('viking_ocean_prev.db'))
     
     cur = connection.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS '"+tank+

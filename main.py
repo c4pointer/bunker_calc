@@ -5,8 +5,8 @@ from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
-from kivymd.uix.label import MDLabel
-from collections import ChainMap
+# from kivymd.uix.label import MDLabel
+# from collections import ChainMap
 
 # import file from project
 import db_editing
@@ -160,36 +160,70 @@ class BunkerCalc(MDApp):
             self.root.current = "tab_screen"
 
 
-    def vessel_name(self,i):
+    def vessel_name(self,i): 
         print(i)
-        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
-        self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
-        self.set_vessel_name(i)
+        print(self.the_DB[i])
+        if len(self.the_DB) != 0:
+            self.name_of_tank()
+            self.mdo_tank_extract()
+            # self.vessel_name()
+
+            self.add_tab()
+
+            self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
+            self.set_vessel_name(i)
 
 
     def set_vessel_name(self, i):
-        print(i)
         # self.root.get_screen("tab_screen").ids.top_menu.title.halign = 'right'
-        self.root.get_screen("total_screen").ids.total_menu.title = str(self.vessel)
+        self.root.get_screen("total_screen").ids.total_menu.title = str(i)
+
+
     def choose_vessel(self,x):
         """
         Create a dropdown menu for navigate beetwen the screens
         """
-        for i in vessels:
-            menu_items = [
-                {
-                    "viewclass": "OneLineListItem",
-                    "text": f"{i}",
-                    "on_release": lambda x="lambda": self.vessel_name(i)
-                },
+        try:
+            for v in iter(vessels):
+                j = 0
+                for i  in  range(len(vessels)):
+            
+                    self.the_DB[i]=vessels[j]
+                    
+            
+                    menu_items = [(
+                    {
+                        "viewclass": "OneLineListItem",
+                        "text": f"{vessels[i]}",
+                        "on_release": lambda x="lambda": self.vessel_name(i)
+                    })
+                for i in range(len(vessels))   
+                ]
 
-            ]
-        menu = MDDropdownMenu(
-            items=menu_items,
-            width_mult=4
-        )
-        menu.caller = x
-        menu.open()
+                    j += 1
+
+
+            menu = MDDropdownMenu(
+                items=menu_items,
+                width_mult=4
+            )
+            menu.caller = x
+            menu.open()
+            
+        except ValueError:
+            print("tt")
+        
+            
+        
+        # for v in iter(vessels):
+        #     j = 0
+        #     for i  in  range(len(vessels)):
+        
+        #         self.the_DB[i]=vessels[j]
+        #         j += 1
+        print(self.the_DB)
+
         
 
     def name_of_tank(self):
@@ -397,11 +431,9 @@ class BunkerCalc(MDApp):
         return self.temperature, self.def_dens, self.real_volume
         
     def on_start(self):
+        self.the_DB = {}
+        pass
 
-        self.name_of_tank()
-        self.mdo_tank_extract()
-        # self.vessel_name()
-        self.add_tab()
     
 
 
