@@ -306,15 +306,18 @@ class BunkerCalc(MDApp):
         db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
         db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
         db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+        
         volume = str(db_editing.volume_in_m3[0]) 
         # If tank is in MDO state than we make calcs for it and append to
         # "total_list_mdo" for displaing in Totoal result screnn
         if db_editing.state_of_tank[0] ==1:
+            print(f"{db_editing.type_of_tank[0]}")
             
             try:
                 self.result.font_size = "30dp"
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
+                    volume = self.result.text
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
                     total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
@@ -346,10 +349,16 @@ class BunkerCalc(MDApp):
 
         # Calculate if tank is NOT MDO but is HFO
         else:
+            
             try:
                 self.result.font_size = "30dp"
+
+                # If type of tank is not with sounding table,
+                # but only gauging than inputed value is added
+                # to total screen
                 if db_editing.type_of_tank[0] == 1:
                     self.result.text=str(self.sound_value.text)
+                    volume = self.result.text
                     self.temp_dens_extraction()
                     # Define below row for take into prev function use
                     total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
