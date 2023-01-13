@@ -186,28 +186,27 @@ class BunkerCalc(MDApp):
         Create a dropdown menu for navigate beetwen the screens
         """
         try:
-            # self.db_tuple = []
+            self.db_tuple = []
             j = 0
             for v in iter(vessels):
                 
                 for i  in  range(len(vessels)):
             
                     self.the_DB[v]=vessels[j]
-                
+            menu_items =[]
+            for i in range(len(vessels)):
         
-            menu_items = [(
-                {
-                    "viewclass": "OneLineListItem",
-                    "text": f"{vessels[i]}",
-                    "on_release": lambda x="lambda": self.vessel_name(vessels[i])
-                })
-                for i in range(len(vessels))   
-            ]
+                menu_items.append(
+                    {
+                        "viewclass": "OneLineListItem",
+                        "text": f"{vessels[i]}",
+                        "on_release": lambda x="lambda": self.vessel_name(vessels[i])
+                    },)
                 # self.db_tuple.append(menu_items)
 
                 # j += 1
 
-
+            print(menu_items[0])
             menu = MDDropdownMenu(
                 items= menu_items,
                 width_mult=4
