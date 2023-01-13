@@ -161,15 +161,9 @@ class BunkerCalc(MDApp):
 
 
     def vessel_name(self,i): 
-        print(i)
-        print(self.the_DB[i])
         if len(self.the_DB) != 0:
-            self.name_of_tank()
-            self.mdo_tank_extract()
+            
             # self.vessel_name()
-
-            self.add_tab()
-
             self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
             self.set_vessel_name(i)
@@ -185,6 +179,7 @@ class BunkerCalc(MDApp):
         Create a dropdown menu for navigate beetwen the screens
         """
         try:
+            self.db_tuple = []
             for v in iter(vessels):
                 j = 0
                 for i  in  range(len(vessels)):
@@ -197,15 +192,16 @@ class BunkerCalc(MDApp):
                         "viewclass": "OneLineListItem",
                         "text": f"{vessels[i]}",
                         "on_release": lambda x="lambda": self.vessel_name(i)
-                    })
-                for i in range(len(vessels))   
+                    }),
+                  
                 ]
+                    self.db_tuple.append(menu_items)
 
                     j += 1
 
 
             menu = MDDropdownMenu(
-                items=menu_items,
+                items= self.db_tuple,
                 width_mult=4
             )
             menu.caller = x
@@ -213,18 +209,14 @@ class BunkerCalc(MDApp):
             
         except ValueError:
             print("tt")
-        
-            
-        
+
         # for v in iter(vessels):
         #     j = 0
         #     for i  in  range(len(vessels)):
         
         #         self.the_DB[i]=vessels[j]
         #         j += 1
-        print(self.the_DB)
 
-        
 
     def name_of_tank(self):
         # Extract from DB names of each tank
@@ -441,7 +433,10 @@ class BunkerCalc(MDApp):
         
     def on_start(self):
         self.the_DB = {}
-        pass
+        self.name_of_tank()
+        self.mdo_tank_extract()
+        self.add_tab()
+        
 
     
 
