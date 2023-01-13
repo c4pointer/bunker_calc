@@ -164,15 +164,8 @@ class BunkerCalc(MDApp):
         print(text_item)
         if len(self.the_DB) != 0:
             
-            # self.vessel_name()
-            self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(text_item)
             self.set_vessel_name(text_item)
-        # else:
-        #     self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
-        #     self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
-        #     self.set_vessel_name(i)
-
 
 
     def set_vessel_name(self, i):
@@ -182,7 +175,7 @@ class BunkerCalc(MDApp):
 
     def choose_vessel(self,x):
         """
-        Create a dropdown menu for navigate beetwen the screens
+        Create a dropdown menu for selecting the Vessel`s Data Base
         """
         try:
             self.db_tuple = {}
@@ -434,6 +427,8 @@ class BunkerCalc(MDApp):
         self.name_of_tank()
         self.mdo_tank_extract()
         self.add_tab()
+        # Label for toggle screens between the total screen and Tabs
+        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         
 
     
