@@ -161,12 +161,19 @@ class BunkerCalc(MDApp):
 
 
     def vessel_name(self,i): 
+        print(i)
+        print(len(self.the_DB))
         if len(self.the_DB) != 0:
             
             # self.vessel_name()
             self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
             self.set_vessel_name(i)
+        # else:
+        #     self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+        #     self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
+        #     self.set_vessel_name(i)
+
 
 
     def set_vessel_name(self, i):
@@ -180,19 +187,19 @@ class BunkerCalc(MDApp):
         """
         try:
             # self.db_tuple = []
-            # j = 0
-            # for v in iter(vessels):
+            j = 0
+            for v in iter(vessels):
                 
-                # for i  in  range(len(vessels)):
+                for i  in  range(len(vessels)):
             
-                # self.the_DB[v]=vessels[j]
+                    self.the_DB[v]=vessels[j]
                 
         
             menu_items = [(
                 {
                     "viewclass": "OneLineListItem",
                     "text": f"{vessels[i]}",
-                    "on_release": lambda x="lambda": self.vessel_name(i)
+                    "on_release": lambda x="lambda": self.vessel_name(vessels[i])
                 })
                 for i in range(len(vessels))   
             ]
