@@ -160,15 +160,14 @@ class BunkerCalc(MDApp):
             self.root.current = "tab_screen"
 
 
-    def vessel_name(self,i): 
-        print(i)
-        print(len(self.the_DB))
+    def vessel_name(self,text_item): 
+        print(text_item)
         if len(self.the_DB) != 0:
             
             # self.vessel_name()
             self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
-            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
-            self.set_vessel_name(i)
+            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(text_item)
+            self.set_vessel_name(text_item)
         # else:
         #     self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         #     self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(i)
@@ -186,27 +185,19 @@ class BunkerCalc(MDApp):
         Create a dropdown menu for navigate beetwen the screens
         """
         try:
-            self.db_tuple = []
+            self.db_tuple = {}
             j = 0
             for v in iter(vessels):
-                
-                for i  in  range(len(vessels)):
-            
-                    self.the_DB[v]=vessels[j]
-            menu_items =[]
-            for i in range(len(vessels)):
+                self.the_DB[v]=vessels[j]
         
-                menu_items.append(
-                    {
-                        "viewclass": "OneLineListItem",
-                        "text": f"{vessels[i]}",
-                        "on_release": lambda x="lambda": self.vessel_name(vessels[i])
-                    },)
-                # self.db_tuple.append(menu_items)
+            menu_items= [(
+                {
+                    "viewclass": "OneLineListItem",
+                    "text": f"{vessels[i]}",
+                    "on_release": lambda x=f"{vessels[i]}": self.vessel_name(x)
+                }) for i in range(len(vessels))
+                ]
 
-                # j += 1
-
-            print(menu_items[0])
             menu = MDDropdownMenu(
                 items= menu_items,
                 width_mult=4
