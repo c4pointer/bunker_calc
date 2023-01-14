@@ -67,11 +67,13 @@ def extract_prev(e):
 # r = re.compile('[^a-zA-Z-0-9]')
 
 
-def extract_names():
+def extract_names(i):
     """
     Here we connect to our DB and select all tank names
     that we will display in ListBox
     """
+    conn = sqlite3.connect(i)
+    cur = conn.cursor()
     global name_of_tank
     name_of_tank = []
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")

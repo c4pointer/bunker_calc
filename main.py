@@ -15,7 +15,7 @@ import vol_coorection
 import drop_vessel_list
 
 import os
-import sqlite3
+# import sqlite3
 # Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
 # Window.size = (400, 700)
@@ -29,6 +29,8 @@ def_temp = int(str("15"))
 prev_label_text = {}
 
 # Store the all ships
+vessel_db = "viking_ocean.db"
+vessel_name_db =[]
 vessels =[]
 file_location_detect = os.getcwd()
 try:
@@ -37,6 +39,8 @@ try:
         if not entries.name.endswith('_prev.db') and entries.is_file:
             if entries.name.endswith(".db"):
                 parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
+                vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
+                vessel_name_db.append(vessel_name_db_parsed)
                 vessels.append(parsed_vessel)
     
 except sqlite3.OperationalError as e:
@@ -71,11 +75,15 @@ class BunkerCalc(MDApp):
         
     def on_start(self):
         self.the_DB = {}
-        self.name_of_tank()
+        self.name_of_tank(vessel_db)
         self.mdo_tank_extract()
         self.add_tab()
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+
+    def change_vessel(self, vessel_db ):
+        self.name_of_tank(vessel_db)
+        self.add_tab()
 
 
     # def dropdown(self, x):
@@ -169,8 +177,8 @@ class BunkerCalc(MDApp):
 
 
     def vessel_name(self,text_item): 
-        print(text_item)
-        self.text_vessel = text_item
+        self.name_of_vessel_db = str(text_item).lower()+".db"
+        self.change_vessel(self.name_of_vessel_db)
         if len(self.the_DB) != 0:
             
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(text_item)
@@ -211,10 +219,10 @@ class BunkerCalc(MDApp):
             print("Error on choose vessel")
 
 
-    def name_of_tank(self):
+    def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
         self.names = []
-        db_reading.extract_names()
+        db_reading.extract_names(vessel_db)
 
         self.tank_name = db_reading.name_of_tank
         for i in self.tank_name:
@@ -234,7 +242,6 @@ class BunkerCalc(MDApp):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         # print(names_for_do)
         self.tab_iterator = 0
-        print(prev_label_text)
         for i in (self.names):
             db_reading.extract_prev(i)
             
