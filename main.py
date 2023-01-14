@@ -179,11 +179,10 @@ class BunkerCalc(MDApp):
             # Display total results for MDO and HFO
             self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
             self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                + str(f"\n {self.sum_hfo_tons} MT HFO"+f"\n___________________")
+                + str(f"\n {round(self.sum_hfo_tons)} MT HFO"+f"\n___________________")
             self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                + str(f"\n {self.sum_mdo_tons} MT MDO")
+                + str(f"\n {round(self.sum_mdo_tons)} MT MDO")
         else:
-            # self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.root.current = "tab_screen"
 
 
