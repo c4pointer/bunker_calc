@@ -5,31 +5,29 @@
 
 # import csv
 import sqlite3
-conn = sqlite3.connect("viking_ocean.db")
-cur = conn.cursor()
 
 # Create empty dict for placing here data from previous DB for Showing on start App
 prev_label_text = {}
 
-def add_to_prevdb(tank, val, volume):
+def add_to_prevdb(tank, val, volume, vessel):
     """
     Function for Create Prev DB  tables and inserting data into there
     """
-    connection= sqlite3.connect(('viking_ocean_prev.db'))
+    connection= sqlite3.connect((str(vessel).strip(".db")+"_prev.db"))
     
     cur = connection.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS '"+tank+
                 "' (sound_id INT ,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL) ;")
     
     connection.commit()
-    update(tank,val, volume)
+    update(tank,val, volume,vessel)
 
 
-def update(t,v,volume):
+def update(t,v,volume, vessel):
     """
     Update data in Prev DB
     """
-    connection= sqlite3.connect(('viking_ocean_prev.db'))
+    connection= sqlite3.connect((str(vessel).strip(".db")+"_prev.db"))
     
     cur = connection.cursor()
     cur.execute("SELECT * from '"+ t +
@@ -45,21 +43,23 @@ def update(t,v,volume):
 
 
 
-def extract_prev(e):
+def extract_prev(name,vessel):
     """
     Make a query for extracting data from DB table and inserting into
     empty Dict from beggining of this file
     """
-    
-    connection= sqlite3.connect(('viking_ocean_prev.db'))
-    
-    cur = connection.cursor()
-    cur.execute("SELECT * from '"+ e +
-            "' ;")
-    for i in cur:
-        prev_label_text[e]=((i[1]),(i[0]))
+    try:
+        connection= sqlite3.connect((str(vessel).strip(".db")+"_prev.db"))
+        cur = connection.cursor()
 
-    connection.close()
+        cur.execute("SELECT * from '"+ name +
+                "' ;")
+        for i in cur:
+            prev_label_text[name]=((i[1]),(i[0]))
+
+        connection.close()
+    except sqlite3.OperationalError as error:
+        print("Need to insert Data to prev DB")
 
     
     
@@ -102,8 +102,9 @@ def extract_names(i):
 #     return table_names
 
 
-def sort_tanks_mdo():
-
+def sort_tanks_mdo(v):
+    conn = sqlite3.connect(v)
+    cur = conn.cursor()
     table_name_md = []
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
     for tables in cur:

@@ -15,25 +15,34 @@ import vol_coorection
 import drop_vessel_list
 
 import os
-# import sqlite3
+import sqlite3
 # Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
 # Window.size = (400, 700)
 
+# Here we store our dict with total quantity of fuel
 total_list_hfo= {}
 total_list_mdo= {}
 
+# Declare empty list for tanks
 names_hfo =[]
 names_mdo =[]
+
+# Default variables
 def_temp = int(str("15"))
+vessel_db = "viking_ocean.db"
+
 prev_label_text = {}
 
 # Store the all ships
-vessel_db = "viking_ocean.db"
-vessel_name_db =[]
 vessels =[]
+
+# Store db names for each ship
+vessel_name_db =[]
+
 file_location_detect = os.getcwd()
 try:
+    # scan current working Directory
     scan_dir=os.scandir(file_location_detect)
     for entries in scan_dir:
         if not entries.name.endswith('_prev.db') and entries.is_file:
@@ -43,7 +52,7 @@ try:
                 vessel_name_db.append(vessel_name_db_parsed)
                 vessels.append(parsed_vessel)
     
-except sqlite3.OperationalError as e:
+except:
     print(f"Error in DB choosing code")
 
 
@@ -67,7 +76,6 @@ sm.add_widget(TotalScreen(name='total_screen'))
 class BunkerCalc(MDApp):
 
     def build(self):
-        
         # Theme and colors
         self.theme_cls.primary_palette = "Gray"
         self.theme_cls.primary_hue = "600"
@@ -76,17 +84,18 @@ class BunkerCalc(MDApp):
     def on_start(self):
         self.the_DB = {}
         self.name_of_tank(vessel_db)
-        self.mdo_tank_extract()
-        self.add_tab()
+        self.mdo_tank_extract(vessel_db)
+        self.add_tab(vessel_db)
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
 
-    def change_vessel(self, vessel_db ):
+    def change_vessel(self, v ):
         f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
         for i in f:
             self.root.get_screen("tab_screen").ids.tabs.remove_widget(i)
-        self.name_of_tank(vessel_db)
-        self.add_tab()
+        self.name_of_tank(v)
+        self.mdo_tank_extract(v)
+        self.add_tab(v)
 
 
     # def dropdown(self, x):
@@ -121,6 +130,7 @@ class BunkerCalc(MDApp):
         self.hfo_tons = []
         # HFO
         self.sum_hfo = 0
+        self.sum_hfo_tons = 0
         for i in (self.names):
             try:
                 if len(total_list_hfo[i]) > 0:
@@ -133,12 +143,11 @@ class BunkerCalc(MDApp):
 
         for i in self.total_result_hfo:
             self.sum_hfo += float(i[4])
-
-            tons_hfo =round(float(i[0]),2)
-            self.hfo_tons.append(tons_hfo)    
+            self.sum_hfo_tons += float(i[0])    
         
         # MDO
         self.sum_mdo = 0
+        self.sum_mdo_tons = 0
         for d in (list(set(self.mdo_names).intersection(set(self.names)))):
             try:
                 if len(total_list_mdo[d]) > 0:
@@ -149,15 +158,13 @@ class BunkerCalc(MDApp):
         
         for i in self.total_result_mdo:
             self.sum_mdo += float(i[4])
-            # float(i[2]) temperature
-            tons_mdo=round(float(i[0]),2)
-            self.mdo_tons.append(tons_mdo)
+            self.sum_mdo_tons += float(i[0])
         
         if len(self.hfo_tons) ==0 :
             self.hfo_tons.append(float(0))
         if len(self.mdo_tons) ==0:
             self.mdo_tons.append(float(0))
-        return self.sum_mdo, self.sum_hfo, self.hfo_tons, self.mdo_tons
+        return self.sum_mdo, self.sum_hfo, self.hfo_tons, self.mdo_tons,self.sum_mdo_tons ,self.sum_hfo_tons  
 
 
     def screen2(self):
@@ -169,28 +176,29 @@ class BunkerCalc(MDApp):
         if self.root.current != "total_screen":
             self.root.current = "total_screen"
             self.calculate_total()
+            # Display total results for MDO and HFO
             self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
             self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                + str(f"\n {self.hfo_tons[0]} MT HFO")
+                + str(f"\n {self.sum_hfo_tons} MT HFO"+f"\n___________________")
             self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                + str(f"\n {self.mdo_tons[0]} MT MDO")
+                + str(f"\n {self.sum_mdo_tons} MT MDO")
         else:
-            self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+            # self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
             self.root.current = "tab_screen"
 
 
-    def vessel_name(self,text_item): 
-        self.name_of_vessel_db = str(text_item).lower()+".db"
+    def vessel_name(self,vessel):
+        """
+        Set selected vessel as title of App
+        """
+        self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
         self.change_vessel(self.name_of_vessel_db)
         if len(self.the_DB) != 0:
-            
-            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(text_item)
-            self.set_vessel_name(text_item)
+            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
 
+        self.root.get_screen("total_screen").ids.total_menu.title = str(vessel)
 
-    def set_vessel_name(self, i):
-        # self.root.get_screen("tab_screen").ids.top_menu.title.halign = 'right'
-        self.root.get_screen("total_screen").ids.total_menu.title = str(i)
+        
 
 
     def choose_vessel(self,x):
@@ -232,21 +240,21 @@ class BunkerCalc(MDApp):
             self.names.append(i[0])
 
 
-    def mdo_tank_extract(self):
+    def mdo_tank_extract(self, v):
         self.mdo_names = []
-        db_reading.sort_tanks_mdo()
+        db_reading.sort_tanks_mdo(v)
         self.mdo_tanks = db_reading.table_names_md
         for i in self.mdo_tanks:
             self.mdo_names.append(i[0])
         # print(self.mdo_names)
 
 
-    def add_tab(self):
+    def add_tab(self,vessel):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         # print(names_for_do)
         self.tab_iterator = 0
         for i in (self.names):
-            db_reading.extract_prev(i)
+            db_reading.extract_prev(i,vessel)
             
             if not i in names_for_do:
             
@@ -296,7 +304,6 @@ class BunkerCalc(MDApp):
         if len(total_list_mdo)==0 and len(total_list_hfo)==0:
             try:
                 if self.text_vessel==True:
-                    print(self.text_vessel)
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(
                         Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
                         {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
@@ -315,7 +322,7 @@ class BunkerCalc(MDApp):
 
             # except :
             #     pass
-
+   
 
     def callback_Calc(self, *args):
 
@@ -356,7 +363,7 @@ class BunkerCalc(MDApp):
                     print("********\n")
                     for i  in (total_list_mdo):
                         "     "
-                        db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0])
+                        db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0], self.name_of_vessel_db)
 
             except IndexError as e:
                 # Printing on display the error and change the font-size
@@ -398,7 +405,7 @@ class BunkerCalc(MDApp):
                     print(total_list_mdo)
                     print("*************\n")
                     for i  in (total_list_hfo):
-                        db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0])
+                        db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0], self.name_of_vessel_db)
                         # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
 
             except IndexError as e:
