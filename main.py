@@ -69,29 +69,37 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
+    def on_start(self):
+        self.the_DB = {}
+        self.name_of_tank()
+        self.mdo_tank_extract()
+        self.add_tab()
+        # Label for toggle screens between the total screen and Tabs
+        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
 
-    def dropdown(self, x):
-        """
-        Create a dropdown menu for navigate beetwen the screens
-        """
-        self.menu_items = [
-            {
-                "viewclass": "OneLineListItem",
-                "text": "Tanks Sounding",
-                "on_release": lambda x= 'lambda':self.screen2()
-            },
-            {
-                "viewclass": "OneLineListItem",
-                "text": "Total Result",
-                "on_release": lambda x= 'lambda':self.screen2()
-            }
-        ]
-        self.menu = MDDropdownMenu(
-            items=self.menu_items,
-            width_mult=4
-        )
-        self.menu.caller = x
-        self.menu.open()
+
+    # def dropdown(self, x):
+    #     """
+    #     Create a dropdown menu for navigate beetwen the screens
+    #     """
+    #     self.menu_items = [
+    #         {
+    #             "viewclass": "OneLineListItem",
+    #             "text": "Tanks Sounding",
+    #             "on_release": lambda x= 'lambda':self.screen2()
+    #         },
+    #         {
+    #             "viewclass": "OneLineListItem",
+    #             "text": "Total Result",
+    #             "on_release": lambda x= 'lambda':self.screen2()
+    #         }
+    #     ]
+    #     self.menu = MDDropdownMenu(
+    #         items=self.menu_items,
+    #         width_mult=4
+    #     )
+    #     self.menu.caller = x
+    #     self.menu.open()
 
 
     def calculate_total(self):
@@ -162,6 +170,7 @@ class BunkerCalc(MDApp):
 
     def vessel_name(self,text_item): 
         print(text_item)
+        self.text_vessel = text_item
         if len(self.the_DB) != 0:
             
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(text_item)
@@ -199,14 +208,7 @@ class BunkerCalc(MDApp):
             menu.open()
             
         except ValueError:
-            print("tt")
-
-        # for v in iter(vessels):
-        #     j = 0
-        #     for i  in  range(len(vessels)):
-        
-        #         self.the_DB[i]=vessels[j]
-        #         j += 1
+            print("Error on choose vessel")
 
 
     def name_of_tank(self):
@@ -232,6 +234,7 @@ class BunkerCalc(MDApp):
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         # print(names_for_do)
         self.tab_iterator = 0
+        print(prev_label_text)
         for i in (self.names):
             db_reading.extract_prev(i)
             
@@ -241,12 +244,20 @@ class BunkerCalc(MDApp):
             for do in names_for_do :
                 if do == i:
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
-    
-        self.root.get_screen('tab_screen').ids.tabs.add_widget(
-            Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
-            {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
-        )
-        
+        try:
+            if self.text_vessel==True:
+                print(self.text_vessel)
+                self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                    Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
+                    {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
+                )
+            else:
+                self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                    Tab(title=f"Previous quantity: {prev_label_text}"))
+        except AttributeError:
+            self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                    Tab(title=f"Previous quantity: {prev_label_text}"))
+
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
             self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
@@ -274,14 +285,26 @@ class BunkerCalc(MDApp):
         #if no any entries are inserted we show below text to user
         if len(total_list_mdo)==0 and len(total_list_hfo)==0:
             try:
-                self.result.text = str("Previous quantity:\n")+\
-                str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
-                str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str(" cm")
-                self.result.font_size = "24dp"
-                db_editing.type_sel(tab_text)
-
-            except :
+                if self.text_vessel==True:
+                    print(self.text_vessel)
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                        Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
+                        {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
+                    )
+                else:
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                        Tab(title=f"Previous quantity: {prev_label_text}"))
+            except:
                 pass
+            # try:
+            #     self.result.text = str("Previous quantity:\n")+\
+            #     str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
+            #     str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str(" cm")
+            #     self.result.font_size = "24dp"
+            #     db_editing.type_sel(tab_text)
+
+            # except :
+            #     pass
 
 
     def callback_Calc(self, *args):
@@ -421,18 +444,6 @@ class BunkerCalc(MDApp):
         self.real_volume = vol_coorection.result
 
         return self.temperature, self.def_dens, self.real_volume
-        
-    def on_start(self):
-        self.the_DB = {}
-        self.name_of_tank()
-        self.mdo_tank_extract()
-        self.add_tab()
-        # Label for toggle screens between the total screen and Tabs
-        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
-        
-
-    
-
 
 
 
