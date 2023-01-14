@@ -325,9 +325,9 @@ class BunkerCalc(MDApp):
 
     def callback_Calc(self, *args):
 
-        db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text)
-        db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
-        db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+        db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text, self.name_of_vessel_db)
+        db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
+        db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
         
         volume = str(db_editing.volume_in_m3[0]) 
         # If tank is in MDO state than we make calcs for it and append to
@@ -424,7 +424,7 @@ class BunkerCalc(MDApp):
                 self.temperature = def_temp
             # Density selecting
             if len(self.dens_new.text) == 0:
-                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
     
                 
             else:
@@ -432,7 +432,7 @@ class BunkerCalc(MDApp):
                 
         except KeyError as error:
             if len(self.dens_new.text) == 0:
-                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
                 
             else:
                 self.def_dens = self.dens_new.text
@@ -440,7 +440,7 @@ class BunkerCalc(MDApp):
 
         except AttributeError as error2:
             if len(self.dens_new.text) == 0:
-                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
                 
             else:
                 self.def_dens = self.dens_new.text
@@ -448,7 +448,7 @@ class BunkerCalc(MDApp):
 
         except ValueError as error3:
             if len(self.dens_new.text) == 0:
-                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '))
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
                 
             else:
                 self.def_dens = self.dens_new.text

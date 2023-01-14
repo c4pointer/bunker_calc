@@ -4,7 +4,7 @@
 # Version-1.0
 # import os
 import sqlite3
-from main import vessels
+
 # file_location_detect = os.getcwd()
 # try:
 #     name_off_app = "BunkerCalc"
@@ -18,7 +18,9 @@ conn = sqlite3.connect("viking_ocean.db")
 cur = conn.cursor()
 
 
-def select_DefDens(tk_name):
+def select_DefDens(tk_name, vessel):
+    conn = sqlite3.connect(vessel)
+    cur = conn.cursor()
     cur.execute("SELECT density FROM '%s' WHERE sound_id='1'" % (tk_name))
     global density
     density = 0
@@ -34,13 +36,15 @@ def select_DefDens(tk_name):
     return density
 
 
-def calculation(tk_name, sound):
+def calculation(tk_name, sound, vessel):
     '''
     Takes value from DB
     '''
     global volume_in_m3
     volume_in_m3 = []
     try:
+        conn = sqlite3.connect(vessel)
+        cur = conn.cursor()
         cur.execute("SELECT volume FROM '%s' WHERE sound_id='%s'" %
                     (tk_name, sound))
         for data in cur:
@@ -52,13 +56,15 @@ def calculation(tk_name, sound):
     except Exception as e:
         print(f"Erorr: {e}")
 
-def type_sel(tank):
+def type_sel(tank, vessel):
     """
     Sort tank if the tank don`t have Sounding Table,
     then we just take the inputed value in textfield
     """
     global type_of_tank
     type_of_tank=[]
+    conn = sqlite3.connect(vessel)
+    cur = conn.cursor()
     cur.execute("SELECT type FROM '"+tank+"' WHERE sound_id='0';")
     for i in cur:
         type_of_tank.append(i[0])
@@ -66,13 +72,15 @@ def type_sel(tank):
     return type_of_tank
 
 
-def state_sel(tank):
+def state_sel(tank, vessel):
     """
     Sort tank if the tank by state
     If state == 1 than means that tank is for MDO total result caclc`s
     """
     global state_of_tank
     state_of_tank=[]
+    conn = sqlite3.connect(vessel)
+    cur = conn.cursor()
     cur.execute("SELECT state FROM '"+tank+"' WHERE sound_id='0';")
     for i in cur:
         state_of_tank.append(i[0])
