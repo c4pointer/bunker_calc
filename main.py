@@ -82,6 +82,9 @@ class BunkerCalc(MDApp):
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
 
     def change_vessel(self, vessel_db ):
+        f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
+        for i in f:
+            self.root.get_screen("tab_screen").ids.tabs.remove_widget(i)
         self.name_of_tank(vessel_db)
         self.add_tab()
 
