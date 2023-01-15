@@ -49,14 +49,14 @@ ScreenManager:
 #            on_press: root.manager.current= "total_screen"
             
         # Will always be at the bottom of the screen.
-        MDBottomAppBar:
-            MDTopAppBar:
-                id: bottom_bar
-                title: "by Oleg Zubak"
-                icon: "fuel"
-                type: "bottom"
-                left_action_items: [["alpha-c-box", lambda x: x]]
-                mode: "center"
+    MDBottomAppBar:
+        MDTopAppBar:
+            id: bottom_bar
+            title: "by Oleg Zubak"
+            icon: "fuel"
+            type: "bottom"
+            left_action_items: [["alpha-c-box", lambda x: x]]
+            mode: "center"
         
 <TotalScreen>:
     name:'total_screen'
@@ -164,6 +164,7 @@ ScreenManager:
         theme_icon_color: "Secondary"
         md_bg_color: ("#465d5a")
         on_press: app.callback_Calc(*args)
+        disabled: 'True'
         # size_hint: None, None
     MDFloatingActionButton:
         id: close

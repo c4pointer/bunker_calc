@@ -5,6 +5,7 @@ from kivymd.app import MDApp
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
+from kivymd.uix.dialog import MDDialog
 # from kivymd.uix.label import MDLabel
 # from collections import ChainMap
 
@@ -16,6 +17,7 @@ import drop_vessel_list
 
 import os
 import sqlite3
+import threading
 # Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
 # Window.size = (400, 700)
@@ -89,7 +91,7 @@ class BunkerCalc(MDApp):
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         self.root.get_screen("tab_screen").ids.select_vessel.text = "Select vessel"
-
+        # self.root.get_screen("tab_screen").ids.calc.disabled = True
     def change_vessel(self, v ):
         f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
         for i in f:
@@ -97,6 +99,7 @@ class BunkerCalc(MDApp):
         self.name_of_tank(v)
         self.mdo_tank_extract(v)
         self.add_tab(v)
+        
 
 
     # def dropdown(self, x):
@@ -192,7 +195,8 @@ class BunkerCalc(MDApp):
         Set selected vessel as title of App
         """
         self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
-        self.change_vessel(self.name_of_vessel_db)
+        # THREAD FOR selecting and switching vessel DB
+        self.start_thread(self.name_of_vessel_db)
         if len(self.the_DB) != 0:
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
 
@@ -231,6 +235,14 @@ class BunkerCalc(MDApp):
             print("Error on choose vessel")
 
 
+    def start_thread(self, vessel):
+        self.x_thread = threading.Thread(target=self.change_vessel(vessel), daemon=True)
+        self.x_thread.start()
+        if not self.x_thread.is_alive() == True:
+            self.root.get_screen("tab_screen").ids.calc.disabled = "False"
+        
+
+
     def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
         self.names = []
@@ -251,6 +263,7 @@ class BunkerCalc(MDApp):
 
 
     def add_tab(self,vessel):
+        
         names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
         # print(names_for_do)
         self.tab_iterator = 0
