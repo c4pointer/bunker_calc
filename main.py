@@ -88,6 +88,7 @@ class BunkerCalc(MDApp):
         self.add_tab(vessel_db)
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+        self.root.get_screen("tab_screen").ids.select_vessel.text = "Select vessel"
 
     def change_vessel(self, v ):
         f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
@@ -205,6 +206,7 @@ class BunkerCalc(MDApp):
         Create a dropdown menu for selecting the Vessel`s Data Base
         """
         try:
+            self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
             j = 0
             for v in iter(vessels):
@@ -324,93 +326,98 @@ class BunkerCalc(MDApp):
    
 
     def callback_Calc(self, *args):
-
-        db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text, self.name_of_vessel_db)
-        db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
-        db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
-        
-        volume = str(db_editing.volume_in_m3[0]) 
-        # If tank is in MDO state than we make calcs for it and append to
-        # "total_list_mdo" for displaing in Totoal result screnn
-        if db_editing.state_of_tank[0] ==1:
-            print(f"{db_editing.type_of_tank[0]}")
+        try:
             
-            try:
-                self.result.font_size = "30dp"
-                if db_editing.type_of_tank[0] == 1:
-                    self.result.text=str(self.sound_value.text)
-                    volume = self.result.text
-                    self.temp_dens_extraction()
-                    # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
-                    self.result.text = str(self.sound_value.text) + str(" m3")
-
-                else:
-                    self.result.text = str(db_editing.volume_in_m3[0])
-                    self.temp_dens_extraction()
-                    # Define below row for take into prev function use
-                    total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
-                    self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
-                            
+            db_editing.calculation(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.sound_value.text, self.name_of_vessel_db)
+            db_editing.type_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
+            db_editing.state_sel(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
             
-
-                # Insert data to prev DB for prev values extarcting on start
-                if len(total_list_mdo) >0 :
-                    print(total_list_hfo)
-                    print("\n")
-                    print(total_list_mdo)
-                    print("********\n")
-                    for i  in (total_list_mdo):
-                        "     "
-                        db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0], self.name_of_vessel_db)
-
-            except IndexError as e:
-                # Printing on display the error and change the font-size
-                self.result.text = str("Wrong sounding value!")
-                self.result.font_size = "20dp"
-
-        # Calculate if tank is NOT MDO but is HFO
-        else:
-            
-            try:
-                self.result.font_size = "30dp"
-
-                # If type of tank is not with sounding table,
-                # but only gauging than inputed value is added
-                # to total screen
-                if db_editing.type_of_tank[0] == 1:
-                    self.result.text=str(self.sound_value.text)
-                    volume = self.result.text
-                    self.temp_dens_extraction()
-                    # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
-                    self.result.text = str(self.sound_value.text) + str(" m3")
-
-                else:
+            volume = str(db_editing.volume_in_m3[0]) 
+            # If tank is in MDO state than we make calcs for it and append to
+            # "total_list_mdo" for displaing in Totoal result screnn
+            if db_editing.state_of_tank[0] ==1:
+                print(f"{db_editing.type_of_tank[0]}")
+                
+                try:
+                    
                     self.result.font_size = "30dp"
-                    self.result.text = str(db_editing.volume_in_m3[0])
-                    self.temp_dens_extraction()
+                    if db_editing.type_of_tank[0] == 1:
+                        self.result.text=str(self.sound_value.text)
+                        volume = self.result.text
+                        self.temp_dens_extraction()
+                        # Define below row for take into prev function use
+                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.result.text = str(self.sound_value.text) + str(" m3")
 
-                    # Define below row for take into prev function use
-                    total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
-                    self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
-                            
-            
+                    else:
+                        self.result.text = str(db_editing.volume_in_m3[0])
+                        self.temp_dens_extraction()
+                        # Define below row for take into prev function use
+                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+                                
+                
 
-                # Insert data to prev DB for prev values extarcting on start
-                if len(total_list_hfo) >0 :
-                    print(total_list_hfo)
-                    print("\n")
-                    print(total_list_mdo)
-                    print("*************\n")
-                    for i  in (total_list_hfo):
-                        db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0], self.name_of_vessel_db)
-                        # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
+                    # Insert data to prev DB for prev values extarcting on start
+                    if len(total_list_mdo) >0 :
+                        print(total_list_hfo)
+                        print("\n")
+                        print(total_list_mdo)
+                        print("********\n")
+                        for i  in (total_list_mdo):
+                            "     "
+                            db_reading.add_to_prevdb(i, total_list_mdo[i][1], total_list_mdo[i][0], self.name_of_vessel_db)
 
-            except IndexError as e:
-                # Printing on display the error and change the font-size
-                self.result.text = str("Wrong sounding value!")
-                self.result.font_size = "20dp"
+                except IndexError as e:
+                    # Printing on display the error and change the font-size
+                    self.result.text = str("Wrong sounding value!")
+                    self.result.font_size = "20dp"
+
+            # Calculate if tank is NOT MDO but is HFO
+            else:
+                
+                try:
+                    self.result.font_size = "30dp"
+
+                    # If type of tank is not with sounding table,
+                    # but only gauging than inputed value is added
+                    # to total screen
+                    if db_editing.type_of_tank[0] == 1:
+                        self.result.text=str(self.sound_value.text)
+                        volume = self.result.text
+                        self.temp_dens_extraction()
+                        # Define below row for take into prev function use
+                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.result.text = str(self.sound_value.text) + str(" m3")
+
+                    else:
+                        self.result.font_size = "30dp"
+                        self.result.text = str(db_editing.volume_in_m3[0])
+                        self.temp_dens_extraction()
+
+                        # Define below row for take into prev function use
+                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
+                                
+                
+
+                    # Insert data to prev DB for prev values extarcting on start
+                    if len(total_list_hfo) >0 :
+                        print(total_list_hfo)
+                        print("\n")
+                        print(total_list_mdo)
+                        print("*************\n")
+                        for i  in (total_list_hfo):
+                            db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0], self.name_of_vessel_db)
+                            # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
+
+                except IndexError as e:
+                    # Printing on display the error and change the font-size
+                    self.result.text = str("Wrong sounding value!")
+                    self.result.font_size = "20dp"
+        except AttributeError:
+            self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
+            pass
         
     def my_value(self, object_property, value):  # <<<<<<<<<<< Value from Temp slider
         self.slider_value={}
