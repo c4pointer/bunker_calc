@@ -19,18 +19,19 @@ ScreenManager:
             right_action_items: [["menu", lambda x: app.choose_vessel(x)]]
 
             # right_action_items: [["menu", lambda x:app.screen2()]]
-
-            MDLabel:
-                id: right_action
-                halign: "left"
-                theme_text_color: "Custom"
-                text_color: "#4a4939"
-            MDLabel:
-                id: select_vessel
-                halign: "right"
-                theme_text_color: "Custom"
-                text_color: "#4a4939"
-            
+            MDBoxLayout:
+                orientation : "horizontal"
+                MDLabel:
+                    id: right_action
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                MDLabel:
+                    id: select_vessel
+                    halign: "right"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                
         # MDBoxLayout:
         #     orientation: "horizontal"
         #     # pos_hint: {"central_x": .5}
@@ -164,7 +165,6 @@ ScreenManager:
         theme_icon_color: "Secondary"
         md_bg_color: ("#465d5a")
         on_press: app.callback_Calc(*args)
-        disabled: 'True'
         # size_hint: None, None
     MDFloatingActionButton:
         id: close

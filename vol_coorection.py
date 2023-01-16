@@ -1,6 +1,10 @@
 import math
 
-
+"""
+Definition for calculating real quantity of fuel.
+It takes the volume temperature and density from 
+daatbase and inputed into main screen
+"""
 
 def vol_correction_factor_calc(conv_dens, volume_value, temp):
     try:
