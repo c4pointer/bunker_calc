@@ -144,7 +144,7 @@ class BunkerCalc(MDApp):
                     self.total_result_hfo.append(total_list_hfo[i])
 
             except KeyError as err:
-                pass
+               print("eror string 147")
         
 
 
@@ -161,7 +161,7 @@ class BunkerCalc(MDApp):
                     self.total_result_mdo.append(total_list_mdo[d])
 
             except KeyError as err:
-                pass
+                print("eror string 164")
         
         for i in self.total_result_mdo:
             self.sum_mdo += float(i[4])
@@ -248,6 +248,7 @@ class BunkerCalc(MDApp):
                 
             except Exception as e:
                 print(e)
+                print("eror string 251")
         
 
     def name_of_tank(self, vessel_db):
@@ -298,6 +299,7 @@ class BunkerCalc(MDApp):
         except AttributeError:
             self.root.get_screen('tab_screen').ids.tabs.add_widget(
                     Tab(title=f"Previous quantity: {prev_label_text}"))
+            print("eror string 302")
 
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -360,7 +362,8 @@ class BunkerCalc(MDApp):
             try:
                 volume = str(db_editing.volume_in_m3[0])
             except IndexError:
-                pass 
+                print("eror string 365")
+                pass
             # If tank is in MDO state than we make calcs for it and append to
             # "total_list_mdo" for displaing in Totoal result screnn
             if db_editing.state_of_tank[0] ==1:
@@ -400,7 +403,7 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
                     self.result.font_size = "20dp"
-
+                    print("eror string 406")
             # Calculate if tank is NOT MDO but is HFO
             else:
                 
@@ -443,9 +446,10 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
                     self.result.font_size = "20dp"
+                    print("eror string 449")
         except AttributeError:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            pass
+            print("eror string 488")
         
     def my_value(self, object_property, value):  # <<<<<<<<<<< Value from Temp slider
         self.slider_value={}
@@ -473,6 +477,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as e:
                         print(e)
+                        print("eror string 476")
                         
                 else:
                     self.dens_new.hint_text = "Density (example: 0.9588)"
@@ -482,6 +487,7 @@ class BunkerCalc(MDApp):
 
         except AttributeError as e:
             self.temperature = def_temp
+            print("eror string 490")
             if len(self.dens_new.text) == 0:
                 # If density is not inputed by user than we collect it from
                 # database
@@ -494,7 +500,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as e:
                         print(e)
-                        
+                        print("eror string 498")
                 else:
                     self.dens_new.hint_text = "Density (example: 0.9588)"
                     self.dens_new.text_color_normal = 1, 1, 0.8, 1
@@ -507,6 +513,7 @@ class BunkerCalc(MDApp):
             self.real_volume = vol_coorection.result
         except Exception as e:
             print(e)
+            print("eror string 511")
 
         return self.temperature, self.def_dens, self.real_volume
 
