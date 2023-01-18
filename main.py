@@ -14,6 +14,7 @@ import db_editing
 import db_reading
 import vol_coorection
 import drop_vessel_list
+import calculation
 
 import os
 import sqlite3
@@ -90,10 +91,13 @@ class BunkerCalc(MDApp):
         self.name_of_tank(vessel_db)
         self.mdo_tank_extract(vessel_db)
         self.add_tab(vessel_db)
+        
+
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
         self.root.get_screen("tab_screen").ids.select_vessel.text = "Select vessel"
         # self.root.get_screen("tab_screen").ids.calc.disabled = True
+
     def change_vessel(self, v ):
         f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
         for i in f:
@@ -101,8 +105,6 @@ class BunkerCalc(MDApp):
         self.name_of_tank(v)
         self.mdo_tank_extract(v)
         self.add_tab(v)
-
-        
 
 
     # def dropdown(self, x):
@@ -320,15 +322,20 @@ class BunkerCalc(MDApp):
         instance_tab.ids.sound_field.hint_text = "Sounding value (cm):"
         instance_tab.ids.sound_field.text_color_normal = 1, 1, 0.8, 1
         self.button_calc = instance_tab.ids.calc
-        if self.button_state > 0:
-            self.button_calc.disabled = False
-        else:
-            self.button_calc.disabled = True
+        
         self.sound_value = instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
         self.dens_new = instance_tab.ids.density_field
-        
+        if self.button_state > 0:
+            self.button_calc.disabled = False
+            self.root.get_screen("tab_screen").ids.select_vessel.text_color = 1, 1, 0.9, 1
+        else:
+            self.button_calc.disabled = True
+            
+            self.result.font_size = "30dp"
+            self.result.text = "Select Vessel first"
+            self.root.get_screen("tab_screen").ids.select_vessel.text_color ="#f43434"
         #if no any entries are inserted we show below text to user
         if len(total_list_mdo)==0 and len(total_list_hfo)==0:
             try:
@@ -340,17 +347,9 @@ class BunkerCalc(MDApp):
                 else:
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(
                         Tab(title=f"Previous quantity: {prev_label_text}"))
-            except:
-                pass
-            # try:
-            #     self.result.text = str("Previous quantity:\n")+\
-            #     str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0])+ \
-            #     str(" m3, at ") + str(db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1])+ str(" cm")
-            #     self.result.font_size = "24dp"
-            #     db_editing.type_sel(tab_text)
-
-            # except :
-            #     pass
+            except Exception as e:
+                print(str(e) + " error string 346")
+                
    
 
     def callback_Calc(self, *args):
@@ -377,14 +376,14 @@ class BunkerCalc(MDApp):
                         volume = self.result.text
                         self.temp_dens_extraction()
                         # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((x.real_volume), self.sound_value.text, x.temperature, x.def_dens, volume)
                         self.result.text = str(self.sound_value.text) + str(" m3")
 
                     else:
                         self.result.text = str(db_editing.volume_in_m3[0])
                         self.temp_dens_extraction()
                         # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = ((self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] =  ((x.real_volume), self.sound_value.text, x.temperature, x.def_dens, volume)
                         self.result.text = str(db_editing.volume_in_m3[0]) + str(" m3")
                                 
                 
@@ -451,7 +450,7 @@ class BunkerCalc(MDApp):
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
             print("eror string 488")
         
-    def my_value(self, object_property, value):  # <<<<<<<<<<< Value from Temp slider
+    def my_value(self, value):  # <<<<<<<<<<< Value from Temp slider
         self.slider_value={}
         self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]= str(int(round(value,0)))
 
