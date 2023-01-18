@@ -146,7 +146,7 @@ class BunkerCalc(MDApp):
                     self.total_result_hfo.append(total_list_hfo[i])
 
             except KeyError as err:
-                pass
+               print("eror string 147")
         
 
 
@@ -163,7 +163,7 @@ class BunkerCalc(MDApp):
                     self.total_result_mdo.append(total_list_mdo[d])
 
             except KeyError as err:
-                pass
+                print("eror string 164")
         
         for i in self.total_result_mdo:
             self.sum_mdo += float(i[4])
@@ -250,6 +250,7 @@ class BunkerCalc(MDApp):
                 
             except Exception as e:
                 print(e)
+                print("eror string 251")
         
 
     def name_of_tank(self, vessel_db):
@@ -300,6 +301,7 @@ class BunkerCalc(MDApp):
         except AttributeError:
             self.root.get_screen('tab_screen').ids.tabs.add_widget(
                     Tab(title=f"Previous quantity: {prev_label_text}"))
+            print("eror string 302")
 
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -362,7 +364,8 @@ class BunkerCalc(MDApp):
             try:
                 volume = str(db_editing.volume_in_m3[0])
             except IndexError:
-                pass 
+                print("eror string 365")
+                pass
             # If tank is in MDO state than we make calcs for it and append to
             # "total_list_mdo" for displaing in Totoal result screnn
             if db_editing.state_of_tank[0] ==1:
@@ -403,7 +406,7 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
                     self.result.font_size = "20dp"
-
+                    print("eror string 406")
             # Calculate if tank is NOT MDO but is HFO
             else:
                 
@@ -448,14 +451,90 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
                     self.result.font_size = "20dp"
+<<<<<<< HEAD
         except AttributeError as e:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
             print(e)
+=======
+                    print("eror string 449")
+        except AttributeError:
+            self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
+            print("eror string 488")
+>>>>>>> 2c6e1d633411e9da14f8ddd17156a5a8a2e7677d
         
     def my_value(self, object_property, value):  # <<<<<<<<<<< Value from Temp slider
         self.slider_value={}
         self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]= str(int(round(value,0)))
 
+<<<<<<< HEAD
+=======
+    def temp_dens_extraction(self):
+        try:
+
+            if len(self.slider_value) !=0 :
+                self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+            else:
+                self.temperature = def_temp
+
+            # Density selecting
+            if len(self.dens_new.text) == 0:
+                # If density is not inputed by user than we collect it from
+                # database
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
+
+            else:
+                # if is inputed than put that what user inputed
+                if float(self.dens_new.text) >= 1.1:
+                    try:
+                        self.dens_new.hint_text = "Wrong Density"
+                        self.dens_new.text_color_normal = "#ff2233"
+                    except Exception as e:
+                        print(e)
+                        print("eror string 476")
+                        
+                else:
+                    self.dens_new.hint_text = "Density (example: 0.9588)"
+                    self.dens_new.text_color_normal = 1, 1, 0.8, 1
+                    self.def_dens = self.dens_new.text
+            
+        except KeyError as e:
+            self.temperature = def_temp
+            print("eror string 488")
+            
+
+        except AttributeError as e:
+            self.temperature = def_temp
+            print("eror string 490")
+            if len(self.dens_new.text) == 0:
+                # If density is not inputed by user than we collect it from
+                # database
+                self.def_dens = db_editing.select_DefDens(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
+            else:
+                # if is inputed than put that what user inputed
+                if float(self.dens_new.text) >= 1.1:
+                    try:
+                        self.dens_new.hint_text = "Wrong Density"
+                        self.dens_new.text_color_normal = "#ff2233"
+                    except Exception as e:
+                        print(e)
+                        print("eror string 498")
+                else:
+                    self.dens_new.hint_text = "Density (example: 0.9588)"
+                    self.dens_new.text_color_normal = 1, 1, 0.8, 1
+                    self.def_dens = self.dens_new.text
+
+
+        try:
+            self.converted_density = ((float(self.def_dens)/2)*1000)*2       
+            vol_coorection.vol_correction_factor_calc(self.converted_density, self.result.text, self.temperature)
+            self.real_volume = vol_coorection.result
+        except Exception as e:
+            print(e)
+            print("eror string 511")
+
+        return self.temperature, self.def_dens, self.real_volume
+
+>>>>>>> 2c6e1d633411e9da14f8ddd17156a5a8a2e7677d
 
 
 if __name__ == "__main__":
