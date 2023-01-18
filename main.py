@@ -484,6 +484,10 @@ class BunkerCalc(MDApp):
                     self.dens_new.text_color_normal = 1, 1, 0.8, 1
                     self.def_dens = self.dens_new.text
             
+        except KeyError as e:
+            self.temperature = def_temp
+            print("eror string 488")
+            
 
         except AttributeError as e:
             self.temperature = def_temp
