@@ -203,9 +203,18 @@ class BunkerCalc(MDApp):
         """
         self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
         # THREAD FOR selecting and switching vessel DB
-        self.start_thread(self.name_of_vessel_db)
+        print(f"{vessel} == {str(self.the_DB[vessel])} ")
+        if self.j == 0:
+            if self.name_of_vessel_db == str(self.the_DB[vessel]):
+                pass
+            else:
+                self.start_thread(self.name_of_vessel_db)
+                self.j += 1
+                
         if len(self.the_DB) != 0:
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
+            self.menu.dismiss()
+        
 
         self.root.get_screen("total_screen").ids.total_menu.title = str(vessel)
 
@@ -219,7 +228,7 @@ class BunkerCalc(MDApp):
         try:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
-            j = 0
+            self.j = 0
             for v in iter(vessels):
                 self.the_DB[v]=vessels[j]
         
@@ -231,12 +240,12 @@ class BunkerCalc(MDApp):
                 }) for i in range(len(vessels))
                 ]
 
-            menu = MDDropdownMenu(
+            self.menu = MDDropdownMenu(
                 items= menu_items,
                 width_mult=4
             )
-            menu.caller = x
-            menu.open()
+            self.menu.caller = x
+            self.menu.open()
             
         except ValueError:
             print("Error on choose vessel")
@@ -448,7 +457,7 @@ class BunkerCalc(MDApp):
                     self.result.font_size = "20dp"
         except AttributeError as e:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            print(str(e) + str("error string 451"))
+            print(str("error string 451"))
         
     def my_value(self, *args):  # <<<<<<<<<<< Value from Temp slider
         try:
@@ -490,7 +499,7 @@ class BunkerCalc(MDApp):
 
             except AttributeError as e:
                 self.temperature = def_temp
-                print("eror string 490" + str(self.temperature))
+                print("eror string 490 ")
                 if len(self.dens_new.text) == 0:
                     # If density is not inputed by user than we collect it from
                     # database
