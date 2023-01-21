@@ -11,6 +11,7 @@ bunkercalc.apk
 test.py
 .idea
 venv
-bunker_calc_prev.db
+viking_ocean_prev.db
+viking_sea_prev.db
 kivy
 
