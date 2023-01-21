@@ -190,9 +190,9 @@ class BunkerCalc(MDApp):
             # Display total results for MDO and HFO
             self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
             self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                + str(f"\n {round(self.sum_hfo_tons)} MT HFO"+f"\n___________________")
+                + str(f"\n {round((self.sum_hfo_tons),2)} MT HFO"+f"\n___________________")
             self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                + str(f"\n {round(self.sum_mdo_tons)} MT MDO")
+                + str(f"\n {round((self.sum_mdo_tons),2)} MT MDO")
         else:
             self.root.current = "tab_screen"
 
@@ -350,8 +350,8 @@ class BunkerCalc(MDApp):
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(
                         Tab(title=f"Previous quantity: {prev_label_text}"))
             except Exception as e:
-                print(str(e) + " error string 346")
-                
+                # print(str(e) + " error string 346")
+                pass
    
 
     def callback_Calc(self, *args):
@@ -448,14 +448,14 @@ class BunkerCalc(MDApp):
                     self.result.font_size = "20dp"
         except AttributeError as e:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            print(e)
+            print(str(e) + str("error string 451"))
         
     def my_value(self, *args):  # <<<<<<<<<<< Value from Temp slider
         try:
             self.slider_value={}
-            self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')]= str(float(args[1]))
+            self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(float((args[1])),0)
         except Exception as e:
-            print(e)
+            print(e +str("error string 458"))
         return self.slider_value
 
     def temp_dens_extraction(self):
@@ -508,7 +508,26 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Density (example: 0.9588)"
                         self.dens_new.text_color_normal = 1, 1, 0.8, 1
                         self.def_dens = self.dens_new.text
-
+            except KeyError:
+                self.temperature = def_temp
+                print("eror string 513" )
+                if len(self.dens_new.text) == 0:
+                    # If density is not inputed by user than we collect it from
+                    # database
+                    self.def_dens = db_editing.select_DefDens(str(super.tank_name.text.removesuffix('mdo')).strip(' '), super.name_of_vessel_db)
+                else:
+                    # if is inputed than put that what user inputed
+                    if float(self.dens_new.text) >= 1.1:
+                        try:
+                            self.dens_new.hint_text = "Wrong Density"
+                            self.dens_new.text_color_normal = "#ff2233"
+                        except Exception as e:
+                            print(e)
+                            print("eror string 526")
+                    else:
+                        self.dens_new.hint_text = "Density (example: 0.9588)"
+                        self.dens_new.text_color_normal = 1, 1, 0.8, 1
+                        self.def_dens = self.dens_new.text
 
             try:
                 self.converted_density = ((float(self.def_dens)/2)*1000)*2       
@@ -516,7 +535,7 @@ class BunkerCalc(MDApp):
                 self.real_volume = vol_coorection.result
             except Exception as e:
                 print(e)
-                print("eror string 511")
+                print("eror string 538")
 
             return self.temperature, self.def_dens, self.real_volume
 
