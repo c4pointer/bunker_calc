@@ -345,6 +345,8 @@ class BunkerCalc(MDApp):
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
         self.dens_new = instance_tab.ids.density_field
+        self.result_mt = instance_tab.ids.label_mt
+        self.result_mt.font_size = "20dp"
         if self.button_state > 0:
             self.button_calc.disabled = False
             self.root.get_screen("tab_screen").ids.select_vessel.text_color = 1, 1, 0.9, 1
@@ -555,6 +557,9 @@ class BunkerCalc(MDApp):
                 print("eror string 538")
             vol_coorection.vol_correction_factor_calc(self.converted_density, self.result.text, int(self.temperature))
             self.real_volume = vol_coorection.result
+            
+            self.result_mt.text =str(self.real_volume) + f" mt"
+            
             return self.temperature, self.def_dens, self.real_volume
 
 
