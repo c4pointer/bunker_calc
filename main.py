@@ -91,7 +91,8 @@ class BunkerCalc(MDApp):
         self.name_of_tank(vessel_db)
         self.mdo_tank_extract(vessel_db)
         self.add_tab(vessel_db)
-        
+        self.slider_value={}
+        self.j = 0
 
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
@@ -203,14 +204,20 @@ class BunkerCalc(MDApp):
         """
         self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
         # THREAD FOR selecting and switching vessel DB
-        print(f"{vessel} == {str(self.the_DB[vessel])} ")
-        if self.j == 0:
-            if self.name_of_vessel_db == str(self.the_DB[vessel]):
-                pass
-            else:
-                self.start_thread(self.name_of_vessel_db)
-                self.j += 1
+        # print(f"{vessel} == {str(self.the_DB[vessel])} ")
+        # if self.j == 0:
+        #     self.start_thread(self.name_of_vessel_db)
+        #     self.j += 1
+        
+        # else:
+        #     if self.name_of_vessel_db == str(self.the_DB[vessel]):
+        #         print("pass block")
                 
+        #     else:
+        #         self.start_thread(self.name_of_vessel_db)
+        #         self.j += 1
+        #         print("here")
+        self.start_thread(self.name_of_vessel_db)
         if len(self.the_DB) != 0:
             self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
             self.menu.dismiss()
@@ -228,9 +235,9 @@ class BunkerCalc(MDApp):
         try:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
-            self.j = 0
+            
             for v in iter(vessels):
-                self.the_DB[v]=vessels[j]
+                self.the_DB[v]=vessels[0]
         
             menu_items= [(
                 {
@@ -379,7 +386,6 @@ class BunkerCalc(MDApp):
             if db_editing.state_of_tank[0] ==1:
 
                 try:
-                    
                     self.result.font_size = "30dp"
                     if db_editing.type_of_tank[0] == 1:
                         self.result.text=str(self.sound_value.text)
@@ -461,20 +467,23 @@ class BunkerCalc(MDApp):
         
     def my_value(self, *args):  # <<<<<<<<<<< Value from Temp slider
         try:
-            self.slider_value={}
-            self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(float((args[1])),0)
+            # self.slider_value={}
+            self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])),0)
         except Exception as e:
-            print(e +str("error string 458"))
+            print(str(e) +str("error string 458"))
         return self.slider_value
 
     def temp_dens_extraction(self):
             try:
-
-                if len(self.slider_value) !=0 :
-                    self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
-                else:
+                try:
+                    if len(self.slider_value) !=0 :
+                        self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
+                    else:
+                        self.temperature = def_temp
+                        print('else')
+                except Exception as e:
                     self.temperature = def_temp
-
+                    print(str(e) +str(" string 486"))
                 # Density selecting
                 if len(self.dens_new.text) == 0:
                     # If density is not inputed by user than we collect it from
@@ -499,7 +508,7 @@ class BunkerCalc(MDApp):
 
             except AttributeError as e:
                 self.temperature = def_temp
-                print("eror string 490 ")
+                print("eror string 490 " + str(e))
                 if len(self.dens_new.text) == 0:
                     # If density is not inputed by user than we collect it from
                     # database
@@ -517,9 +526,9 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Density (example: 0.9588)"
                         self.dens_new.text_color_normal = 1, 1, 0.8, 1
                         self.def_dens = self.dens_new.text
-            except KeyError:
+            except KeyError as e:
                 self.temperature = def_temp
-                print("eror string 513" )
+                print("eror string 513 Keyerror=" +str(e) )
                 if len(self.dens_new.text) == 0:
                     # If density is not inputed by user than we collect it from
                     # database
@@ -540,12 +549,12 @@ class BunkerCalc(MDApp):
 
             try:
                 self.converted_density = ((float(self.def_dens)/2)*1000)*2       
-                vol_coorection.vol_correction_factor_calc(self.converted_density, self.result.text, self.temperature)
-                self.real_volume = vol_coorection.result
+                
             except Exception as e:
                 print(e)
                 print("eror string 538")
-
+            vol_coorection.vol_correction_factor_calc(self.converted_density, self.result.text, int(self.temperature))
+            self.real_volume = vol_coorection.result
             return self.temperature, self.def_dens, self.real_volume
 
 

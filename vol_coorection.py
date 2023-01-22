@@ -61,7 +61,8 @@ def vol_correction_factor_calc(conv_dens, volume_value, temp):
                                 (-d*int((int(temp)*4+0.5)/4-15)*(1+0.8*float(d)*int((int(temp)*4+0.5)/4-15)))), 4
                                 )
 
-                    except ValueError:
+                    except ValueError as e:
+                        print(e)
 
                         # self.show_error=showinfo(
                         #     "Error", message=str(
@@ -79,7 +80,8 @@ def vol_correction_factor_calc(conv_dens, volume_value, temp):
                     #         "Error", message=str(
                     #         "Температура слишком низкая или слишком высокая \n"))
 
-            except ValueError:
+            except ValueError as e:
+                print(str(e) + str(84))
 
                 temp=15
 

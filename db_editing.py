@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/ucheck_same_thread=Falsesr/bin/python3
 # -*- coding: utf-8 -*-
 # created by neo
 # Version-1.0
@@ -13,7 +13,7 @@ import sqlite3
 # except sqlite3.OperationalError as e:
 #     name_off_app = "BunkerCalc"
 #     conn = sqlite3.connect(
-#         (file_location_detect+'/bunker_calc.db'), check_same_thread=False)
+#         (file_location_detect+'/bunker_calc.db'), )
 conn = sqlite3.connect("viking_ocean.db")
 cur = conn.cursor()
 

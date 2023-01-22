@@ -50,14 +50,14 @@ ScreenManager:
 #            on_press: root.manager.current= "total_screen"
             
         # Will always be at the bottom of the screen.
-    MDBottomAppBar:
-        MDTopAppBar:
-            id: bottom_bar
-            title: "by Oleg Zubak"
-            icon: "fuel"
-            type: "bottom"
-            left_action_items: [["alpha-c-box", lambda x: x]]
-            mode: "center"
+        MDBottomAppBar:
+            MDTopAppBar:
+                id: bottom_bar
+                title: "by Oleg Zubak"
+                icon: "fuel"
+                type: "bottom"
+                left_action_items: [["alpha-c-box", lambda x: x]]
+                mode: "center"
         
 <TotalScreen>:
     name:'total_screen'
@@ -201,7 +201,7 @@ ScreenManager:
 
         MDLabel:
             id: slider_lbl
-            text: "Temp:\n"+str(round(float(temp_slider.value),0))
+            text: "Temp:\n"+str(round(int(float(temp_slider.value)),0))
             pos_hint: {"center_x":.05,"center_y": .4}
             halign: "right"
             # size_hint: .2, .2
