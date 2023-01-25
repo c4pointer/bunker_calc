@@ -2,6 +2,7 @@ ScreenManager:
     id: manag
     TabScreen:
     TotalScreen:
+    AdminScreen:
 
 <TabScreen>:
     id: tab_screen
@@ -50,15 +51,17 @@ ScreenManager:
 #            on_press: root.manager.current= "total_screen"
             
         # Will always be at the bottom of the screen.
+        # MDFloatLayout:
         MDBottomAppBar:
             MDTopAppBar:
                 id: bottom_bar
                 title: "by Oleg Zubak"
-                halign : "center"
+                halign: "center"
                 icon: "fuel"
                 type: "bottom"
+                right_action_items: [["alpha-c-box",  lambda x:app.admin_panel()]]
                 left_action_items: [["alpha-c-box", lambda x: x]]
-                mode : "end"
+                # mode: "end"
         
 <TotalScreen>:
     name:'total_screen'
@@ -102,25 +105,17 @@ ScreenManager:
             md_bg_color: .3,.5,.4,1
             pos_hint: {'center_x': 0.5, 'center_y': 0.3}
             on_press: root.manager.current= "tab_screen"
-        MDBottomAppBar:
-            MDTopAppBar:
-                title: "by Oleg Zubak"
-                icon: "fuel"
-                type: "bottom"
-                left_action_items: [["alpha-c-box", lambda x: x]]
-                mode: "end"
+        # MDBottomAppBar:
+        #     MDTopAppBar:
+        #         title: "by Oleg Zubak"
+        #         icon: "fuel"
+        #         type: "bottom"
+        #         left_action_items: [["alpha-c-box", lambda x: x]]
+        #         mode: "end"
 
 
 <Tab>
 
- 
-    # MDBoxLayout:
-    #     orientation: "vertical"
-    #     size_hint: .7, 1
-    #     pos_hint: {"center_x": .4, "y":.15}
-        # size: 0.7, 1
-        # adaptive_height: True
-        # md_bg_color:  "lightblue"  #app.theme_cls.primary_color
     MDTextField:
         id: density_field
         helper_text: "Density (example: 0.9588)"
@@ -132,11 +127,7 @@ ScreenManager:
         icon_left_color: app.theme_cls.primary_color
         pos_hint: {'center_x': 0.5, 'center_y': 0.9}
         size_hint: .5, None
-        #size: 300,1
-        # width: 200
-        # on_text_validate : app.callback_Calc(*args)
-    # MDBoxLayout:
-    #         orientation: "vertical"
+
     MDLabel:
         id: label
         halign: "center"
@@ -182,28 +173,11 @@ ScreenManager:
         md_bg_color: ("#f56c5a")
         on_press: app.stop()
         # size_hint: None, None
-    # MDFlatButton:
-    #     id: calc
-    #     text: 'Calculate'
-    #     pos_hint: {'center_x': 0.5, 'center_y': 0.395}
-    #     md_bg_color: ("#465d5a")
-    #     on_press: app.callback_Calc(*args)
 
-    # Close Button
-
-    
-
-        #MDFlatButton:
-            #id: close
-            #text: 'Close'
-            #pos_hint: {'center_x': 0.5, 'center_y': 0.285}
-            #md_bg_color: ("#f00c5a")
-            #on_press: app.stop()
     MDBoxLayout:
         pos_hint: { "x":.7 ,"center_y": .5}
         size_hint: .3, .85
         # size: 0.3, 1
-        
         orientation: "horizontal"
         # md_bg_color:  "green"  #app.theme_cls.primary_color
 
@@ -226,3 +200,58 @@ ScreenManager:
             thumb_color_inactive: "red"
             pos_hint: { "center_x": .2, "center_y": .55}
             size_hint_y: .8
+
+
+<AdminScreen>:
+    id: admin_screen
+    name: 'admin_screen'
+    MDBoxLayout:
+        orientation: "vertical"
+        MDTopAppBar:
+            id: top_menu
+            elevation:4
+            pos_hint: {"top": 1}
+            # anchor_title: "center"
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items: [["calculator-variant", lambda x:app.screen2()]]
+            right_action_items: [["ship-wheel", lambda x: app.choose_vessel(x)]]
+
+            # right_action_items: [["menu", lambda x:app.screen2()]]
+            MDBoxLayout:
+                orientation : "horizontal"
+                MDLabel:
+                    id: right_action
+                    halign: "left"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                MDLabel:
+                    id: select_vessel
+                    halign: "right"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                
+        # MDBoxLayout:
+        #     orientation: "horizontal"
+        #     # pos_hint: {"central_x": .5}
+
+        #     # size: 1, 1
+        #     # md_bg_color: app.theme_cls.primary_color
+
+        MDFlatButton:
+            id : btn_tab
+            text: "Tabs"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+            on_press: root.manager.current= "total_screen"
+            
+        # Will always be at the bottom of the screen.
+        # MDFloatLayout:
+        MDBottomAppBar:
+            MDTopAppBar:
+                id: bottom_bar
+                title: "by Oleg Zubak"
+                halign: "center"
+                icon: "fuel"
+                type: "bottom"
+                right_action_items: [["alpha-c-box",  lambda x:app.admin_panel()]]
+                mode: "end"

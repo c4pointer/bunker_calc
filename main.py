@@ -66,14 +66,16 @@ class TabScreen(Screen):
 class TotalScreen(Screen):
     pass
 
+class AdminScreen(Screen):
+    pass
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
 
-sm = ScreenManager()
-sm.add_widget(TabScreen(name='tab_screen'))
-sm.add_widget(TotalScreen(name='total_screen'))
+# sm = ScreenManager()
+# sm.add_widget(TabScreen(name='tab_screen'))
+# sm.add_widget(TotalScreen(name='total_screen'))
 
 
 class BunkerCalc(MDApp):
@@ -85,6 +87,7 @@ class BunkerCalc(MDApp):
         self.theme_cls.theme_style = "Dark"
         
     def on_start(self):
+        # Dict for store here all vessel sounding table data base
         self.the_DB = {}
         # Calculation button state is Disabled
         self.button_state = 0
@@ -319,7 +322,7 @@ class BunkerCalc(MDApp):
         except AttributeError:
             self.root.get_screen('tab_screen').ids.tabs.add_widget(
                     Tab(title=f"Previous quantity: {prev_label_text}"))
-            print("eror string 302")
+            # print("eror string 302")
 
         # afetr add text to label of first tab we delete here the last widget that is non correct 
         self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -561,6 +564,9 @@ class BunkerCalc(MDApp):
             self.result_mt.text =str(self.real_volume) + f" mt"
             
             return self.temperature, self.def_dens, self.real_volume
+    
+    def admin_panel(self):
+        self.root.current = "admin_screen"
 
 
 if __name__ == "__main__":
