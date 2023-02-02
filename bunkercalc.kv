@@ -202,7 +202,7 @@ ScreenManager:
             size_hint_y: .8
 
 
-<AdminScreen>:
+<AdminScreen@Example>:
     id: admin_screen
     name: 'admin_screen'
     MDBoxLayout:
@@ -231,18 +231,12 @@ ScreenManager:
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
                 
-        # MDBoxLayout:
-        #     orientation: "horizontal"
-        #     # pos_hint: {"central_x": .5}
-
-        #     # size: 1, 1
-        #     # md_bg_color: app.theme_cls.primary_color
 
         MDFlatButton:
             id : btn_tab
             text: "Tabs"
             pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-            on_press: root.manager.current= "total_screen"
+            on_press: root.manager.current= "tab_screen"
             
         # Will always be at the bottom of the screen.
         # MDFloatLayout:

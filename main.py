@@ -6,6 +6,8 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.datatables import MDDataTable
+from kivy.metrics import dp
 # from kivymd.uix.label import MDLabel
 # from collections import ChainMap
 
@@ -567,6 +569,23 @@ class BunkerCalc(MDApp):
     
     def admin_panel(self):
         self.root.current = "admin_screen"
+        self.table = MDDataTable(
+                size_hint=(0.7, 0.6),
+                use_pagination=True,
+                check=True,
+                # name column, width column, sorting function column(optional)
+                column_data=[
+                    ("No.", dp(30)),
+                    ("Status", dp(30)),
+                    ("Signal Name", dp(60)),
+                    ("Severity", dp(30)),
+                    ("Stage", dp(30)),
+                    ("Schedule", dp(30),
+                     lambda *args: print("Sorted using Schedule")),
+                    ("Team Lead", dp(30)),
+                ],
+            )
+
 
 
 if __name__ == "__main__":
