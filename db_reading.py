@@ -3,7 +3,7 @@
 # created by neo
 # Version-1.0
 
-# import csv
+import csv
 import sqlite3
 
 # Create empty dict for placing here data from previous DB for Showing on start App
@@ -185,45 +185,43 @@ def sort_tanks_mdo(v):
 #     return all_vol, all_dens, all_temp, all_state, all_type
 
 
-# def import_data(tk):
-#     file_choose = askopenfilenames(
-#         title="Import to tank" + str(tk), initialdir=os.sep+"home/neo/Documents/myapp/"
-#     )
-#     file_import = str(file_choose).strip('()\',')
+def import_data(file, db):
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
 
-#     with open(file_import, 'r') as fin:  # `with` statement available in 2.5+
-#         # csv.DictReader uses first line in file for column headings by default
-#         dr = csv.DictReader(fin)  # comma is default delimiter
-#         to_db = [(i['sound_id'], i['volume']) for i in dr]
-#         try:
-#             cur.executemany("INSERT INTO '"+tk +
-#                             "' (sound_id, volume) VALUES (?, ?);", to_db)
-#             conn.commit()
-#         except sqlite3.IntegrityError as e:
-#             show_error = showerror("Error with input data",
-#                                    message="Allready have data. Confirm to Delete\n" +
-#                                    str(e)
-#                                    )
-#             cur.execute("DROP TABLE '%s';" % (tk))
-#             show_info = askokcancel(
-#                 "Create new tank ",
-#                 message=str("Create new tank with name:\n" +
-#                             str(tk)
-#                             )
-#             )
-#             if show_info == True:
-#                 cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
-#                     temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
-#                 conn.commit()
-#                 show_info = askokcancel(
-#                     "Import again",
-#                     message=str("Start to import data to tank:\n" +
-#                                 str(tk) + "again?"
-#                                 )
-#                 )
-#                 if show_info == True:
-#                     import_data(tk)
-#                 else:
-#                     pass
-#             else:
-#                 pass
+    with open(file, 'r') as fin:  # `with` statement available in 2.5+
+        # csv.DictReader uses first line in file for column headings by default
+        dr = csv.DictReader(fin)  # comma is default delimiter
+        to_db = [(i['sound_id'], i['volume']) for i in dr]
+        try:
+            cur.executemany("INSERT INTO '"+tk +
+                            "' (sound_id, volume) VALUES (?, ?);", to_db)
+            conn.commit()
+        except sqlite3.IntegrityError as e:
+            show_error = showerror("Error with input data",
+                                   message="Allready have data. Confirm to Delete\n" +
+                                   str(e)
+                                   )
+            cur.execute("DROP TABLE '%s';" % (tk))
+            show_info = askokcancel(
+                "Create new tank ",
+                message=str("Create new tank with name:\n" +
+                            str(tk)
+                            )
+            )
+            if show_info == True:
+                cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
+                    temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
+                conn.commit()
+                show_info = askokcancel(
+                    "Import again",
+                    message=str("Start to import data to tank:\n" +
+                                str(tk) + "again?"
+                                )
+                )
+                if show_info == True:
+                    import_data(tk)
+                else:
+                    pass
+            else:
+                pass

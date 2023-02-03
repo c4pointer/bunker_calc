@@ -646,7 +646,9 @@ class BunkerCalc(MDApp):
         print(path)
         self.selected_tank_import = path
         self.exit_manager()
+
         toast(path)
+        db_reading.import_data(self.selected_tank_import, )
 
 if __name__ == "__main__":
     try:
