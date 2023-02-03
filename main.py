@@ -7,6 +7,8 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.filemanager import MDFileManager
+from kivymd.toast import toast
 from kivy.metrics import dp
 # from kivymd.uix.label import MDLabel
 # from collections import ChainMap
@@ -16,7 +18,7 @@ import db_editing
 import db_reading
 import vol_coorection
 import drop_vessel_list
-import calculation
+import create_vessel
 
 import os
 import sqlite3
@@ -70,15 +72,21 @@ class TotalScreen(Screen):
 
 class AdminScreen(Screen):
     pass
+class NewVesselScreen(Screen):
+    pass
+class AddTankScreen(Screen):
+    pass
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
 
-# sm = ScreenManager()
-# sm.add_widget(TabScreen(name='tab_screen'))
-# sm.add_widget(TotalScreen(name='total_screen'))
-
+sm = ScreenManager()
+sm.add_widget(TabScreen(name='tab_screen'))
+sm.add_widget(TotalScreen(name='total_screen'))
+sm.add_widget(AdminScreen(name='admin_screen'))
+sm.add_widget(NewVesselScreen(name='new_vessel_screen'))
+sm.add_widget(AddTankScreen(name='add_tank_screen'))
 
 class BunkerCalc(MDApp):
 
@@ -88,6 +96,8 @@ class BunkerCalc(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.theme_style = "Dark"
         
+
+
     def on_start(self):
         # Dict for store here all vessel sounding table data base
         self.the_DB = {}
@@ -105,13 +115,23 @@ class BunkerCalc(MDApp):
         # self.root.get_screen("tab_screen").ids.calc.disabled = True
 
     def change_vessel(self, v ):
-        f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
-        for i in f:
-            self.root.get_screen("tab_screen").ids.tabs.remove_widget(i)
-        self.name_of_tank(v)
-        self.mdo_tank_extract(v)
-        self.add_tab(v)
-
+        try:
+            f =self.root.get_screen('tab_screen').ids.tabs.get_tab_list()
+            for i in f:
+                self.root.get_screen("tab_screen").ids.tabs.remove_widget(i)
+            try:
+                self.name_of_tank(v)
+                
+                self.mdo_tank_extract(v)
+                
+                self.add_tab(v)
+               
+            except Exception as e:
+                print(str(e) + str(" error 119"))
+                
+           
+        except Exception as e:
+            print(str(e)+ str("  error 123"))
 
     # def dropdown(self, x):
     #     """
@@ -206,31 +226,34 @@ class BunkerCalc(MDApp):
     def vessel_name(self,vessel):
         """
         Set selected vessel as title of App
+    
         """
-        self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
-        # THREAD FOR selecting and switching vessel DB
-        # print(f"{vessel} == {str(self.the_DB[vessel])} ")
-        # if self.j == 0:
-        #     self.start_thread(self.name_of_vessel_db)
-        #     self.j += 1
-        
-        # else:
-        #     if self.name_of_vessel_db == str(self.the_DB[vessel]):
-        #         print("pass block")
-                
-        #     else:
-        #         self.start_thread(self.name_of_vessel_db)
-        #         self.j += 1
-        #         print("here")
-        self.start_thread(self.name_of_vessel_db)
-        if len(self.the_DB) != 0:
-            self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
-            self.menu.dismiss()
-        
+        try:
+            self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
+            # THREAD FOR selecting and switching vessel DB
+            # print(f"{vessel} == {str(self.the_DB[vessel])} ")
+            # if self.j == 0:
+            #     self.start_thread(self.name_of_vessel_db)
+            #     self.j += 1
+            
+            # else:
+            #     if self.name_of_vessel_db == str(self.the_DB[vessel]):
+            #         print("pass block")
+                    
+            #     else:
+            #         self.start_thread(self.name_of_vessel_db)
+            #         self.j += 1
+            #         print("here")
+            self.start_thread(self.name_of_vessel_db)
+            if len(self.the_DB) != 0:
+                self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
+                self.menu.dismiss()
+            
 
-        self.root.get_screen("total_screen").ids.total_menu.title = str(vessel)
-
-        
+            self.root.get_screen("total_screen").ids.total_menu.title = str(vessel)
+        except Exception as e:
+            print(str(e) + str("  error 239"))
+            # self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
 
 
     def choose_vessel(self,x):
@@ -267,6 +290,7 @@ class BunkerCalc(MDApp):
         self.button_state += 1
         self.x_thread = threading.Thread(target=self.change_vessel(vessel), daemon=True)
         self.x_thread.start()
+        
         if not self.x_thread.is_alive() == True:
             try:
                 self.button_state += 1
@@ -278,12 +302,16 @@ class BunkerCalc(MDApp):
 
     def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
-        self.names = []
-        db_reading.extract_names(vessel_db)
+        try:
+            self.names = []
+            db_reading.extract_names(vessel_db)
 
-        self.tank_name = db_reading.name_of_tank
-        for i in self.tank_name:
-            self.names.append(i[0])
+            self.tank_name = db_reading.name_of_tank
+            for i in self.tank_name:
+                self.names.append(i[0])
+        except Exception as e:
+            print(str(e) + str(" error 303"))
+            self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
 
 
     def mdo_tank_extract(self, v):
@@ -296,41 +324,43 @@ class BunkerCalc(MDApp):
 
 
     def add_tab(self,vessel):
-        
-        names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
-        # print(names_for_do)
-        self.tab_iterator = 0
-        for i in (self.names):
-            db_reading.extract_prev(i,vessel)
-            
-            if not i in names_for_do:
-            
-                self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
-            for do in names_for_do :
-                if do == i:
-                    self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
         try:
-            if self.text_vessel==True:
-                print(self.text_vessel)
+            names_for_do = list(set(self.mdo_names).intersection(set(self.names)))
+            # print(names_for_do)
+            self.tab_iterator = 0
+            for i in (self.names):
+                db_reading.extract_prev(i,vessel)
+                
+                if not i in names_for_do:
+                
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{i}"))
+                for do in names_for_do :
+                    if do == i:
+                        self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
+        
+            try:
+                if self.text_vessel==True:
+                    print(self.text_vessel)
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                        Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
+                        {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
+                    )
+
+                else:
+                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
+                        Tab(title=f"Previous quantity: {prev_label_text}"))
+
+            except AttributeError:
                 self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                    Tab(title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
-                    {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
+                        Tab(title=f"Previous quantity: {prev_label_text}"))
+                # print("eror string 302")
+
+            # afetr add text to label of first tab we delete here the last widget that is non correct 
+            self.root.get_screen('tab_screen').ids.tabs.remove_widget(
+                self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
                 )
-
-            else:
-                self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                    Tab(title=f"Previous quantity: {prev_label_text}"))
-
-        except AttributeError:
-            self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                    Tab(title=f"Previous quantity: {prev_label_text}"))
-            # print("eror string 302")
-
-        # afetr add text to label of first tab we delete here the last widget that is non correct 
-        self.root.get_screen('tab_screen').ids.tabs.remove_widget(
-            self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
-            )
-
+        except Exception as e:
+            print(str(e)+ str("  error 321"))
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -569,24 +599,57 @@ class BunkerCalc(MDApp):
     
     def admin_panel(self):
         self.root.current = "admin_screen"
-        self.table = MDDataTable(
-                size_hint=(0.7, 0.6),
-                use_pagination=True,
-                check=True,
-                # name column, width column, sorting function column(optional)
-                column_data=[
-                    ("No.", dp(30)),
-                    ("Status", dp(30)),
-                    ("Signal Name", dp(60)),
-                    ("Severity", dp(30)),
-                    ("Stage", dp(30)),
-                    ("Schedule", dp(30),
-                     lambda *args: print("Sorted using Schedule")),
-                    ("Team Lead", dp(30)),
-                ],
-            )
+        # self.table = MDDataTable(
+        #         size_hint=(0.7, 0.6),
+        #         use_pagination=True,
+        #         check=True,
+        #         # name column, width column, sorting function column(optional)
+        #         column_data=[
+        #             ("No.", dp(30)),
+        #             ("Status", dp(30)),
+        #             ("Signal Name", dp(60)),
+        #             ("Severity", dp(30)),
+        #             ("Stage", dp(30)),
+        #             ("Schedule", dp(30),
+        #              lambda *args: print("Sorted using Schedule")),
+        #             ("Team Lead", dp(30)),
+        #         ],
+        #     )
+    def create_vessel(self, name):
+        # Create new Vessel data base
+        try:
+            create_vessel.create_connection(name)
+        except Exception as e:
+            print(str(e)+str("593"))
 
+    def file_manager_open(self):
+        self.manager_open = False
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager, select_path=self.select_path
+        )
+        self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
+        self.manager_open = True
 
+    def exit_manager(self, *args):
+        '''Called when the user reaches the root of the directory tree.'''
+
+        self.manager_open = False
+        self.file_manager.close()
+
+    def select_path(self, path: str):
+        '''
+        It will be called when you click on the file name
+        or the catalog selection button.
+
+        :param path: path to the selected directory or file;
+        '''
+        print(path)
+        self.selected_tank_import = path
+        self.exit_manager()
+        toast(path)
 
 if __name__ == "__main__":
-    BunkerCalc().run()
+    try:
+        BunkerCalc().run()
+    except Exception as e:
+        print(str(e) +str(" error 625"))
