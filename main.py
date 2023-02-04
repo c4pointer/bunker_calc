@@ -113,7 +113,7 @@ class BunkerCalc(MDApp):
         self.j = 0
 
         # Label for toggle screens between the total screen and Tabs
-        self.root.get_screen("tab_screen").ids.right_action.text = "Total  result"
+        self.root.get_screen("tab_screen").ids.right_action.text = "Sounding Screen"
         self.root.get_screen("tab_screen").ids.select_vessel.text = "Select vessel"
         # self.root.get_screen("tab_screen").ids.calc.disabled = True
 
@@ -214,14 +214,18 @@ class BunkerCalc(MDApp):
         total figure
         """
         if self.root.current != "total_screen":
-            self.root.current = "total_screen"
-            self.calculate_total()
-            # Display total results for MDO and HFO
-            self.root.get_screen("total_screen").ids.right_action.text = "Tank sounding"
-            self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                + str(f"\n {round((self.sum_hfo_tons),2)} MT HFO"+f"\n___________________")
-            self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                + str(f"\n {round((self.sum_mdo_tons),2)} MT MDO")
+            if self.root.current == "tab_screen":
+                self.root.current = "total_screen"
+                self.calculate_total()
+                # Display total results for MDO and HFO
+                self.root.get_screen("total_screen").ids.right_action.text = "Total Screen"
+                self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
+                    + str(f"\n {round((self.sum_hfo_tons),2)} MT HFO"+f"\n___________________")
+                self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
+                    + str(f"\n {round((self.sum_mdo_tons),2)} MT MDO")
+            else:
+                self.root.current = "tab_screen"
+
         else:
             self.root.current = "tab_screen"
 
@@ -628,13 +632,18 @@ class BunkerCalc(MDApp):
             print(str(e)+str("593"))
 
     def file_manager_open(self):
-        self.manager_open = False
-        self.file_manager = MDFileManager(
-            exit_manager=self.exit_manager, select_path=self.select_path,
-            ext = ['.csv', ], selection = []
-        )
-        self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
-        self.manager_open = True
+        # print(self.tk)
+        if len(self.tk) != 0:
+            self.manager_open = False
+            self.file_manager = MDFileManager(
+                exit_manager=self.exit_manager, select_path=self.select_path,
+                ext = ['.csv', ], selection = []
+            )
+            self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
+            self.manager_open = True
+        else:
+            self.tk=self.root.get_screen("add_tank_screen").ids.new_tank.text = "Enter name of Tank"
+            pass
 
     def exit_manager(self, *args):
         '''Called when the user reaches the root of the directory tree.'''
@@ -644,7 +653,7 @@ class BunkerCalc(MDApp):
 
     def select_path(self, path: str, ):
         '''
-        It will be called when you click on the file name
+        It will be called when you click on the file nameF
         or the catalog selection button.
 
         :param path: path to the selected directory or file;
@@ -652,11 +661,11 @@ class BunkerCalc(MDApp):
 
         self.selected_tank_import = path
         self.exit_manager()
-        print(self.selected_tank_import)
-        print(self.root.get_screen("add_tank_screen").ids.new_tank.text)
-        tk=self.root.get_screen("add_tank_screen").ids.new_tank.text
+        # print(self.selected_tank_import)
+        # print(self.root.get_screen("add_tank_screen").ids.new_tank.text)
+        self.tk=self.root.get_screen("add_tank_screen").ids.new_tank.text
         toast(path)
-        db_reading.import_data(self.selected_tank_import, self.vessel_for_import, tk)
+        db_reading.import_data(self.selected_tank_import, self.vessel_for_import, self.tk)
 
     def choose_vessel_admin(self):
         vessels_admin = []
@@ -682,7 +691,7 @@ class BunkerCalc(MDApp):
             
             for v in iter(vessels_admin):
                 self.the_DB_admin[v]=vessels_admin[0]
-            print(vessels_admin)
+            # print(vessels_admin)
             menu_items= [(
                 {
                     "viewclass": "OneLineListItem",
@@ -704,12 +713,14 @@ class BunkerCalc(MDApp):
             print("Error on choose vessel")
         
     def selected_vessel_import(self, vessel: str):
-        print(str(vessel).lower()+".db")
         self.root.get_screen("add_tank_screen").ids.drop_vessels.text = vessel
         self.menu_admin.dismiss()
         self.vessel_for_import = (str(vessel).lower()+".db")
-        self.root.get_screen("add_tank_screen").ids.btn_add.disabled = False
+        
         self.root.get_screen("add_tank_screen").ids.new_tank.disabled = False
+        
+        self.root.get_screen("add_tank_screen").ids.btn_add.disabled = False
+        self.tk=self.root.get_screen("add_tank_screen").ids.new_tank.text = str()
 
 
 if __name__ == "__main__":

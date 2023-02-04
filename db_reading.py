@@ -186,7 +186,7 @@ def sort_tanks_mdo(v):
 
 
 def import_data(file, db, tk):
-    conn = sqlite3.connect(str(db))
+    conn = sqlite3.connect(db)
     cur = conn.cursor()
     try:
         cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\

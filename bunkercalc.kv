@@ -17,7 +17,7 @@ ScreenManager:
             # anchor_title: "center"
             md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["calculator-variant", lambda x:app.screen2()],["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+            left_action_items: [["calculator-variant", lambda x:app.screen2(), "Total"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Admin"]]
             right_action_items: [["ship-wheel", lambda x: app.choose_vessel(x)]]
 
             # right_action_items: [["menu", lambda x:app.screen2()]]
@@ -25,9 +25,10 @@ ScreenManager:
                 orientation : "horizontal"
                 MDLabel:
                     id: right_action
-                    halign: "center"
+                    halign: "right"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
+                    
                 MDLabel:
                     id: select_vessel
                     halign: "right"
@@ -71,13 +72,14 @@ ScreenManager:
         #md_bg_color: "#e7e4c0"
         specific_text_color: "#4a4939"
         # right_action_items: [["menu", lambda x:(x)]]
-        left_action_items: [["calculator-variant", lambda x:app.screen2()],["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+        left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Admin Panel"]]
 
         MDLabel:
             id: right_action
             halign: "center"
             theme_text_color: "Custom"
             text_color: "#4a4939"
+            pos_hint_x: .5
 
     MDFloatLayout:
         orientation: "vertical"
@@ -220,7 +222,7 @@ ScreenManager:
             # anchor_title: "center"
             md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["calculator-variant", lambda x:app.screen2()],["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+            left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding Screen"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Admin Panel"]]
             
 
             MDBoxLayout:
@@ -228,9 +230,10 @@ ScreenManager:
                 MDLabel:
                     id: right_action_admin
                     text: "Admin Panel"
-                    halign: "center"
+                    halign: "right"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
+                    pos_hint_x: .5
                 MDLabel:
                     id: select_vessel_admin
                     # text: "Vessel"
@@ -305,16 +308,17 @@ ScreenManager:
             # anchor_title: "center"
             md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["calculator-variant", lambda x:app.screen2()],["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+            left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding Screen"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Back to Admin"]]
             
             MDBoxLayout:
                 orientation : "horizontal"
                 MDLabel:
                     id: right_action_admin
                     text: "Admin Panel"
-                    halign: "center"
+                    halign: "right"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
+                    pos_hint_x: .5
                 MDLabel:
                     id: select_vessel_admin
                     # text: "Vessel"
@@ -384,7 +388,7 @@ ScreenManager:
     name: 'add_tank_screen'
     MDBoxLayout:
         orientation : 'vertical'
-        size_hint_y: 1
+        
         # md_bg_color: "#e7d4d0"
         MDTopAppBar:
             id: top_menu_admin
@@ -393,16 +397,17 @@ ScreenManager:
             # anchor_title: "center"
             md_bg_color: "#e7e4c0"
             specific_text_color: "#4a4939"
-            left_action_items: [["calculator-variant", lambda x:app.screen2()],["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+            left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding Screen"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Back to Admin"]]
 
             MDBoxLayout:
                 orientation : "horizontal"
                 MDLabel:
                     id: right_action_admin
-                    text : "Total"
-                    halign: "center"
+                    text : "Add Tank to Vessel"
+                    halign: "right"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
+                    pos_hint_x: .5
                 MDLabel:
                     id: select_vessel_admin
                     # text: "Vessel"
@@ -413,9 +418,10 @@ ScreenManager:
         MDBoxLayout:
             orientation : "vertical"            
             # md_bg_color: "#ccccd0"
+            
             MDDropDownItem:
                 id: drop_vessels
-                pos_hint: {'center_x': .5, 'center_y': .8}
+                pos_hint: {'center_x': .5, 'center_y': .9}
                 text: 'Select the Vessel'
                 on_release: app.choose_vessel_admin()
 
@@ -430,6 +436,9 @@ ScreenManager:
                 # text_color_focus: "white"
                 max_text_length: 10
                 disabled: 'True'
+                # required: "True"
+                theme_text_color: "Hint"
+                
 
             MDFlatButton:
                 id : btn_add
