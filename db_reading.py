@@ -133,10 +133,8 @@ def sort_tanks_mdo(v):
 #     conn.commit()
 
 
-# def delete_tk(tk_name):
-
-#     cur.execute("DROP TABLE '%s';" % (tk_name))
-#     conn.commit()
+def delete_vessel(vessel):
+    pass
 
 # ####### EDIT SECTION ##########
 

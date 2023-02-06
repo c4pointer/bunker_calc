@@ -4,6 +4,7 @@ ScreenManager:
     AdminScreen:
     NewVesselScreen:
     AddTankScreen:
+    DelVesselScreen:
 
 <TabScreen>:
     id: tab_screen
@@ -258,7 +259,7 @@ ScreenManager:
                 id : btn_delete
                 text: "Delete tank"
                 pos_hint: {'center_x': 0.5, 'center_y': 0.6}
-                # on_press: root.manager.current= "tab_screen"
+                on_press: root.manager.current= "del_vessel_screen"
                 # text_color: "#"
                 font_size: "30dp"
                 md_bg_color: "#000ccc"
@@ -456,7 +457,7 @@ ScreenManager:
                 id : btn_delete_tk
                 text: "Delete tank"
                 pos_hint: {'center_x': 0.5, 'center_y': 0.4}
-                # on_press: root.manager.current= "tab_screen"
+                # on_press: root.manager.current= "del_vessel_screen"
                 # text_color: "#"
                 font_size: "30dp"
                 md_bg_color: "#000fff"
@@ -470,6 +471,79 @@ ScreenManager:
                 md_bg_color: ("#f56c5a")
                 on_press: app.stop()
         # size_hint: None, None
+                
+            # Will always be at the bottom of the screen.
+            # MDFloatLayout:
+            MDBottomAppBar:
+                MDTopAppBar:
+                    id: bottom_bar
+                    title: "by Oleg Zubak"
+                    halign: "center"
+                    # icon: "fuel"
+                    type: "bottom"
+                    # right_action_items: [["account-arrow-left-outline",  lambda x:app.admin_panel()]]
+                    # left_action_items: [["account-arrow-left-outline", lambda x: x]]
+                    # mode: "center"
+<DelVesselScreen>:
+    id: del_vessel_screen
+    name: 'del_vessel_screen'
+    MDBoxLayout:
+        orientation : 'vertical'
+        
+        # md_bg_color: "#e7d4d0"
+        MDTopAppBar:
+            id: top_menu_admin
+            elevation:4
+            pos_hint: {"top": 1}
+            # anchor_title: "center"
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding Screen"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Back to Admin"]]
+
+            MDBoxLayout:
+                orientation : "horizontal"
+                MDLabel:
+                    id: right_action_admin
+                    text : "Add Tank to Vessel"
+                    halign: "right"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                    pos_hint_x: .5
+                MDLabel:
+                    id: select_vessel_admin
+                    # text: "Vessel"
+                    halign: "right"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                    
+        MDBoxLayout:
+            orientation : "vertical"            
+            # md_bg_color: "#ccccd0"
+            
+            MDDropDownItem:
+                id: drop_vessels
+                pos_hint: {'center_x': .5, 'center_y': .9}
+                text: 'Select the Vessel'
+                on_release: app.choose_vessel_admin()
+                
+            MDFlatButton:
+                id : btn_delete_tk
+                text: "Delete tank"
+                pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+                on_press: app.delete_vessel()
+                # text_color: "#"
+                font_size: "30dp"
+                md_bg_color: "#000fff"
+
+            
+            MDFloatingActionButton:
+                id: close
+                text: 'Exit'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.25}
+                icon: "close"
+                md_bg_color: ("#f56c5a")
+                on_press: app.stop()
+       
                 
             # Will always be at the bottom of the screen.
             # MDFloatLayout:

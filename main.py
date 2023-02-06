@@ -41,54 +41,50 @@ vessel_db = "viking_ocean.db"
 
 prev_label_text = {}
 
-# Store the all ships
-vessels =[]
-
-
-# Store db names for each ship
-vessel_name_db = []
-
 file_location_detect = os.getcwd()
-try:
-    # scan current working Directory
-    scan_dir=os.scandir(file_location_detect)
-    for entries in scan_dir:
-        if not entries.name.endswith('_prev.db') and entries.is_file:
-            if entries.name.endswith(".db"):
-                parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
-                vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
-                vessel_name_db.append(vessel_name_db_parsed)
-                vessels.append(parsed_vessel)
+# Store db names for each ship
+# vessel_name_db = []
+
+
+# try:
+#     # scan current working Directory
+#     scan_dir=os.scandir(file_location_detect)
+#     for entries in scan_dir:
+#         if not entries.name.endswith('_prev.db') and entries.is_file:
+#             if entries.name.endswith(".db"):
+#                 parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
+#                 vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
+#                 vessel_name_db.append(vessel_name_db_parsed)
+#                 vessels.append(parsed_vessel)
     
-except:
-    print(f"Error in DB choosing code")
+# except:
+#     print(f"Error in DB choosing code")
 
 
-
+# Screens 
 class TabScreen(Screen):
     pass
-
-
 class TotalScreen(Screen):
     pass
-
 class AdminScreen(Screen):
     pass
 class NewVesselScreen(Screen):
     pass
 class AddTankScreen(Screen):
     pass
+class DelVesselScreen(Screen):
+    pass
 
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
 
-sm = ScreenManager()
-sm.add_widget(TabScreen(name='tab_screen'))
-sm.add_widget(TotalScreen(name='total_screen'))
-sm.add_widget(AdminScreen(name='admin_screen'))
-sm.add_widget(NewVesselScreen(name='new_vessel_screen'))
-sm.add_widget(AddTankScreen(name='add_tank_screen'))
+# sm = ScreenManager()
+# sm.add_widget(TabScreen(name='tab_screen'))
+# sm.add_widget(TotalScreen(name='total_screen'))
+# sm.add_widget(AdminScreen(name='admin_screen'))
+# sm.add_widget(NewVesselScreen(name='new_vessel_screen'))
+# sm.add_widget(AddTankScreen(name='add_tank_screen'))
 
 class BunkerCalc(MDApp):
 
@@ -264,6 +260,25 @@ class BunkerCalc(MDApp):
 
 
     def choose_vessel(self,x):
+        vessel_name_db = []
+        self.the_DB = {}
+        # Store the all ships
+        vessels =[]
+
+        file_location_detect = os.getcwd()
+        try:
+            # scan current working Directory
+            scan_dir=os.scandir(file_location_detect)
+            for entries in scan_dir:
+                if not entries.name.endswith('_prev.db') and entries.is_file:
+                    if entries.name.endswith(".db"):
+                        parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
+                        vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
+                        vessel_name_db.append(vessel_name_db_parsed)
+                        vessels.append(parsed_vessel)
+            
+        except:
+            print(f"Error in DB choosing code 281")
         """
         Create a dropdown menu for selecting the Vessel`s Data Base
         """
@@ -273,7 +288,7 @@ class BunkerCalc(MDApp):
             
             for v in iter(vessels):
                 self.the_DB[v]=vessels[0]
-        
+            
             menu_items= [(
                 {
                     "viewclass": "OneLineListItem",
@@ -668,6 +683,7 @@ class BunkerCalc(MDApp):
         db_reading.import_data(self.selected_tank_import, self.vessel_for_import, self.tk)
 
     def choose_vessel_admin(self):
+        vessel_name_db = []
         vessels_admin = []
         """
         Create a dropdown menu for selecting the Vessel`s Data Base
@@ -708,19 +724,25 @@ class BunkerCalc(MDApp):
             )
             
             self.menu_admin.open()
-            
+            self.vessel_to_delete=(vessels_admin)
         except ValueError:
             print("Error on choose vessel")
         
     def selected_vessel_import(self, vessel: str):
         self.root.get_screen("add_tank_screen").ids.drop_vessels.text = vessel
+        self.root.get_screen("del_vessel_screen").ids.drop_vessels.text = vessel
         self.menu_admin.dismiss()
         self.vessel_for_import = (str(vessel).lower()+".db")
-        
         self.root.get_screen("add_tank_screen").ids.new_tank.disabled = False
-        
         self.root.get_screen("add_tank_screen").ids.btn_add.disabled = False
         self.tk=self.root.get_screen("add_tank_screen").ids.new_tank.text = str()
+
+    def delete_vessel(self):
+        print(file_location_detect)
+        file_db = str(self.root.get_screen("del_vessel_screen").ids.drop_vessels.text).lower()+".db"
+        file_db_prev = str(self.root.get_screen("del_vessel_screen").ids.drop_vessels.text).lower()+"_prev.db"
+        os.remove(str(file_location_detect+"/" + str(file_db)))
+        os.remove(str(file_location_detect+"/" + str(file_db_prev)))
 
 
 if __name__ == "__main__":
