@@ -107,29 +107,6 @@ class BunkerCalc(MDApp):
         except Exception as e:
             print(str(e)+ str("  error 123"))
 
-    # def dropdown(self, x):
-    #     """
-    #     Create a dropdown menu for navigate beetwen the screens
-    #     """
-    #     self.menu_items = [
-    #         {
-    #             "viewclass": "OneLineListItem",
-    #             "text": "Tanks Sounding",
-    #             "on_release": lambda x= 'lambda':self.screen2()
-    #         },
-    #         {
-    #             "viewclass": "OneLineListItem",
-    #             "text": "Total Result",
-    #             "on_release": lambda x= 'lambda':self.screen2()
-    #         }
-    #     ]
-    #     self.menu = MDDropdownMenu(
-    #         items=self.menu_items,
-    #         width_mult=4
-    #     )
-    #     self.menu.caller = x
-    #     self.menu.open()
-
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
@@ -595,35 +572,25 @@ class BunkerCalc(MDApp):
             return self.temperature, self.def_dens, self.real_volume
     
     def admin_panel(self):
-        
+
+        self.vessel_name_db = []
+        self.vessels_admin = []
+        self.db_tuple_admin= {}
         self.root.current = "admin_screen"
-        # self.table = MDDataTable(
-        #         size_hint=(0.7, 0.6),
-        #         use_pagination=True,
-        #         check=True,
-        #         # name column, width column, sorting function column(optional)
-        #         column_data=[
-        #             ("No.", dp(30)),
-        #             ("Status", dp(30)),
-        #             ("Signal Name", dp(60)),
-        #             ("Severity", dp(30)),
-        #             ("Stage", dp(30)),
-        #             ("Schedule", dp(30),
-        #              lambda *args: print("Sorted using Schedule")),
-        #             ("Team Lead", dp(30)),
-        #         ],
-        #     )
+
+        self.root.get_screen("add_tank_screen").ids.drop_vessels.text = "Choose vessel"
+        self.root.get_screen("del_vessel_screen").ids.drop_vessels.text = "Choose vessel"
+
     def create_vessel(self, name):
         # Create new Vessel data base
         try:
-            
             create_vessel.create_vessel(name)
         except Exception as e:
             print(str(e)+str("593"))
 
     def file_manager_open(self):
         # print(self.tk)
-        if len(self.tk) != 0:
+        if len(self.tk) == 0:
             self.manager_open = False
             self.file_manager = MDFileManager(
                 exit_manager=self.exit_manager, select_path=self.select_path,
@@ -658,11 +625,13 @@ class BunkerCalc(MDApp):
         db_reading.import_data(self.selected_tank_import, self.vessel_for_import, self.tk)
 
     def choose_vessel_admin(self):
-        vessel_name_db = []
-        vessels_admin = []
         """
         Create a dropdown menu for selecting the Vessel`s Data Base
         """
+        self.vessel_name_db = []
+        self.vessels_admin = []
+        self.db_tuple_admin= {}
+
         try:
             try:
                 # scan current working Directory
@@ -672,23 +641,21 @@ class BunkerCalc(MDApp):
                         if entries.name.endswith(".db"):
                             parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
                             vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
-                            vessel_name_db.append(vessel_name_db_parsed)
-                            vessels_admin.append(parsed_vessel)
+                            self.vessel_name_db.append(vessel_name_db_parsed)
+                            self.vessels_admin.append(parsed_vessel)
                 
             except:
                 print(f"Error in DB choosing code")
 
-            self.db_tuple_admin= {}
-            
-            for v in iter(vessels_admin):
-                self.the_DB_admin[v]=vessels_admin[0]
+            for v in iter(self.vessels_admin):
+                self.the_DB_admin[v]=self.vessels_admin[0]
             # print(vessels_admin)
             menu_items= [(
                 {
                     "viewclass": "OneLineListItem",
-                    "text": f"{vessels_admin[i]}",
-                    "on_release": lambda x=f"{vessels_admin[i]}": self.selected_vessel_import(x)
-                }) for i in range(len(vessels_admin))
+                    "text": f"{self.vessels_admin[i]}",
+                    "on_release": lambda x=f"{self.vessels_admin[i]}": self.selected_vessel_import(x)
+                }) for i in range(len(self.vessels_admin))
                 ]
 
 
@@ -699,7 +666,7 @@ class BunkerCalc(MDApp):
             )
             
             self.menu_admin.open()
-            self.vessel_to_delete=(vessels_admin)
+            self.vessel_to_delete=(self.vessels_admin)
         except ValueError:
             print("Error on choose vessel")
         

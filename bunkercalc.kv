@@ -38,7 +38,7 @@ ScreenManager:
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
                     # md_bg_color: "#cccfff"
-                    size_hint_x: None
+                    size_hint_x: .2
                     # pos_hint_y: 1
             MDBoxLayout:
                 orientation : "horizontal"
@@ -442,17 +442,15 @@ ScreenManager:
                 font_size: "30dp"
                 md_bg_color: "#00ccff"
                 disabled: 'True'
-
-
                 
-            MDFlatButton:
-                id : btn_delete_tk
-                text: "Delete tank"
-                pos_hint: {'center_x': 0.5, 'center_y': 0.4}
-                # on_press: root.manager.current= "del_vessel_screen"
-                # text_color: "#"
-                font_size: "30dp"
-                md_bg_color: "#000fff"
+            # MDFlatButton:
+            #     id : btn_delete_tk
+            #     text: "Delete tank"
+            #     pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            #     # on_press: root.manager.current= "del_vessel_screen"
+            #     # text_color: "#"
+            #     font_size: "30dp"
+            #     md_bg_color: "#000fff"
 
             
             MDFloatingActionButton:
@@ -509,13 +507,13 @@ ScreenManager:
             
             MDDropDownItem:
                 id: drop_vessels
-                pos_hint: {'center_x': .5, 'center_y': .9}
+                pos_hint: {'center_x': .5, 'center_y': .7}
                 text: 'Select the Vessel'
                 on_release: app.choose_vessel_admin()
                 
             MDFlatButton:
                 id : btn_delete_tk
-                text: "Delete tank"
+                text: "Delete Vessel"
                 pos_hint: {'center_x': 0.5, 'center_y': 0.4}
                 on_press: app.delete_vessel()
                 # text_color: "#"
