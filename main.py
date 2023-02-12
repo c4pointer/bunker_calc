@@ -42,24 +42,6 @@ vessel_db = "viking_ocean.db"
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
-# Store db names for each ship
-# vessel_name_db = []
-
-
-# try:
-#     # scan current working Directory
-#     scan_dir=os.scandir(file_location_detect)
-#     for entries in scan_dir:
-#         if not entries.name.endswith('_prev.db') and entries.is_file:
-#             if entries.name.endswith(".db"):
-#                 parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
-#                 vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
-#                 vessel_name_db.append(vessel_name_db_parsed)
-#                 vessels.append(parsed_vessel)
-    
-# except:
-#     print(f"Error in DB choosing code")
-
 
 # Screens 
 class TabScreen(Screen):
@@ -78,13 +60,6 @@ class DelVesselScreen(Screen):
 class Tab(MDFloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
-
-# sm = ScreenManager()
-# sm.add_widget(TabScreen(name='tab_screen'))
-# sm.add_widget(TotalScreen(name='total_screen'))
-# sm.add_widget(AdminScreen(name='admin_screen'))
-# sm.add_widget(NewVesselScreen(name='new_vessel_screen'))
-# sm.add_widget(AddTankScreen(name='add_tank_screen'))
 
 class BunkerCalc(MDApp):
 

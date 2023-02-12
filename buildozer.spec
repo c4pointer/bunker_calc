@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,db,ttf,md
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 1.1.0
+version = 1.1.1
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -94,7 +94,7 @@ fullscreen = 0
 
 # (list) Permissions
 #android.permissions = INTERNET
-#android.permissions = WRITE_EXTERNAL_STORAGE
+# android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 

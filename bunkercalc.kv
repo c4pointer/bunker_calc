@@ -9,6 +9,7 @@ ScreenManager:
 <TabScreen>:
     id: tab_screen
     name: 'tab_screen'
+            
     MDBoxLayout:
         orientation: "vertical"
         MDTopAppBar:
@@ -24,46 +25,43 @@ ScreenManager:
             # right_action_items: [["menu", lambda x:app.screen2()]]
             MDBoxLayout:
                 orientation : "horizontal"
+                
                 MDLabel:
-                    id: right_action
-                    halign: "right"
+                    id: space
+                    halign:  "center"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
-                    
+                    # md_bg_color: "#e7d4cc"
                 MDLabel:
                     id: select_vessel
                     halign: "right"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
+                    # md_bg_color: "#cccfff"
+                    size_hint_x: None
+                    # pos_hint_y: 1
+            MDBoxLayout:
+                orientation : "horizontal"
                 
-        # MDBoxLayout:
-        #     orientation: "horizontal"
-        #     # pos_hint: {"central_x": .5}
+                MDLabel:
+                    id: right_action
+                    halign:  "center"
+                    theme_text_color: "Custom"
+                    text_color: "#4a4939"
+                    # md_bg_color: "#e7d4cc"
 
-        #     # size: 1, 1
-        #     # md_bg_color: app.theme_cls.primary_color
         MDTabs:
             id: tabs
             on_tab_switch: app.on_tab_switch(*args)
-            
 
-#        MDFlatButton:
-#            id : btn_tab
-#            text: "Tabs"
-#            pos_hint: {'center_x': 0.5, 'center_y': 0.25}
-#            on_press: root.manager.current= "total_screen"
-            
-        # Will always be at the bottom of the screen.
-        # MDFloatLayout:
+
         MDBottomAppBar:
             MDTopAppBar:
                 id: bottom_bar
                 title: "by Oleg Zubak"
                 halign: "center"
                 type: "bottom"
-                
-
-        
+   
 <TotalScreen>:
     name:'total_screen'
     MDTopAppBar:
@@ -75,12 +73,21 @@ ScreenManager:
         # right_action_items: [["menu", lambda x:(x)]]
         left_action_items: [["calculator-variant", lambda x:app.screen2(), "Sounding"],["account-arrow-left-outline",  lambda x:app.admin_panel(), "Admin Panel"]]
 
-        MDLabel:
-            id: right_action
-            halign: "center"
-            theme_text_color: "Custom"
-            text_color: "#4a4939"
-            pos_hint_x: .5
+        # MDLabel:
+        #     id: right_action
+        #     halign: "center"
+        #     theme_text_color: "Custom"
+        #     text_color: "#4a4939"
+        #     pos_hint_x: .5
+        MDBoxLayout:
+            orientation : "horizontal"
+        
+            MDLabel:
+                id: right_action
+                halign:  "center"
+                theme_text_color: "Custom"
+                text_color: "#4a4939"
+                # md_bg_color: "#e7d4cc"
 
     MDFloatLayout:
         orientation: "vertical"
@@ -228,21 +235,16 @@ ScreenManager:
 
             MDBoxLayout:
                 orientation : "horizontal"
+            
                 MDLabel:
                     id: right_action_admin
-                    text: "Admin Panel"
-                    halign: "right"
+                    text: "Admin Screen"
+                    halign:  "center"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
-                    pos_hint_x: .5
-                MDLabel:
-                    id: select_vessel_admin
-                    # text: "Vessel"
-                    halign: "right"
-                    theme_text_color: "Custom"
-                    text_color: "#4a4939"
+                    # md_bg_color: "#e7d4cc"
                     
-        MDBoxLayout:
+        MDFloatLayout:
             orientation : "vertical"            
             # md_bg_color: "#ccccd0"
             
@@ -313,21 +315,16 @@ ScreenManager:
             
             MDBoxLayout:
                 orientation : "horizontal"
+            
                 MDLabel:
                     id: right_action_admin
-                    text: "Admin Panel"
-                    halign: "right"
+                    text: "Add new Vessel Screen"
+                    halign:  "center"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
-                    pos_hint_x: .5
-                MDLabel:
-                    id: select_vessel_admin
-                    # text: "Vessel"
-                    halign: "right"
-                    theme_text_color: "Custom"
-                    text_color: "#4a4939"
+                    # md_bg_color: "#e7d4cc"
                     
-        MDBoxLayout:
+        MDFloatLayout:
             orientation : "vertical"            
             # md_bg_color: "#ccccd0"
             
@@ -402,21 +399,16 @@ ScreenManager:
 
             MDBoxLayout:
                 orientation : "horizontal"
+            
                 MDLabel:
                     id: right_action_admin
-                    text : "Add Tank to Vessel"
-                    halign: "right"
+                    text: "Add tank Screen"
+                    halign:  "center"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
-                    pos_hint_x: .5
-                MDLabel:
-                    id: select_vessel_admin
-                    # text: "Vessel"
-                    halign: "right"
-                    theme_text_color: "Custom"
-                    text_color: "#4a4939"
+                    # md_bg_color: "#e7d4cc"
                     
-        MDBoxLayout:
+        MDFloatLayout:
             orientation : "vertical"            
             # md_bg_color: "#ccccd0"
             
@@ -502,21 +494,16 @@ ScreenManager:
 
             MDBoxLayout:
                 orientation : "horizontal"
+            
                 MDLabel:
                     id: right_action_admin
-                    text : "Add Tank to Vessel"
-                    halign: "right"
+                    text: "Delete Vessel"
+                    halign:  "center"
                     theme_text_color: "Custom"
                     text_color: "#4a4939"
-                    pos_hint_x: .5
-                MDLabel:
-                    id: select_vessel_admin
-                    # text: "Vessel"
-                    halign: "right"
-                    theme_text_color: "Custom"
-                    text_color: "#4a4939"
+                    # md_bg_color: "#e7d4cc"
                     
-        MDBoxLayout:
+        MDFloatLayout:
             orientation : "vertical"            
             # md_bg_color: "#ccccd0"
             
