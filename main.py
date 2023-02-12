@@ -24,8 +24,8 @@ import os
 import sqlite3
 import threading
 # Window resizing. To be deleted or commented before compiling
-# from kivy.core.window import Window
-# Window.size = (400, 700)
+from kivy.core.window import Window
+Window.size = (400, 700)
 
 # Here we store our dict with total quantity of fuel
 total_list_hfo = {}
