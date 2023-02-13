@@ -17,15 +17,19 @@ from kivy.metrics import dp
 import db_editing
 import db_reading
 import vol_coorection
-import drop_vessel_list
 import create_vessel
 
 import os
-import sqlite3
 import threading
 ## Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
 # Window.size = (400, 700)
+
+from kivy import platform
+if platform == "android":
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.WRITE_EXTERNAL_STORAGE, 
+    Permission.READ_EXTERNAL_STORAGE])
 
 # Here we store our dict with total quantity of fuel
 total_list_hfo = {}
@@ -82,6 +86,10 @@ class BunkerCalc(MDApp):
         self.add_tab(vessel_db)
         self.slider_value={}
         self.j = 0
+        if platform == "android":
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
+
 
         # Label for toggle screens between the total screen and Tabs
         self.root.get_screen("tab_screen").ids.right_action.text = "Sounding Screen"
@@ -185,20 +193,8 @@ class BunkerCalc(MDApp):
         """
         try:
             self.name_of_vessel_db = str(vessel).lower()+".db"  # Name of DB if is non default
-            # THREAD FOR selecting and switching vessel DB
-            # print(f"{vessel} == {str(self.the_DB[vessel])} ")
-            # if self.j == 0:
-            #     self.start_thread(self.name_of_vessel_db)
-            #     self.j += 1
             
-            # else:
-            #     if self.name_of_vessel_db == str(self.the_DB[vessel]):
-            #         print("pass block")
-                    
-            #     else:
-            #         self.start_thread(self.name_of_vessel_db)
-            #         self.j += 1
-            #         print("here")
+            # THREAD FOR selecting and switching vessel DB
             self.start_thread(self.name_of_vessel_db)
             if len(self.the_DB) != 0:
                 self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
@@ -466,7 +462,7 @@ class BunkerCalc(MDApp):
                         print("*************\n")
                         for i  in (total_list_hfo):
                             db_reading.add_to_prevdb(i, total_list_hfo[i][1], total_list_hfo[i][0], self.name_of_vessel_db)
-                            # print(f"Data insert in {i} with sound = {total_list[i][1]} and volume ={total_list[i][0]} , deleted value is = { total_list} ")
+
 
                 except IndexError as e:
                     # Printing on display the error and change the font-size
