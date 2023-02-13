@@ -94,7 +94,8 @@ fullscreen = 0
 
 # (list) Permissions
 #android.permissions = INTERNET
-android.permissions = READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE
+android.permissions = READ_EXTERNAL_STORAGE,READ_SETTINGS,READ_SECURE_SETTINGS,MANAGE_DOCUMENTS,WRITE_EXTERNAL_STORAGE
+
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 
