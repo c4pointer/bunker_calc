@@ -31,8 +31,8 @@ if platform == "android":
     request_permissions([Permission.WRITE_EXTERNAL_STORAGE, 
     Permission.READ_EXTERNAL_STORAGE])
 
-from android.storage import primary_external_storage_path
-SD_CARD = primary_external_storage_path()
+    from android.storage import primary_external_storage_path
+    SD_CARD = primary_external_storage_path()
 
 # Here we store our dict with total quantity of fuel
 total_list_hfo = {}
@@ -595,8 +595,11 @@ class BunkerCalc(MDApp):
                 exit_manager=self.exit_manager, select_path=self.select_path,
                 ext = ['.csv', ], selection = []
             )
-            # self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
-            self.file_manager.show(SD_CARD) 
+            if platform == "android":
+                self.file_manager.show(SD_CARD)
+            else:
+                self.file_manager.show(os.path.expanduser("~"))  # output manager to the screen
+            
             self.manager_open = True
         else:
             self.tk=self.root.get_screen("add_tank_screen").ids.new_tank.text = "Enter name of Tank"
