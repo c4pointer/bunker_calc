@@ -234,7 +234,6 @@ class BunkerCalc(MDApp):
         Create a dropdown menu for selecting the Vessel`s Data Base
         """
         try:
-            self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
             
             for v in iter(vessels):
@@ -267,7 +266,7 @@ class BunkerCalc(MDApp):
         if not self.x_thread.is_alive() == True:
             try:
                 self.button_state += 1
-                
+                self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             except Exception as e:
                 print(e)
                 print("eror string 251")
