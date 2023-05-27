@@ -22,7 +22,6 @@ def select_DefDens(tk_name, vessel):
     conn = sqlite3.connect(vessel)
     cur = conn.cursor()
     cur.execute("SELECT density FROM '%s' WHERE sound_id='1'" % (tk_name))
-    global density
     density = 0
     for dens in cur:
         if len(dens) > 0:
@@ -32,61 +31,54 @@ def select_DefDens(tk_name, vessel):
             density = ("zero set")
         else:
             density = ("Error")
-
     return density
 
-
-def calculation(tk_name, sound, vessel):
+def calculation(tk_name: object, sound: object, vessel: object) -> object:
     '''
     Takes value from DB
     '''
-    global volume_in_m3
     volume_in_m3 = []
     try:
         conn = sqlite3.connect(vessel)
         cur = conn.cursor()
-        cur.execute("SELECT volume FROM '%s' WHERE sound_id='%s'" %
-                    (tk_name, sound))
+        cur.execute(
+            "SELECT volume FROM '%s' WHERE sound_id='%s'" %
+            (tk_name, sound))
         for data in cur:
             x = str(data)
             x = x.strip('(),')
             volume_in_m3.append(x)
         return volume_in_m3
-        
-    except Exception as e:
-        print(f"Erorr: {e}")
 
-def type_sel(tank, vessel):
+    except Exception as e:
+        pass
+
+def type_sel(tank: object, vessel: object) -> object:
     """
     Sort tank if the tank don`t have Sounding Table,
     then we just take the inputed value in textfield
     """
-    global type_of_tank
-    type_of_tank=[]
+    type_of_tank = []
     conn = sqlite3.connect(vessel)
     cur = conn.cursor()
-    cur.execute("SELECT type FROM '"+tank+"' WHERE sound_id='0';")
+    cur.execute("SELECT type FROM '" + tank + "' WHERE sound_id='0';")
     for i in cur:
         type_of_tank.append(i[0])
-    
+
     return type_of_tank
-
-
-def state_sel(tank, vessel):
+def state_sel(tank: object, vessel: object) -> object:
     """
     Sort tank if the tank by state
-    If state == 1 than means that tank is for MDO total result caclc`s
+    If state == 1 than means that tank is for MDO total result calc`s
     """
-    global state_of_tank
-    state_of_tank=[]
+    state_of_tank = []
     conn = sqlite3.connect(vessel)
     cur = conn.cursor()
-    cur.execute("SELECT state FROM '"+tank+"' WHERE sound_id='0';")
+    cur.execute(f"SELECT state FROM '" + tank + "' WHERE sound_id='0';")
     for i in cur:
         state_of_tank.append(i[0])
-    
-    return state_of_tank
 
+    return state_of_tank
 
 # def def_dens_modify(tk_name, new_val):
 #     try:

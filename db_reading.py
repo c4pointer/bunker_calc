@@ -59,48 +59,22 @@ def extract_prev(name,vessel):
 
         connection.close()
     except sqlite3.OperationalError as error:
-        print("Need to insert Data to prev DB")
-
-    
-    
+        print("Need to insert Data to prev_DB")
 
 # r = re.compile('[^a-zA-Z-0-9]')
 
-
-def extract_names(i):
+def extract_names(database):
     """
     Here we connect to our DB and select all tank names
     that we will display in ListBox
     """
-    conn = sqlite3.connect(i)
+    conn = sqlite3.connect(database)
     cur = conn.cursor()
-    global name_of_tank
     name_of_tank = []
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
     for data in cur:
         name_of_tank.append(data)
     return name_of_tank
-
-
-# def sort_tanks():
-
-#     table_name = []
-
-#     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-#     for tables in cur:
-#         table_name.append(tables)
-
-#     global table_names
-#     table_names = []
-#     for row in table_name:
-#         x0 = str(row).strip('\'(),')
-#         cur.execute(" SELECT  state==1 FROM '"+x0+"' WHERE sound_id = 0")
-#         for q in cur:
-#             x1 = str(q).strip('\'(),')
-#             if float(x1) == 0:
-#                 table_names.append(row)
-#     return table_names
-
 
 def sort_tanks_mdo(v):
     conn = sqlite3.connect(v)
@@ -109,8 +83,6 @@ def sort_tanks_mdo(v):
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
     for tables in cur:
         table_name_md.append(tables)
-
-    global table_names_md
     table_names_md = []
     for row in table_name_md:
         x0 = str(row).strip('\'(),')
@@ -122,6 +94,36 @@ def sort_tanks_mdo(v):
                 table_names_md.append(row)
     return table_names_md
 
+def delete_vessel(vessel):
+    pass
+
+def import_data(file , db , tk):
+    conn = sqlite3.connect(db)
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "CREATE TABLE IF NOT EXISTS '" + tk + "' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
+                temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
+        conn.commit()
+        with open(file , 'r') as fin:  # `with` statement available in 2.5+
+            # csv.DictReader uses first line in file for column headings by default
+            dr = csv.DictReader(fin)  # comma is default delimiter
+            to_db = [(i['sound_id'] , i['volume']) for i in dr]
+            try:
+
+                cur.executemany(
+                    "INSERT INTO '" + tk +
+                    "' (sound_id, volume) VALUES (?, ?);" , to_db)
+                conn.commit()
+            except sqlite3.DatabaseError as error:
+                pass
+                # cur.execute("DROP TABLE '%s';" % (tk))
+
+                # cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
+                #     temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
+                # conn.commit()
+    except Exception as error:
+        pass
 
 # def create_tk(arg):
 #     new_tank = str(arg)
@@ -132,9 +134,6 @@ def sort_tanks_mdo(v):
 #                 "' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
 #     conn.commit()
 
-
-def delete_vessel(vessel):
-    pass
 
 # ####### EDIT SECTION ##########
 
@@ -183,32 +182,23 @@ def delete_vessel(vessel):
 #     return all_vol, all_dens, all_temp, all_state, all_type
 
 
-def import_data(file, db, tk):
-    conn = sqlite3.connect(db)
-    cur = conn.cursor()
-    try:
-        cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
-                temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
-        conn.commit()
-        with open(file, 'r') as fin:  # `with` statement available in 2.5+
-            # csv.DictReader uses first line in file for column headings by default
-            dr = csv.DictReader(fin)  # comma is default delimiter
-            to_db = [(i['sound_id'], i['volume']) for i in dr]
-            try:
-                
-                
-                cur.executemany("INSERT INTO '"+ tk +
-                                "' (sound_id, volume) VALUES (?, ?);", to_db)
-                conn.commit()
-            except sqlite3.DatabaseError as e:
-                print(e)
-                print("errot")
-                # cur.execute("DROP TABLE '%s';" % (tk))
-                
-                # cur.execute("CREATE TABLE IF NOT EXISTS '"+tk+"' (sound_id INT,volume FLOAT NULL,density FLOAT DEFAULT 0.9855 NULL,\
-                #     temperature INT DEFAULT 15 NULL, state INT DEFAULT 0 NULL, type INT DEFAULT 0 NULL, PRIMARY KEY(sound_id)) ;")
-                # conn.commit()
-                    
-                    
-    except Exception as e:
-        print(str(e))
+
+# def sort_tanks():
+
+#     table_name = []
+
+#     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+#     for tables in cur:
+#         table_name.append(tables)
+
+#     global table_names
+#     table_names = []
+#     for row in table_name:
+#         x0 = str(row).strip('\'(),')
+#         cur.execute(" SELECT  state==1 FROM '"+x0+"' WHERE sound_id = 0")
+#         for q in cur:
+#             x1 = str(q).strip('\'(),')
+#             if float(x1) == 0:
+#                 table_names.append(row)
+#     return table_names
+

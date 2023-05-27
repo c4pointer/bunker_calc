@@ -8,7 +8,7 @@ def create_vessel(db_file):
     conn = None
     conn_prev = None
     try:
-        # create new vessel data base
+        # create new vessel database
         conn = sqlite3.connect(db_file+".db")
         conn_prev = sqlite3.connect(db_file+"_prev.db")
     except Error as e:
