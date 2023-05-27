@@ -4,10 +4,14 @@ settings.json
 
 # byte-compiled / optimized / DLL files
 __pycache__
-*.py[cod]
-*$py.class
-
-# phpstorm project files
+/bin
+.bunker_venv
+.buildozer
+my_log.txt
+buildozer.spec
+/buildozer.spec
+bunkercalc.apk
+test.py
 .idea
 
 # netbeans project files
