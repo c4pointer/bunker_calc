@@ -13,6 +13,7 @@ buildozer.spec
 bunkercalc.apk
 test.py
 .idea
+.github
 
 # netbeans project files
 nbproject
