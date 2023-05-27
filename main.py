@@ -1,5 +1,6 @@
 import os
 import threading
+from logging import Logger
 
 from kivy import platform
 from kivy.uix.screenmanager import Screen
@@ -23,7 +24,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(module)s - - %(lineno)d  - %(message)s", filename='mylog.log', level=logging.WARNING, # %(pathname)s
 
 )
-logger = logging.getLogger()
+logger: Logger = logging.getLogger()
 
 ## Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
@@ -419,10 +420,10 @@ class BunkerCalc(MDApp):
 
                     # Insert data to prev DB for prev values extarcting on start
                     if len(total_list_mdo) > 0:
-                        print(total_list_hfo)
-                        print("\n")
-                        print(total_list_mdo)
-                        print("********\n")
+                        # print(total_list_hfo)
+                        # print("\n")
+                        # print(total_list_mdo)
+                        # print("********\n")
                         for i in (total_list_mdo):
                             "     "
                             db_reading.add_to_prevdb(
@@ -436,7 +437,6 @@ class BunkerCalc(MDApp):
                     logger.warning(error)
             # Calculate if tank is NOT MDO but is HFO
             else:
-
                 try:
                     self.result.font_size = "30dp"
 
@@ -464,16 +464,14 @@ class BunkerCalc(MDApp):
 
                     # Insert data to prev DB for prev values extracting on start
                     if len(total_list_hfo) > 0:
-                        print(total_list_hfo)
-                        print("\n")
-                        print(total_list_mdo)
-                        print("*************\n")
+                        # print(total_list_hfo)
+                        # print("\n")
+                        # print(total_list_mdo)
+                        # print("*************\n")
                         for i in (total_list_hfo):
                             db_reading.add_to_prevdb(
                                 i , total_list_hfo[i][1] , total_list_hfo[i][0] ,
                                 self.name_of_vessel_db)
-
-
                 except IndexError as error:
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
@@ -585,7 +583,6 @@ class BunkerCalc(MDApp):
             self.converted_density , self.result.text , int(self.temperature))
         self.real_volume = vol_
         self.result_mt.text = f"{str(self.real_volume) } mt"
-
         return self.temperature , self.def_dens , self.real_volume
 
     def admin_panel(self):
