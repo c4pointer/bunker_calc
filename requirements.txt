@@ -3,8 +3,6 @@ charset-normalizer==2.1.1
 docutils==0.19
 idna==3.4
 Kivy==2.1.0
-# For kivy developper version
-#pip3 install "kivy[base] @ https://github.com/kivy/kivy/archive/master.zip"
 Kivy-Garden==0.1.5
 kivymd==1.1.1
 Pygments==2.13.0
