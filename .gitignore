@@ -15,9 +15,6 @@ test.py
 .idea
 .github
 
-# netbeans project files
-nbproject
-
 # zend studio for eclipse project files
 .buildpath
 .project
