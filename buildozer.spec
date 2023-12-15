@@ -129,7 +129,7 @@ android.permissions = READ_EXTERNAL_STORAGE,READ_SETTINGS,READ_SECURE_SETTINGS,M
 # (bool) If True, then skip trying to update the Android sdk
 # This can be useful to avoid excess Internet downloads or save time
 # when an update is due and you just want to test/build your package
-# android.skip_update = False
+android.skip_update = False
 
 # (bool) If True, then automatically accept SDK license
 # agreements. This is intended for automation only. If set to False,
