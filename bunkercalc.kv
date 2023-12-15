@@ -155,7 +155,6 @@ ScreenManager:
         size_hint: .9, None
         font_size : "30dp"
 
-        # Enter sound value of each tank
     MDTextField:
         id: sound_field
         helper_text: "do not input ullage!"
@@ -171,7 +170,7 @@ ScreenManager:
         on_text_validate : app.callback_Calc(*args)
 
     MDFloatingActionButton:
-        id:calc
+        id: calc
         text: 'Calculate'
         pos_hint: {'center_x': 0.5, 'center_y': 0.4}
         icon: "calculator"

@@ -2,6 +2,7 @@ import logging
 import os
 import threading
 from logging import Logger
+import traceback
 
 from kivy import platform
 from kivy.uix.screenmanager import Screen
@@ -23,7 +24,7 @@ logging.basicConfig(
     level=logging.WARNING,  # %(pathname)s
 
 )
-logger: Logger = logging.getLogger()
+logger: Logger = logging.getLogger(__name__)
 
 ## Window resizing. To be deleted or commented before compiling
 # from kivy.core.window import Window
@@ -49,8 +50,8 @@ names_hfo = []
 names_mdo = []
 
 # Default variables
-def_temp = int(str("15"))
-vessel_db = "viking_ocean.db"
+def_temp = int(str("15"))  # The conventional Default temperature for calculating fuel
+vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of App
 
 prev_label_text = {}
 
@@ -192,23 +193,21 @@ class BunkerCalc(MDApp):
         else:
             self.root.current = "tab_screen"
 
-    def vessel_name(self, vessel):
+    def vessel_name(self, vessel_name):
         """
         Set selected vessel as title of App
         """
         try:
-            self.name_of_vessel_db = str(vessel).lower() + ".db"  # Name of DB if is non default
+            self.name_of_vessel_db = str(vessel_name).lower() + ".db"  # Name of DB if is non default
 
             # THREAD FOR selecting and switching vessel DB
             self.start_thread(self.name_of_vessel_db)
             if len(self.the_DB) != 0:
-                self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel)
+                self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel_name)
                 self.menu.dismiss()
-            self.root.get_screen("total_screen").ids.total_menu.title = str(vessel)
+            self.root.get_screen("total_screen").ids.total_menu_total.title = str(vessel_name)
         except Exception as error:
-            logger.warning(error)
-            pass
-            # self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
+            logger.warning(f"Vessel name methed - {error} : {traceback.format_exc()}")
 
     def choose_vessel(self, x):
         vessel_name_db = []
@@ -227,14 +226,11 @@ class BunkerCalc(MDApp):
                         vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
                         vessel_name_db.append(vessel_name_db_parsed)
                         vessels.append(parsed_vessel)
-
         except Exception as error:
-            logger.warning(error)
-            pass
+            logger.warning(f"Choose vessel files function - {error} : {traceback.format_exc()}")
 
-        """
-        Create a dropdown menu for selecting the Vessel`s Data Base
-        """
+
+        # Create a dropdown menu for selecting the Vessel`s Database
         try:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
@@ -258,7 +254,7 @@ class BunkerCalc(MDApp):
             self.menu.open()
 
         except ValueError as error:
-            logger.warning(error)
+            logger.warning(f"Create a dropdown menu - {error} : {traceback.format_exc()}")
 
     def start_thread(self, vessel):
         self.button_state += 1
@@ -271,7 +267,6 @@ class BunkerCalc(MDApp):
 
             except Exception as error:
                 logger.warning(error)
-                pass
 
     def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
@@ -307,8 +302,7 @@ class BunkerCalc(MDApp):
                         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
 
             try:
-                if self.text_vessel == True:
-                    print(self.text_vessel)
+                if self.text_vessel:
                     self.root.get_screen('tab_screen').ids.tabs.add_widget(
                         Tab(
                             title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
@@ -322,14 +316,14 @@ class BunkerCalc(MDApp):
             except AttributeError as error:
                 self.root.get_screen('tab_screen').ids.tabs.add_widget(
                     Tab(title=f"Previous quantity: {prev_label_text}"))
-                logger.warning(error)
+                logger.warning(f"Exception for previous quantity - {error} : {traceback.format_exc()}")
 
             # afetr add text to label of first tab we delete here the last widget that is non-correct
             self.root.get_screen('tab_screen').ids.tabs.remove_widget(
                 self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
             )
         except Exception as error:
-            logger.warning(error)
+            logger.warning(f"Exception in add tab - {error} : {traceback.format_exc()}")
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -341,16 +335,17 @@ class BunkerCalc(MDApp):
         :param instance_tab_label: <kivymd.uix.tab.MDTabsLabel object>;
         :param tab_text: text or name icon of tab;
         '''
-        instance_tab.ids.sound_field.hint_text = "Sounding value (cm):"
+        self.bbb = instance_tab.ids.sound_field
         instance_tab.ids.sound_field.text_color_normal = 1, 1, 0.8, 1
         self.button_calc = instance_tab.ids.calc
-
+        self.text_vessel = self.root.get_screen("tab_screen").ids.top_menu.title
         self.sound_value = instance_tab.ids.sound_field
         self.tank_name = instance_tab_label
         self.result = instance_tab.ids.label
         self.dens_new = instance_tab.ids.density_field
         self.result_mt = instance_tab.ids.label_mt
         self.result_mt.font_size = "20dp"
+        self.hint_text = instance_tab.ids.sound_field
         if self.button_state > 0:
             self.button_calc.disabled = False
             self.root.get_screen("tab_screen").ids.select_vessel.text_color = 1, 1, 0.9, 1
@@ -360,21 +355,16 @@ class BunkerCalc(MDApp):
             self.result.font_size = "30dp"
             self.result.text = "Select Vessel first"
             self.root.get_screen("tab_screen").ids.select_vessel.text_color = "#f43434"
-        # if no any entries are inserted we show below text to user
-        if len(total_list_mdo) == 0 and len(total_list_hfo) == 0:
+
+        if not self.result.text == "Select Vessel first":
             try:
-                if self.text_vessel == True:
-                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                        Tab(
-                            title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
-                        {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
-                    )
+                if  self.text_vessel:
+                    self.bbb.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
                 else:
-                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                        Tab(title=f"Previous quantity: {prev_label_text}"))
+                    self.bbb.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
             except Exception as error:
-                logger.warning(error)
-                pass
+                logger.warning(f"On tab switch method - {error} : {traceback.format_exc()}")
+
 
     def callback_Calc(self, *args):
         try:
@@ -390,7 +380,6 @@ class BunkerCalc(MDApp):
                 volume = str(calculations[0])
             except IndexError as error:
                 logger.warning(error)
-                pass
             # If tank is in MDO state than we make calcs for it and append to
             # "total_list_mdo" for displaying in Total result screen
             if state_selected[0] == 1:
@@ -415,10 +404,6 @@ class BunkerCalc(MDApp):
 
                     # Insert data to prev DB for prev values extarcting on start
                     if len(total_list_mdo) > 0:
-                        # print(total_list_hfo)
-                        # print("\n")
-                        # print(total_list_mdo)
-                        # print("********\n")
                         for i in (total_list_mdo):
                             "     "
                             db_reading.add_to_prevdb(
@@ -434,7 +419,6 @@ class BunkerCalc(MDApp):
             else:
                 try:
                     self.result.font_size = "30dp"
-
                     # If type of tank is not with sounding table,
                     # but only gauging than inputted value is added
                     # to total screen
@@ -459,24 +443,21 @@ class BunkerCalc(MDApp):
 
                     # Insert data to prev DB for prev values extracting on start
                     if len(total_list_hfo) > 0:
-                        # print(total_list_hfo)
-                        # print("\n")
-                        # print(total_list_mdo)
-                        # print("*************\n")
                         for i in (total_list_hfo):
                             db_reading.add_to_prevdb(
                                 i, total_list_hfo[i][1], total_list_hfo[i][0],
                                 self.name_of_vessel_db)
                 except IndexError as error:
                     # Printing on display the error and change the font-size
-                    self.result.text = str("Wrong sounding value!")
+                    self.result.text = str("Wrong sounding value!\nRecheck")
                     self.result.font_size = "20dp"
                     logger.warning(error)
+            self.bbb.hint_text = "Sounding value (cm):"
         except AttributeError as error:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
             logger.warning(error)
 
-    def my_value(self, *args):  # <<<<<<<<<<< Value from Temp slider
+    def my_value(self, *args):  #  Value from Temp slider
         try:
             # self.slider_value={}
             self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])), 0)
