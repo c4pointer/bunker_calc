@@ -8,7 +8,7 @@ __pycache__
 .bunker_venv
 .buildozer
 my_log.txt
-buildozer.spec
+#buildozer.spec
 #/buildozer.spec
 bunkercalc.apk
 test.py
