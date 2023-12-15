@@ -134,9 +134,9 @@ class BunkerCalc(MDApp):
                 self.mdo_tank_extract(vessel)
                 self.add_tab(vessel)
             except Exception as error:
-                logger.warning(error)
+                logger.warning(traceback.format_exc())
         except Exception as error:
-            logger.warning(error)
+            logger.warning(traceback.format_exc())
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
@@ -148,13 +148,9 @@ class BunkerCalc(MDApp):
         # MDO
         self.sum_mdo = 0
         self.sum_mdo_tons = 0
-        logger.warning("=====================================")
-        logger.warning(len(total_hfo))
-        logger.warning(self.sum_hfo_tons)
         for t in total_hfo:
             self.sum_hfo += float(t.meter_cubic)
             self.sum_hfo_tons += float(t.metric_tones)
-
         for d in (list(set(self.mdo_names).intersection(set(self.names)))):
             for tank in total_mdo:
                 if str(tank.name) == str(d):
@@ -264,7 +260,7 @@ class BunkerCalc(MDApp):
                 self.button_state += 1
 
             except Exception as error:
-                logger.warning(error)
+                logger.warning(traceback.format_exc())
 
     def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
@@ -276,7 +272,7 @@ class BunkerCalc(MDApp):
                 self.names.append(i[0])
         except Exception as error:
             self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
-            logger.warning(error)
+            logger.warning(traceback.format_exc())
 
     def mdo_tank_extract(self, v):
         self.mdo_names = []
@@ -377,7 +373,7 @@ class BunkerCalc(MDApp):
             try:
                 volume = str(calculations[0])
             except IndexError as error:
-                logger.warning(error)
+                logger.warning(traceback.format_exc())
             # If tank is in MDO state than we make calcs for it and append to
             # "total_list_mdo" for displaying in Total result screen
             if state_selected[0] == 1:
@@ -461,18 +457,18 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!\nRecheck")
                     self.result.font_size = "20dp"
-                    logger.warning(error)
+                    logger.warning(traceback.format_exc())
             self.bbb.hint_text = "Sounding value (cm):"
         except AttributeError as error:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            logger.warning(error)
+            logger.warning(traceback.format_exc())
 
     def my_value(self, *args):  #  Value from Temp slider
         try:
             # self.slider_value={}
             self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])), 0)
         except Exception as error:
-            logger.warning(error)
+            logger.warning(traceback.format_exc())
             pass
         return self.slider_value
 
@@ -487,7 +483,7 @@ class BunkerCalc(MDApp):
 
             except Exception as error:
                 self.temperature = def_temp
-                logger.warning(error)
+                logger.warning(traceback.format_exc())
             # Density selecting
             if len(self.dens_new.text) == 0:
                 # If density is not inputed by user than we collect it from
@@ -503,7 +499,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(error)
+                        logger.warning(traceback.format_exc())
                         pass
 
 
@@ -528,7 +524,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(error)
+                        logger.warning(traceback.format_exc())
                         pass
 
                 else:
@@ -550,19 +546,15 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(error)
-                        pass
-
+                        logger.warning(traceback.format_exc())
                 else:
                     self.dens_new.hint_text = "Density (example: 0.9588)"
                     self.dens_new.text_color_normal = 1, 1, 0.8, 1
                     self.def_dens = self.dens_new.text
-
         try:
             self.converted_density = ((float(self.def_dens) / 2) * 1000) * 2
         except Exception as error:
-            logger.warning(error)
-            pass
+            logger.warning(traceback.format_exc())
 
         vol_ = vol_coorection.vol_correction_factor_calc(
             self.converted_density, self.result.text, int(self.temperature))
@@ -585,7 +577,7 @@ class BunkerCalc(MDApp):
         try:
             create_vessel.create_vessel(name)
         except Exception as error:
-            logger.warning(error)
+            logger.warning(traceback.format_exc())
             pass
 
     def file_manager_open(self):
@@ -649,8 +641,8 @@ class BunkerCalc(MDApp):
                             self.vessels_admin.append(parsed_vessel)
 
             except Exception as error:
-                logger.warning(error)
-                pass
+                logger.warning(traceback.format_exc())
+
 
             for vessel in iter(self.vessels_admin):
                 self.the_DB_admin[vessel] = self.vessels_admin[0]
@@ -670,8 +662,8 @@ class BunkerCalc(MDApp):
             self.menu_admin.open()
             self.vessel_to_delete = self.vessels_admin
         except ValueError as error:
-            logger.warning(error)
-            pass
+            logger.warning(traceback.format_exc())
+
 
     def selected_vessel_import(self, vessel: str):
         self.root.get_screen("add_tank_screen").ids.drop_vessels.text = vessel
@@ -694,5 +686,5 @@ if __name__ == "__main__":
     try:
         BunkerCalc().run()
     except Exception as error:
-        logger.warning(error)
-        pass
+        logger.warning(traceback.format_exc())
+
