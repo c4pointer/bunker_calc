@@ -18,7 +18,7 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          buildozer_version: latest
+          buildozer_version: stable
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2

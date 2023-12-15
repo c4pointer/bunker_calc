@@ -4,7 +4,7 @@
 title = BunkerCalc
 
 # (str) Package name
-package.name = bunkercalc
+package.name = myapp
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,db,ttf,md
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 1.1.9
+version = 1.1.2
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -49,8 +49,7 @@ requirements = python3,kivy==master,https://github.com/kivymd/KivyMD/archive/mas
 # (str) Icon of the application
 #icon.filename = %(source.dir)s/data/icon.png
 
-# (list) Supported orientations
-# Valid options are: landscape, portrait, portrait-reverse or landscape-reverse
+# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
 
 # (list) List of service to declare
@@ -59,6 +58,7 @@ orientation = portrait
 #
 # OSX Specific
 #
+
 #
 # author = © Copyright Info
 
@@ -93,8 +93,8 @@ fullscreen = 0
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 
 # (list) Permissions
-# (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-android.permissions = READ_EXTERNAL_STORAGE,READ_SETTINGS,READ_SECURE_SETTINGS,MANAGE_DOCUMENTS,WRITE_EXTERNAL_STORAGE (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)
+#android.permissions = INTERNET
+android.permissions = READ_EXTERNAL_STORAGE,READ_SETTINGS,READ_SECURE_SETTINGS,MANAGE_DOCUMENTS,WRITE_EXTERNAL_STORAGE
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
@@ -129,7 +129,7 @@ android.permissions = READ_EXTERNAL_STORAGE,READ_SETTINGS,READ_SECURE_SETTINGS,M
 # (bool) If True, then skip trying to update the Android sdk
 # This can be useful to avoid excess Internet downloads or save time
 # when an update is due and you just want to test/build your package
-android.skip_update = False
+ android.skip_update = False
 
 # (bool) If True, then automatically accept SDK license
 # agreements. This is intended for automation only. If set to False,
@@ -194,7 +194,7 @@ android.skip_update = False
 # android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
 # 2) A directory, here  'legal_icons' must contain resources of one kind
 # android.add_resources = legal_icons:drawable
-# 3) A directory, here 'legal_resources' must contain one or more directories, 
+# 3) A directory, here 'legal_resources' must contain one or more directories,
 # each of a resource kind:  drawable, xml, etc...
 # android.add_resources = legal_resources
 #android.add_resources =
@@ -213,14 +213,14 @@ android.skip_update = False
 # android.add_compile_options = "sourceCompatibility = 1.8", "targetCompatibility = 1.8"
 
 # (list) Gradle repositories to add {can be necessary for some android.gradle_dependencies}
-# please enclose in double quotes 
+# please enclose in double quotes
 # e.g. android.gradle_repositories = "maven { url 'https://kotlin.bintray.com/ktor' }"
 #android.add_gradle_repositories =
 
-# (list) packaging options to add 
+# (list) packaging options to add
 # see https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.PackagingOptions.html
 # can be necessary to solve conflicts in gradle_dependencies
-# please enclose in double quotes 
+# please enclose in double quotes
 # e.g. android.add_packaging_options = "exclude 'META-INF/common.kotlin_module'", "exclude 'META-INF/*.kotlin_module'"
 #android.add_packaging_options =
 
@@ -242,10 +242,6 @@ android.skip_update = False
 
 # (str) launchMode to set for the main activity
 #android.manifest.launch_mode = standard
-
-# (str) screenOrientation to set for the main activity.
-# Valid values can be found at https://developer.android.com/guide/topics/manifest/activity-element
-#android.manifest.orientation = fullSensor
 
 # (list) Android additional libraries to copy into libs/armeabi
 #android.add_libs_armeabi = libs/android/*.so
