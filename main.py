@@ -134,9 +134,9 @@ class BunkerCalc(MDApp):
                 self.mdo_tank_extract(vessel)
                 self.add_tab(vessel)
             except Exception as error:
-                logger.warning(traceback.format_exc())
+                logger.debug(traceback.format_exc())
         except Exception as error:
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
@@ -201,7 +201,7 @@ class BunkerCalc(MDApp):
                 self.menu.dismiss()
             self.root.get_screen("total_screen").ids.total_menu_total.title = str(vessel_name)
         except Exception as error:
-            logger.warning(f"Vessel name methed - {error} : {traceback.format_exc()}")
+            logger.debug(f"Vessel name methed - {error} : {traceback.format_exc()}")
 
     def choose_vessel(self, x):
         vessel_name_db = []
@@ -221,7 +221,7 @@ class BunkerCalc(MDApp):
                         vessel_name_db.append(vessel_name_db_parsed)
                         vessels.append(parsed_vessel)
         except Exception as error:
-            logger.warning(f"Choose vessel files function - {error} : {traceback.format_exc()}")
+            logger.debug(f"Choose vessel files function - {error} : {traceback.format_exc()}")
 
 
         # Create a dropdown menu for selecting the Vessel`s Database
@@ -248,7 +248,7 @@ class BunkerCalc(MDApp):
             self.menu.open()
 
         except ValueError as error:
-            logger.warning(f"Create a dropdown menu - {error} : {traceback.format_exc()}")
+            logger.debug(f"Create a dropdown menu - {error} : {traceback.format_exc()}")
 
     def start_thread(self, vessel):
         self.button_state += 1
@@ -260,7 +260,7 @@ class BunkerCalc(MDApp):
                 self.button_state += 1
 
             except Exception as error:
-                logger.warning(traceback.format_exc())
+                logger.debug(traceback.format_exc())
 
     def name_of_tank(self, vessel_db):
         # Extract from DB names of each tank
@@ -272,7 +272,7 @@ class BunkerCalc(MDApp):
                 self.names.append(i[0])
         except Exception as error:
             self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
 
     def mdo_tank_extract(self, v):
         self.mdo_names = []
@@ -310,14 +310,14 @@ class BunkerCalc(MDApp):
             except AttributeError as error:
                 self.root.get_screen('tab_screen').ids.tabs.add_widget(
                     Tab(title=f"Previous quantity: {prev_label_text}"))
-                logger.warning(f"Exception for previous quantity - {error} : {traceback.format_exc()}")
+                logger.debug(f"Exception for previous quantity - {error} : {traceback.format_exc()}")
 
             # afetr add text to label of first tab we delete here the last widget that is non-correct
             self.root.get_screen('tab_screen').ids.tabs.remove_widget(
                 self.root.get_screen('tab_screen').ids.tabs.get_tab_list()[-1]
             )
         except Exception as error:
-            logger.warning(f"Exception in add tab - {error} : {traceback.format_exc()}")
+            logger.debug(f"Exception in add tab - {error} : {traceback.format_exc()}")
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -357,7 +357,7 @@ class BunkerCalc(MDApp):
                 else:
                     self.bbb.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
             except Exception as error:
-                logger.warning(f"On tab switch method - {error} : {traceback.format_exc()}")
+                logger.debug(f"On tab switch method - {error} : {traceback.format_exc()}")
 
 
     def callback_Calc(self, *args):
@@ -373,7 +373,7 @@ class BunkerCalc(MDApp):
             try:
                 volume = str(calculations[0])
             except IndexError as error:
-                logger.warning(traceback.format_exc())
+                logger.debug(traceback.format_exc())
             # If tank is in MDO state than we make calcs for it and append to
             # "total_list_mdo" for displaying in Total result screen
             if state_selected[0] == 1:
@@ -457,18 +457,18 @@ class BunkerCalc(MDApp):
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!\nRecheck")
                     self.result.font_size = "20dp"
-                    logger.warning(traceback.format_exc())
+                    logger.debug(traceback.format_exc())
             self.bbb.hint_text = "Sounding value (cm):"
         except AttributeError as error:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
 
     def my_value(self, *args):  #  Value from Temp slider
         try:
             # self.slider_value={}
             self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])), 0)
         except Exception as error:
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
             pass
         return self.slider_value
 
@@ -483,7 +483,7 @@ class BunkerCalc(MDApp):
 
             except Exception as error:
                 self.temperature = def_temp
-                logger.warning(traceback.format_exc())
+                logger.debug(traceback.format_exc())
             # Density selecting
             if len(self.dens_new.text) == 0:
                 # If density is not inputed by user than we collect it from
@@ -499,7 +499,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(traceback.format_exc())
+                        logger.debug(traceback.format_exc())
                         pass
 
 
@@ -524,7 +524,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(traceback.format_exc())
+                        logger.debug(traceback.format_exc())
                         pass
 
                 else:
@@ -546,7 +546,7 @@ class BunkerCalc(MDApp):
                         self.dens_new.hint_text = "Wrong Density"
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
-                        logger.warning(traceback.format_exc())
+                        logger.debug(traceback.format_exc())
                 else:
                     self.dens_new.hint_text = "Density (example: 0.9588)"
                     self.dens_new.text_color_normal = 1, 1, 0.8, 1
@@ -554,7 +554,7 @@ class BunkerCalc(MDApp):
         try:
             self.converted_density = ((float(self.def_dens) / 2) * 1000) * 2
         except Exception as error:
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
 
         vol_ = vol_coorection.vol_correction_factor_calc(
             self.converted_density, self.result.text, int(self.temperature))
@@ -577,7 +577,7 @@ class BunkerCalc(MDApp):
         try:
             create_vessel.create_vessel(name)
         except Exception as error:
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
             pass
 
     def file_manager_open(self):
@@ -641,7 +641,7 @@ class BunkerCalc(MDApp):
                             self.vessels_admin.append(parsed_vessel)
 
             except Exception as error:
-                logger.warning(traceback.format_exc())
+                logger.debug(traceback.format_exc())
 
 
             for vessel in iter(self.vessels_admin):
@@ -662,7 +662,7 @@ class BunkerCalc(MDApp):
             self.menu_admin.open()
             self.vessel_to_delete = self.vessels_admin
         except ValueError as error:
-            logger.warning(traceback.format_exc())
+            logger.debug(traceback.format_exc())
 
 
     def selected_vessel_import(self, vessel: str):
@@ -686,5 +686,5 @@ if __name__ == "__main__":
     try:
         BunkerCalc().run()
     except Exception as error:
-        logger.warning(traceback.format_exc())
+        logger.debug(traceback.format_exc())
 
