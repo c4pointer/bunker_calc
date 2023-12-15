@@ -1,4 +1,5 @@
-Kivy
 Kivy-Garden
 kivymd
 buildozer==1.5.0
+Cython==0.29.33
+kivy==2.2.0

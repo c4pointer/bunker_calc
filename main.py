@@ -42,9 +42,8 @@ if platform == "android":
     SD_CARD = primary_external_storage_path()
 
 # Here we store our dict with total quantity of fuel
-total_list_hfo = {}
-total_list_mdo = {}
-
+total_hfo = set()
+total_mdo = set()
 # Declare empty list for tanks
 names_hfo = []
 names_mdo = []
@@ -56,6 +55,17 @@ vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of 
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
+
+
+class Tank:
+
+    def __init__(self, name, metric_tones, measure, temp, density, meter_cubic):
+        self.name = name
+        self.metric_tones = metric_tones
+        self.temp = temp
+        self.meter_cubic = meter_cubic
+        self.density = density
+        self.measure = measure
 
 
 # Screens
@@ -130,43 +140,31 @@ class BunkerCalc(MDApp):
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
-        self.total_result_hfo = []
-        self.total_result_mdo = []
         self.mdo_tons = []
         self.hfo_tons = []
         # HFO
         self.sum_hfo = 0
         self.sum_hfo_tons = 0
-        for i in (self.names):
-            try:
-                if len(total_list_hfo[i]) > 0:
-                    self.total_result_hfo.append(total_list_hfo[i])
-            except KeyError as error:
-                logger.warning(error)
-                pass
-
-        for i in self.total_result_hfo:
-            self.sum_hfo += float(i[4])
-            self.sum_hfo_tons += float(i[0])
-            # MDO
+        # MDO
         self.sum_mdo = 0
         self.sum_mdo_tons = 0
+        logger.warning("=====================================")
+        logger.warning(len(total_hfo))
+        logger.warning(self.sum_hfo_tons)
+        for t in total_hfo:
+            self.sum_hfo += float(t.meter_cubic)
+            self.sum_hfo_tons += float(t.metric_tones)
+
         for d in (list(set(self.mdo_names).intersection(set(self.names)))):
-            try:
-                if len(total_list_mdo[d]) > 0:
-                    self.total_result_mdo.append(total_list_mdo[d])
-            except KeyError as error:
-                logger.warning(error)
-                pass
-
-        for i in self.total_result_mdo:
-            self.sum_mdo += float(i[4])
-            self.sum_mdo_tons += float(i[0])
-
+            for tank in total_mdo:
+                if str(tank.name) == str(d):
+                    self.sum_mdo += float(tank.meter_cubic)
+                    self.sum_mdo_tons += float(tank.metric_tones)
         if len(self.hfo_tons) == 0:
             self.hfo_tons.append(float(0))
         if len(self.mdo_tons) == 0:
             self.mdo_tons.append(float(0))
+
         return self.sum_mdo, self.sum_hfo, self.hfo_tons, self.mdo_tons, self.sum_mdo_tons, self.sum_hfo_tons
 
     def screen2(self):
@@ -384,69 +382,81 @@ class BunkerCalc(MDApp):
             # "total_list_mdo" for displaying in Total result screen
             if state_selected[0] == 1:
                 try:
+
                     self.result.font_size = "30dp"
                     if type_selected[0] == 1:
+
                         self.result.text = str(self.sound_value.text)
                         volume = self.result.text
                         self.temp_dens_extraction()
-                        # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.tank = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.real_volume,
+                                         self.sound_value.text, self.temperature, self.def_dens,
+                                         volume)
                         self.result.text = str(self.sound_value.text) + str(" m3")
-
                     else:
                         self.result.text = str(calculations[0])
                         self.temp_dens_extraction()
-                        # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.tank = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.real_volume,
+                                         self.sound_value.text, self.temperature, self.def_dens,
+                                         volume)
                         self.result.text = str(calculations[0]) + str(" m3")
 
                     # Insert data to prev DB for prev values extarcting on start
-                    if len(total_list_mdo) > 0:
-                        for i in (total_list_mdo):
-                            "     "
-                            db_reading.add_to_prevdb(
-                                i, total_list_mdo[i][1], total_list_mdo[i][0],
-                                self.name_of_vessel_db)
-
+                    if self.tank:
+                        db_reading.add_to_prevdb(
+                            self.tank.name, self.tank.measure, self.tank.metric_tones,
+                            self.name_of_vessel_db)
+                    if not total_mdo:
+                        total_mdo.add(self.tank)
+                    else:
+                        for tank in total_mdo:
+                            if tank.name == self.tank_name:
+                                total_mdo.add(self.tank)
                 except IndexError as error:
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!")
                     self.result.font_size = "20dp"
-                    logger.warning(error)
+
             # Calculate if tank is NOT MDO but is HFO
             else:
                 try:
+
                     self.result.font_size = "30dp"
                     # If type of tank is not with sounding table,
                     # but only gauging than inputted value is added
                     # to total screen
+
                     if type_selected[0] == 1:
+
                         self.result.text = str(self.sound_value.text)
                         volume = self.result.text
                         self.temp_dens_extraction()
                         # Define below row for take into prev function use
-                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.tank = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.real_volume,
+                                         self.sound_value.text, self.temperature, self.def_dens,
+                                         volume)
                         self.result.text = str(self.sound_value.text) + str(" m3")
 
                     else:
                         self.result.font_size = "30dp"
                         self.result.text = str(calculations[0])
                         self.temp_dens_extraction()
-
-                        # Define below row for take into prev function use
-                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
+                        self.tank = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.real_volume,
+                                         self.sound_value.text, self.temperature, self.def_dens,
+                                         self.result.text)
                         self.result.text = str(calculations[0]) + str(" m3")
 
                     # Insert data to prev DB for prev values extracting on start
-                    if len(total_list_hfo) > 0:
-                        for i in (total_list_hfo):
-                            db_reading.add_to_prevdb(
-                                i, total_list_hfo[i][1], total_list_hfo[i][0],
-                                self.name_of_vessel_db)
+                    if self.tank:
+                        db_reading.add_to_prevdb(
+                            self.tank.name, self.tank.measure, self.tank.metric_tones,
+                            self.name_of_vessel_db)
+                    if not total_hfo:
+                        total_hfo.add(self.tank)
+                    else:
+                        for tank in total_hfo:
+                            if tank.name == self.tank_name:
+                                total_hfo.add(self.tank)
                 except IndexError as error:
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!\nRecheck")
