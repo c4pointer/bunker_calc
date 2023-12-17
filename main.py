@@ -210,7 +210,8 @@ class BunkerCalc(MDApp):
             self.start_thread(self.name_of_vessel_db)
 
             if len(self.the_DB) != 0:
-                self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel_name)
+                self.vessel = str(vessel_name)
+                self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel_name).replace("_", ' ')
                 self.menu.dismiss()
 
             self.root.get_screen("total_screen").ids.total_menu_total.title = str(vessel_name)
