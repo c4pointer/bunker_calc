@@ -44,7 +44,8 @@ if platform == "android":
 # Here we store our dict with total quantity of fuel
 total_list_hfo = {}
 total_list_mdo = {}
-
+tank_total_hfo = []
+tank_total_mdo = []
 # Declare empty list for tanks
 names_hfo = []
 names_mdo = []
@@ -56,6 +57,66 @@ vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of 
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
+
+
+class Vessel:
+
+    def __init__(self, name):
+        self.name = name
+
+class Tank:
+    
+    def __init__(self, name, metric_tones, measurement, temp, density, volume):
+        self.name = name
+        self.metric_tones = metric_tones
+        self.measurement = measurement
+        self.temp = temp
+        self.density = density
+        self.volume = volume
+
+    def add_tank_hfo(self, tank):
+        if tank_total_hfo:
+            names = set()
+            for tank_ in tank_total_hfo:
+                names.add(tank_.name)
+            for tank_ in tank_total_hfo:
+                if tank.name in names:
+                    logger.debug(f"List before delete {tank.name} - {tank_total_hfo}")
+                    tank_total_hfo.remove(tank_)
+                    logger.debug(f"Update after delete {tank.name} - {tank_total_hfo}")
+                    tank_total_hfo.append(tank)
+                    logger.debug(f"Update {tank.name} after append - {tank_total_hfo}")
+                    return True
+                else:
+                    tank_total_hfo.append(tank)
+                    logger.debug(f"Update after append - {tank_total_hfo}")
+                    return True
+        else:
+            tank_total_hfo.append(tank)
+            logger.debug(f"{tank.name} appended - {tank_total_hfo}")
+            return True
+
+    def add_tank_mdo(self, tank):
+        if tank_total_mdo:
+            names = set()
+            for tank_ in tank_total_mdo:
+                names.add(tank_.name)
+            for tank_ in tank_total_mdo:
+                if tank.name in names:
+                    logger.debug(f"List before delete {tank.name} - {tank_total_mdo}")
+                    tank_total_mdo.remove(tank_)
+                    logger.debug(f"Update after delete {tank.name} - {tank_total_mdo}")
+                    tank_total_mdo.append(tank)
+                    logger.debug(f"Update {tank.name} after append - {tank_total_mdo}")
+                    return True
+                else:
+                    tank_total_mdo.append(tank)
+                    logger.debug(f"Update after append - {tank_total_mdo}")
+                    return True
+        else:
+            tank_total_mdo.append(tank)
+            logger.debug(f"{tank.name} appended - {tank_total_mdo}")
+            return True
 
 
 # Screens
@@ -130,8 +191,6 @@ class BunkerCalc(MDApp):
 
     def calculate_total(self):
         # Calculate the total m3 in our "total_list"
-        self.total_result_hfo = []
-        self.total_result_mdo = []
         self.mdo_tons = []
         self.hfo_tons = []
         # HFO
@@ -140,29 +199,14 @@ class BunkerCalc(MDApp):
         # MDO
         self.sum_mdo = 0
         self.sum_mdo_tons = 0
-        for i in (self.names):
-            try:
-                if i in total_list_hfo:
-                    if len(total_list_hfo) > 0:
-                        self.total_result_hfo.append(total_list_hfo[i])
-            except KeyError as error:
-                logger.debug(traceback.format_exc())
-                pass
-        for i in self.total_result_hfo:
-            self.sum_hfo += float(i[4])
-            self.sum_hfo_tons += float(i[0])
 
-        for d in (list(set(self.mdo_names).intersection(set(self.names)))):
-            try:
-                if d in total_list_mdo:
-                    if len(total_list_mdo) > 0:
-                        self.total_result_mdo.append(total_list_mdo[d])
-            except KeyError as error:
-                logger.debug(traceback.format_exc())
+        for tank in tank_total_hfo:
+            self.sum_hfo += float(tank.volume)
+            self.sum_hfo_tons += float(tank.metric_tones)
 
-        for i in self.total_result_mdo:
-            self.sum_mdo += float(i[4])
-            self.sum_mdo_tons += float(i[0])
+        for tank in tank_total_mdo:
+            self.sum_mdo += float(tank.volume)
+            self.sum_mdo_tons += float(tank.metric_tones)
 
         if len(self.hfo_tons) == 0:
             self.hfo_tons.append(float(0))
@@ -215,18 +259,15 @@ class BunkerCalc(MDApp):
         self.the_DB = {}
         # Store the all ships
         vessels = []
-
         file_location_detect = os.getcwd()
         try:
             # scan current working Directory
-            scan_dir = os.scandir(file_location_detect)
-            for entries in scan_dir:
-                if not entries.name.endswith('_prev.db') and entries.is_file:
-                    if entries.name.endswith(".db"):
-                        parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
-                        vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
-                        vessel_name_db.append(vessel_name_db_parsed)
-                        vessels.append(parsed_vessel)
+            scan_dir = os.listdir(file_location_detect)
+            for file in scan_dir:
+                if not file.endswith('_prev.db') and file.endswith(".db"):
+                    parsed_vessel = str(file).removesuffix('.db').title()
+                    vessel_name_db.append(parsed_vessel)
+                    vessels.append(parsed_vessel)
         except Exception as error:
             logger.warning(f"Choose vessel files function - {error} : {traceback.format_exc()}")
 
@@ -302,22 +343,6 @@ class BunkerCalc(MDApp):
                     if do == i:
                         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
 
-            try:
-                if self.text_vessel:
-                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                        Tab(
-                            title=f"Previous quantity:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at \
-                        {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm")
-                    )
-
-                else:
-                    self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                        Tab(title=f"Previous quantity: {prev_label_text}"))
-
-            except AttributeError as error:
-                self.root.get_screen('tab_screen').ids.tabs.add_widget(
-                    Tab(title=f"Previous quantity: {prev_label_text}"))
-                logger.warning(f"Exception for previous quantity - {error} : {traceback.format_exc()}")
 
             # afetr add text to label of first tab we delete here the last widget that is non-correct
             self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -336,7 +361,7 @@ class BunkerCalc(MDApp):
         :param instance_tab_label: <kivymd.uix.tab.MDTabsLabel object>;
         :param tab_text: text or name icon of tab;
         '''
-        self.bbb = instance_tab.ids.sound_field
+        self.sound_filed_help = instance_tab.ids.sound_field
         instance_tab.ids.sound_field.text_color_normal = 1, 1, 0.8, 1
         self.button_calc = instance_tab.ids.calc
         self.text_vessel = self.root.get_screen("tab_screen").ids.top_menu.title
@@ -360,9 +385,9 @@ class BunkerCalc(MDApp):
         if not self.result.text == "Select Vessel first":
             try:
                 if  self.text_vessel:
-                    self.bbb.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
+                   self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
                 else:
-                    self.bbb.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
+                   self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
             except Exception as error:
                 logger.warning(f"On tab switch method - {error} : {traceback.format_exc()}")
 
@@ -390,19 +415,21 @@ class BunkerCalc(MDApp):
                         self.result.text = str(self.sound_value.text)
                         volume = self.result.text
                         self.temp_dens_extraction()
-                        # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                         self.result.text = str(self.sound_value.text) + str(" m3")
+                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
+                                           self.sound_value.text, self.temperature, self.def_dens, volume)
+                        # vessel_class = Vessel(self.name_of_vessel_db)
+                        tank_vessel.add_tank_mdo(tank_vessel)
 
                     else:
                         self.result.text = str(calculations[0])
                         self.temp_dens_extraction()
                         # Define below row for take into prev function use
-                        total_list_mdo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                         self.result.text = str(calculations[0]) + str(" m3")
-
+                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
+                                           self.sound_value.text, self.temperature, self.def_dens, volume)
+                        # vessel_class = Vessel(self.name_of_vessel_db)
+                        tank_vessel.add_tank_mdo(tank_vessel)
                     # Insert data to prev DB for prev values extarcting on start
                     if len(total_list_mdo) > 0:
                         for i in (total_list_mdo):
@@ -428,20 +455,22 @@ class BunkerCalc(MDApp):
                         volume = self.result.text
                         self.temp_dens_extraction()
                         # Define below row for take into prev function use
-                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                         self.result.text = str(self.sound_value.text) + str(" m3")
-
+                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
+                                           self.sound_value.text, self.temperature, self.def_dens, volume)
+                        # vessel_class = Vessel(self.name_of_vessel_db)
+                        tank_vessel.add_tank_hfo(tank_vessel)
                     else:
                         self.result.font_size = "30dp"
                         self.result.text = str(calculations[0])
                         self.temp_dens_extraction()
 
                         # Define below row for take into prev function use
-                        total_list_hfo[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = (
-                            (self.real_volume), self.sound_value.text, self.temperature, self.def_dens, volume)
                         self.result.text = str(calculations[0]) + str(" m3")
-
+                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
+                                           self.sound_value.text, self.temperature, self.def_dens, volume)
+                        # vessel_class = Vessel(self.name_of_vessel_db)
+                        tank_vessel.add_tank_hfo(tank_vessel)
                     # Insert data to prev DB for prev values extracting on start
                     if len(total_list_hfo) > 0:
                         for i in (total_list_hfo):
@@ -453,7 +482,7 @@ class BunkerCalc(MDApp):
                     self.result.text = str("Wrong sounding value!\nRecheck")
                     self.result.font_size = "20dp"
                     logger.debug(traceback.format_exc())
-            self.bbb.hint_text = "Sounding value (cm):"
+            self.sound_filed_help.hint_text = "Sounding value (cm):"
         except AttributeError as error:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
             logger.debug(traceback.format_exc())
@@ -615,14 +644,12 @@ class BunkerCalc(MDApp):
         try:
             try:
                 # scan current working Directory
-                scan_dir = os.scandir(file_location_detect)
-                for entries in scan_dir:
-                    if not entries.name.endswith('_prev.db') and entries.is_file:
-                        if entries.name.endswith(".db"):
-                            parsed_vessel = str(entries).removeprefix('<DirEntry \'').removesuffix('.db\'>').title()
-                            vessel_name_db_parsed = str(entries).removeprefix('<DirEntry \'').removesuffix('\'>')
-                            self.vessel_name_db.append(vessel_name_db_parsed)
-                            self.vessels_admin.append(parsed_vessel)
+                scan_dir = os.listdir(file_location_detect)
+                for file in scan_dir:
+                    if not file.endswith('_prev.db') and file.endswith(".db"):
+                        parsed_vessel = str(file).removesuffix('.db').title()
+                        self.vessel_name_db.append(parsed_vessel)
+                        self.vessels_admin.append(parsed_vessel)
             except Exception as error:
                 logger.debug(traceback.format_exc())
             for vessel in iter(self.vessels_admin):
@@ -656,7 +683,6 @@ class BunkerCalc(MDApp):
         self.tk = self.root.get_screen("add_tank_screen").ids.new_tank.text = str()
 
     def delete_vessel(self):
-        print(file_location_detect)
         file_db = str(self.root.get_screen("del_vessel_screen").ids.drop_vessels.text).lower() + ".db"
         file_db_prev = str(self.root.get_screen("del_vessel_screen").ids.drop_vessels.text).lower() + "_prev.db"
         os.remove(str(file_location_detect + "/" + str(file_db)))
