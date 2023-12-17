@@ -498,9 +498,6 @@ class BunkerCalc(MDApp):
                         self.dens_new.text_color_normal = "#ff2233"
                     except Exception as error:
                         logger.debug(traceback.format_exc())
-                        pass
-
-
                 else:
                     self.dens_new.hint_text = "Density (example: 0.9588)"
                     self.dens_new.text_color_normal = 1, 1, 0.8, 1
