@@ -42,27 +42,18 @@ if platform == "android":
     SD_CARD = primary_external_storage_path()
 
 # Here we store our dict with total quantity of fuel
-total_list_hfo = {}
-total_list_mdo = {}
 tank_total_hfo = []
 tank_total_mdo = []
-# Declare empty list for tanks
-names_hfo = []
-names_mdo = []
+
 
 # Default variables
-def_temp = int(str("15"))  # The conventional Default temperature for calculating fuel
+def_temp = int(15)  # The conventional Default temperature for calculating fuel
 vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of App
 
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
 
-
-class Vessel:
-
-    def __init__(self, name):
-        self.name = name
 
 class Tank:
     
@@ -81,19 +72,14 @@ class Tank:
                 names.add(tank_.name)
             for tank_ in tank_total_hfo:
                 if tank.name in names:
-                    logger.debug(f"List before delete {tank.name} - {tank_total_hfo}")
                     tank_total_hfo.remove(tank_)
-                    logger.debug(f"Update after delete {tank.name} - {tank_total_hfo}")
                     tank_total_hfo.append(tank)
-                    logger.debug(f"Update {tank.name} after append - {tank_total_hfo}")
                     return True
                 else:
                     tank_total_hfo.append(tank)
-                    logger.debug(f"Update after append - {tank_total_hfo}")
                     return True
         else:
             tank_total_hfo.append(tank)
-            logger.debug(f"{tank.name} appended - {tank_total_hfo}")
             return True
 
     def add_tank_mdo(self, tank):
@@ -103,19 +89,14 @@ class Tank:
                 names.add(tank_.name)
             for tank_ in tank_total_mdo:
                 if tank.name in names:
-                    logger.debug(f"List before delete {tank.name} - {tank_total_mdo}")
                     tank_total_mdo.remove(tank_)
-                    logger.debug(f"Update after delete {tank.name} - {tank_total_mdo}")
                     tank_total_mdo.append(tank)
-                    logger.debug(f"Update {tank.name} after append - {tank_total_mdo}")
                     return True
                 else:
                     tank_total_mdo.append(tank)
-                    logger.debug(f"Update after append - {tank_total_mdo}")
                     return True
         else:
             tank_total_mdo.append(tank)
-            logger.debug(f"{tank.name} appended - {tank_total_mdo}")
             return True
 
 
@@ -377,7 +358,6 @@ class BunkerCalc(MDApp):
             self.root.get_screen("tab_screen").ids.select_vessel.text_color = 1, 1, 0.9, 1
         else:
             self.button_calc.disabled = True
-
             self.result.font_size = "30dp"
             self.result.text = "Select Vessel first"
             self.root.get_screen("tab_screen").ids.select_vessel.text_color = "#f43434"
@@ -431,12 +411,10 @@ class BunkerCalc(MDApp):
                         # vessel_class = Vessel(self.name_of_vessel_db)
                         tank_vessel.add_tank_mdo(tank_vessel)
                     # Insert data to prev DB for prev values extarcting on start
-                    if len(total_list_mdo) > 0:
-                        for i in (total_list_mdo):
-                            "     "
-                            db_reading.add_to_prevdb(
-                                i, total_list_mdo[i][1], total_list_mdo[i][0],
-                                self.name_of_vessel_db)
+                    if tank_vessel:
+                        db_reading.add_to_prevdb(
+                            tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
+                            self.name_of_vessel_db)
 
                 except IndexError as error:
                     # Printing on display the error and change the font-size
@@ -472,10 +450,9 @@ class BunkerCalc(MDApp):
                         # vessel_class = Vessel(self.name_of_vessel_db)
                         tank_vessel.add_tank_hfo(tank_vessel)
                     # Insert data to prev DB for prev values extracting on start
-                    if len(total_list_hfo) > 0:
-                        for i in (total_list_hfo):
+                    if tank_vessel:
                             db_reading.add_to_prevdb(
-                                i, total_list_hfo[i][1], total_list_hfo[i][0],
+                                tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
                                 self.name_of_vessel_db)
                 except IndexError as error:
                     # Printing on display the error and change the font-size
