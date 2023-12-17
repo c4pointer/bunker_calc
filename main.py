@@ -53,51 +53,28 @@ vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of 
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
-
-
 class Tank:
-    
-    def __init__(self, name, metric_tones, measurement, temp, density, volume):
+    def __init__(self, name, metric_tons, measurement, temp, density, volume):
         self.name = name
-        self.metric_tones = metric_tones
+        self.metric_tons = metric_tons
         self.measurement = measurement
         self.temp = temp
         self.density = density
         self.volume = volume
 
-    def add_tank_hfo(self, tank):
-        if tank_total_hfo:
-            names = set()
-            for tank_ in tank_total_hfo:
-                names.add(tank_.name)
-            for tank_ in tank_total_hfo:
-                if tank.name in names:
-                    tank_total_hfo.remove(tank_)
-                    tank_total_hfo.append(tank)
-                    return True
-                else:
-                    tank_total_hfo.append(tank)
-                    return True
-        else:
-            tank_total_hfo.append(tank)
-            return True
+    @staticmethod
+    def add_tank_to_list(tank, tank_list):
+        names = {t.name for t in tank_list}
+        if tank.name in names:
+            tank_list[:] = [t for t in tank_list if t.name != tank.name]
+        tank_list.append(tank)
+        return True
 
-    def add_tank_mdo(self, tank):
-        if tank_total_mdo:
-            names = set()
-            for tank_ in tank_total_mdo:
-                names.add(tank_.name)
-            for tank_ in tank_total_mdo:
-                if tank.name in names:
-                    tank_total_mdo.remove(tank_)
-                    tank_total_mdo.append(tank)
-                    return True
-                else:
-                    tank_total_mdo.append(tank)
-                    return True
-        else:
-            tank_total_mdo.append(tank)
-            return True
+    def add_tank_hfo(self):
+        return self.add_tank_to_list(self, tank_total_hfo)
+
+    def add_tank_mdo(self):
+        return self.add_tank_to_list(self, tank_total_mdo)
 
 
 # Screens
@@ -138,7 +115,7 @@ class BunkerCalc(MDApp):
         self.theme_cls.theme_style = "Dark"
 
     def on_start(self):
-        # Dict for store here all vessel sounding table data base
+        # Dict for storing all vessel sounding table data
         self.the_DB = {}
         self.the_DB_admin = {}
         # Calculation button state is Disabled
@@ -152,9 +129,9 @@ class BunkerCalc(MDApp):
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
         # Label for toggle screens between the total screen and Tabs
-        self.root.get_screen("tab_screen").ids.right_action.text = "Sounding Screen"
-        self.root.get_screen("tab_screen").ids.select_vessel.text = "Select vessel"
-        # self.root.get_screen("tab_screen").ids.calc.disabled = True
+        screen = self.root.get_screen("tab_screen")
+        screen.ids.right_action.text = "Sounding Screen"
+        screen.ids.select_vessel.text = "Select vessel"
 
     def change_vessel(self, vessel):
         try:
@@ -183,11 +160,11 @@ class BunkerCalc(MDApp):
 
         for tank in tank_total_hfo:
             self.sum_hfo += float(tank.volume)
-            self.sum_hfo_tons += float(tank.metric_tones)
+            self.sum_hfo_tons += float(tank.metric_tons)
 
         for tank in tank_total_mdo:
             self.sum_mdo += float(tank.volume)
-            self.sum_mdo_tons += float(tank.metric_tones)
+            self.sum_mdo_tons += float(tank.metric_tons)
 
         if len(self.hfo_tons) == 0:
             self.hfo_tons.append(float(0))
@@ -197,76 +174,82 @@ class BunkerCalc(MDApp):
 
     def screen2(self):
         """
-        Go to total screen where is shown total figure
-        At each time when "total_screen" is pressed is recalculated
-        total figure
+        Go to the total screen where the total figure is shown.
+        Each time "total_screen" is pressed, the total figure is recalculated.
         """
-        if self.root.current != "total_screen":
-            if self.root.current == "tab_screen":
+        current_screen = self.root.current
+
+        if current_screen != "total_screen":
+            if current_screen == "tab_screen":
                 self.root.current = "total_screen"
                 self.calculate_total()
                 # Display total results for MDO and HFO
-                self.root.get_screen("total_screen").ids.right_action.text = "Total Screen"
-                self.root.get_screen("total_screen").ids.total_hfo.text = str(round(self.sum_hfo, 3)) + str(" m3 HFO") \
-                                                                          + str(
-                    f"\n {round((self.sum_hfo_tons), 2)} MT HFO" + f"\n___________________")
-                self.root.get_screen("total_screen").ids.total_mdo.text = str(round(self.sum_mdo, 3)) + str(" m3 MDO") \
-                                                                          + str(
-                    f"\n {round((self.sum_mdo_tons), 2)} MT MDO")
+                total_screen = self.root.get_screen("total_screen")
+                total_screen.ids.right_action.text = "Total Screen"
+                total_screen.ids.total_hfo.text = (
+                    f"{round(self.sum_hfo, 3)} m3 HFO\n"
+                    f"{round(self.sum_hfo_tons, 2)} MT HFO\n___________________"
+                )
+                total_screen.ids.total_mdo.text = (
+                    f"{round(self.sum_mdo, 3)} m3 MDO\n"
+                    f"{round(self.sum_mdo_tons, 2)} MT MDO"
+                )
             else:
                 self.root.current = "tab_screen"
-
         else:
             self.root.current = "tab_screen"
 
     def vessel_name(self, vessel_name):
         """
-        Set selected vessel as title of App
+        Set the selected vessel as the title of the App.
         """
         try:
-            self.name_of_vessel_db = str(vessel_name).lower() + ".db"  # Name of DB if is non default
+            self.name_of_vessel_db = f"{vessel_name.lower()}.db"  # Name of DB if it is non-default
 
             # THREAD FOR selecting and switching vessel DB
             self.start_thread(self.name_of_vessel_db)
+
             if len(self.the_DB) != 0:
                 self.vessel = self.root.get_screen("tab_screen").ids.top_menu.title = str(vessel_name)
                 self.menu.dismiss()
+
             self.root.get_screen("total_screen").ids.total_menu_total.title = str(vessel_name)
         except Exception as error:
-            logger.warning(f"Vessel name methed - {error} : {traceback.format_exc()}")
+            logger.warning(f"Vessel name method - {error} : {traceback.format_exc()}")
 
     def choose_vessel(self, x):
+        """
+        Create a dropdown menu for selecting the Vessel's Database.
+        """
         vessel_name_db = []
         self.the_DB = {}
-        # Store the all ships
         vessels = []
         file_location_detect = os.getcwd()
+
         try:
-            # scan current working Directory
+            # Scan current working Directory
             scan_dir = os.listdir(file_location_detect)
             for file in scan_dir:
                 if not file.endswith('_prev.db') and file.endswith(".db"):
-                    parsed_vessel = str(file).removesuffix('.db').title()
+                    parsed_vessel = os.path.splitext(file)[0].title()
                     vessel_name_db.append(parsed_vessel)
                     vessels.append(parsed_vessel)
         except Exception as error:
             logger.warning(f"Choose vessel files function - {error} : {traceback.format_exc()}")
 
-
-        # Create a dropdown menu for selecting the Vessel`s Database
         try:
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Vessel"
             self.db_tuple = {}
 
-            for v in iter(vessels):
-                self.the_DB[v] = vessels[0]
+            for vessel in iter(vessels):
+                self.the_DB[vessel] = vessels[0]
 
-            menu_items = [(
+            menu_items = [
                 {
-                    "viewclass":  "OneLineListItem",
-                    "text":       f"{vessels[i]}",
+                    "viewclass": "OneLineListItem",
+                    "text": f"{vessels[i]}",
                     "on_release": lambda x=f"{vessels[i]}": self.vessel_name(x)
-                }) for i in range(len(vessels))
+                } for i in range(len(vessels))
             ]
 
             self.menu = MDDropdownMenu(
@@ -399,7 +382,7 @@ class BunkerCalc(MDApp):
                         tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
                                            self.sound_value.text, self.temperature, self.def_dens, volume)
                         # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_mdo(tank_vessel)
+                        tank_vessel.add_tank_mdo()
 
                     else:
                         self.result.text = str(calculations[0])
@@ -409,7 +392,7 @@ class BunkerCalc(MDApp):
                         tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
                                            self.sound_value.text, self.temperature, self.def_dens, volume)
                         # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_mdo(tank_vessel)
+                        tank_vessel.add_tank_mdo()
                     # Insert data to prev DB for prev values extarcting on start
                     if tank_vessel:
                         db_reading.add_to_prevdb(
@@ -437,7 +420,7 @@ class BunkerCalc(MDApp):
                         tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
                                            self.sound_value.text, self.temperature, self.def_dens, volume)
                         # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_hfo(tank_vessel)
+                        tank_vessel.add_tank_hfo()
                     else:
                         self.result.font_size = "30dp"
                         self.result.text = str(calculations[0])
@@ -448,7 +431,7 @@ class BunkerCalc(MDApp):
                         tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
                                            self.sound_value.text, self.temperature, self.def_dens, volume)
                         # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_hfo(tank_vessel)
+                        tank_vessel.add_tank_hfo()
                     # Insert data to prev DB for prev values extracting on start
                     if tank_vessel:
                             db_reading.add_to_prevdb(
