@@ -45,7 +45,6 @@ if platform == "android":
 tank_total_hfo = []
 tank_total_mdo = []
 
-
 # Default variables
 def_temp = int(15)  # The conventional Default temperature for calculating fuel
 vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of App
@@ -53,6 +52,8 @@ vessel_db = "viking_ocean.db"  # deafault vessel for build primary structure of 
 prev_label_text = {}
 
 file_location_detect = os.getcwd()
+
+
 class Tank:
     def __init__(self, name, metric_tons, measurement, temp, density, volume):
         self.name = name
@@ -268,31 +269,33 @@ class BunkerCalc(MDApp):
         self.x_thread = threading.Thread(target=self.change_vessel(vessel), daemon=True)
         self.x_thread.start()
 
-        if not self.x_thread.is_alive() == True:
+        if not self.x_thread.is_alive():
             try:
                 self.button_state += 1
-
             except Exception as error:
                 logger.debug(traceback.format_exc())
 
     def name_of_tank(self, vessel_db):
-        # Extract from DB names of each tank
+        """
+        Extract tank names from the database.
+        """
         try:
             self.names = []
             extract_name = db_reading.extract_names(vessel_db)
             self.tank_name = extract_name
-            for i in self.tank_name:
-                self.names.append(i[0])
+            self.names = [i[0] for i in self.tank_name]
         except Exception as error:
-            self.root.get_screen("tab_screen").ids.top_menu.title = str("No DATA in Vessel data base")
+            self.root.get_screen("tab_screen").ids.top_menu.title = "No DATA in Vessel database"
             logger.debug(traceback.format_exc())
 
     def mdo_tank_extract(self, v):
+        """
+        Extract MDO tank names from the database.
+        """
         self.mdo_names = []
         sorted_tank = db_reading.sort_tanks_mdo(v)
         self.mdo_tanks = sorted_tank
-        for i in self.mdo_tanks:
-            self.mdo_names.append(i[0])
+        self.mdo_names = [i[0] for i in self.mdo_tanks]
 
     def add_tab(self, vessel):
         try:
@@ -307,7 +310,6 @@ class BunkerCalc(MDApp):
                 for do in names_for_do:
                     if do == i:
                         self.root.get_screen('tab_screen').ids.tabs.add_widget(Tab(tab_label_text=f"{do} mdo"))
-
 
             # afetr add text to label of first tab we delete here the last widget that is non-correct
             self.root.get_screen('tab_screen').ids.tabs.remove_widget(
@@ -348,13 +350,12 @@ class BunkerCalc(MDApp):
 
         if not self.result.text == "Select Vessel first":
             try:
-                if  self.text_vessel:
-                   self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
+                if self.text_vessel:
+                    self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
                 else:
-                   self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
+                    self.sound_filed_help.hint_text = f"Prev quant:\n{db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][0]} m3, at {db_reading.prev_label_text[str(self.tank_name.text.removesuffix('mdo')).strip(' ')][1]} cm"
             except Exception as error:
                 logger.warning(f"On tab switch method - {error} : {traceback.format_exc()}")
-
 
     def callback_Calc(self, *args):
         try:
@@ -435,9 +436,9 @@ class BunkerCalc(MDApp):
                         tank_vessel.add_tank_hfo()
                     # Insert data to prev DB for prev values extracting on start
                     if tank_vessel:
-                            db_reading.add_to_prevdb(
-                                tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
-                                self.name_of_vessel_db)
+                        db_reading.add_to_prevdb(
+                            tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
+                            self.name_of_vessel_db)
                 except IndexError as error:
                     # Printing on display the error and change the font-size
                     self.result.text = str("Wrong sounding value!\nRecheck")
@@ -448,7 +449,7 @@ class BunkerCalc(MDApp):
             self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
             logger.debug(traceback.format_exc())
 
-    def my_value(self, *args):  #  Value from Temp slider
+    def my_value(self, *args):  # Value from Temp slider
         try:
             self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])), 0)
         except Exception as error:
@@ -615,8 +616,8 @@ class BunkerCalc(MDApp):
             # print(vessels_admin)
             menu_items = [(
                 {
-                    "viewclass":  "OneLineListItem",
-                    "text":       f"{self.vessels_admin[i]}",
+                    "viewclass": "OneLineListItem",
+                    "text": f"{self.vessels_admin[i]}",
                     "on_release": lambda x=f"{self.vessels_admin[i]}": self.selected_vessel_import(x)
                 }) for i in range(len(self.vessels_admin))
             ]
