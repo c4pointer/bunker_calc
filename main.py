@@ -359,184 +359,122 @@ class BunkerCalc(MDApp):
 
     def callback_Calc(self, *args):
         try:
-            calculations = db_editing.calculation(
-                str(self.tank_name.text.removesuffix('mdo')).strip(' '),
-                self.sound_value.text,
-                self.name_of_vessel_db)
-            type_selected = db_editing.type_sel(
-                str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
-            state_selected = db_editing.state_sel(
-                str(self.tank_name.text.removesuffix('mdo')).strip(' '), self.name_of_vessel_db)
-            try:
-                volume = str(calculations[0])
-            except IndexError as error:
-                logger.debug(traceback.format_exc())
-            # If tank is in MDO state than we make calcs for it and append to
-            # "total_list_mdo" for displaying in Total result screen
-            if state_selected[0] == 1:
-                try:
-                    self.result.font_size = "30dp"
-                    if type_selected[0] == 1:
-                        self.result.text = str(self.sound_value.text)
-                        volume = self.result.text
-                        self.temp_dens_extraction()
-                        self.result.text = str(self.sound_value.text) + str(" m3")
-                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
-                                           self.sound_value.text, self.temperature, self.def_dens, volume)
-                        # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_mdo()
+            tank_name_stripped = str(self.tank_name.text.removesuffix('mdo')).strip(' ')
+            calculations = db_editing.calculation(tank_name_stripped, self.sound_value.text, self.name_of_vessel_db)
+            type_selected = db_editing.type_sel(tank_name_stripped, self.name_of_vessel_db)
+            state_selected = db_editing.state_sel(tank_name_stripped, self.name_of_vessel_db)
 
-                    else:
-                        self.result.text = str(calculations[0])
-                        self.temp_dens_extraction()
-                        # Define below row for take into prev function use
-                        self.result.text = str(calculations[0]) + str(" m3")
-                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
-                                           self.sound_value.text, self.temperature, self.def_dens, volume)
-                        # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_mdo()
-                    # Insert data to prev DB for prev values extarcting on start
-                    if tank_vessel:
-                        db_reading.add_to_prevdb(
-                            tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
-                            self.name_of_vessel_db)
+            volume = str(calculations[0]) if calculations else None
 
-                except IndexError as error:
-                    # Printing on display the error and change the font-size
-                    self.result.text = str("Wrong sounding value!")
-                    self.result.font_size = "20dp"
-                    logger.debug(traceback.format_exc())
-            # Calculate if tank is NOT MDO but is HFO
-            else:
-                try:
-                    self.result.font_size = "30dp"
-                    # If type of tank is not with sounding table,
-                    # but only gauging than inputted value is added
-                    # to total screen
-                    if type_selected[0] == 1:
-                        self.result.text = str(self.sound_value.text)
-                        volume = self.result.text
-                        self.temp_dens_extraction()
-                        # Define below row for take into prev function use
-                        self.result.text = str(self.sound_value.text) + str(" m3")
-                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
-                                           self.sound_value.text, self.temperature, self.def_dens, volume)
-                        # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_hfo()
-                    else:
-                        self.result.font_size = "30dp"
-                        self.result.text = str(calculations[0])
-                        self.temp_dens_extraction()
+            self.handle_calculation_results(type_selected[0], state_selected[0], calculations, volume)
 
-                        # Define below row for take into prev function use
-                        self.result.text = str(calculations[0]) + str(" m3")
-                        tank_vessel = Tank(str(self.tank_name.text.removesuffix('mdo')).strip(' '), (self.real_volume),
-                                           self.sound_value.text, self.temperature, self.def_dens, volume)
-                        # vessel_class = Vessel(self.name_of_vessel_db)
-                        tank_vessel.add_tank_hfo()
-                    # Insert data to prev DB for prev values extracting on start
-                    if tank_vessel:
-                        db_reading.add_to_prevdb(
-                            tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
-                            self.name_of_vessel_db)
-                except IndexError as error:
-                    # Printing on display the error and change the font-size
-                    self.result.text = str("Wrong sounding value!\nRecheck")
-                    self.result.font_size = "20dp"
-                    logger.debug(traceback.format_exc())
-            self.sound_filed_help.hint_text = "Sounding value (cm):"
         except AttributeError as error:
-            self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
-            logger.debug(traceback.format_exc())
+            self.handle_attribute_error()
 
-    def my_value(self, *args):  # Value from Temp slider
+    def handle_calculation_results(self, type_selected, state_selected, calculations, volume):
         try:
-            self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')] = round(int((args[1])), 0)
+            self.result.font_size = "30dp"
+            if state_selected == 1:
+                self.handle_mdo_calculation(type_selected, calculations, volume)
+            else:
+                self.handle_hfo_calculation(type_selected, calculations, volume)
+
+            self.sound_filed_help.hint_text = "Sounding value (cm):"
+        except IndexError as error:
+            self.handle_index_error()
+
+    def handle_mdo_calculation(self, type_selected, calculations, volume):
+        try:
+            if type_selected == 1:
+                self.result.text = str(self.sound_value.text) + " m3"
+            else:
+                self.result.text = str(calculations[0]) + " m3"
+
+            self.temp_dens_extraction()
+            tank_vessel = Tank(self.get_tank_name(), self.real_volume, self.sound_value.text,
+                               self.temperature, self.def_dens, volume)
+            tank_vessel.add_tank_mdo()
+
+            if tank_vessel:
+                db_reading.add_to_prevdb(tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
+                                         self.name_of_vessel_db)
+        except IndexError as error:
+            self.handle_index_error()
+
+    def handle_hfo_calculation(self, type_selected, calculations, volume):
+        try:
+            self.result.text = str(self.sound_value.text) + " m3" if type_selected == 1 else str(
+                calculations[0]) + " m3"
+            self.temp_dens_extraction()
+
+            tank_vessel = Tank(self.get_tank_name(), self.real_volume, self.sound_value.text,
+                               self.temperature, self.def_dens, volume)
+            tank_vessel.add_tank_hfo()
+
+            if tank_vessel:
+                db_reading.add_to_prevdb(tank_vessel.name, tank_vessel.measurement, tank_vessel.volume,
+                                         self.name_of_vessel_db)
+        except IndexError as error:
+            self.handle_index_error()
+
+    def handle_index_error(self):
+        self.result.text = "Wrong sounding value!"
+        self.result.font_size = "20dp"
+        logger.debug(traceback.format_exc())
+
+    def handle_attribute_error(self):
+        self.root.get_screen("tab_screen").ids.select_vessel.text = "Select the vessel first"
+        logger.debug(traceback.format_exc())
+
+    def get_tank_name(self):
+        return str(self.tank_name.text.removesuffix('mdo')).strip(' ')
+
+    def my_value(self, *args):
+        try:
+            self.slider_value[self.get_tank_name()] = round(int(args[1]), 0)
         except Exception as error:
             logger.debug(traceback.format_exc())
-            pass
         return self.slider_value
 
     def temp_dens_extraction(self):
         try:
-            try:
-                if len(self.slider_value) != 0:
-                    self.temperature = str(self.slider_value[str(self.tank_name.text.removesuffix('mdo')).strip(' ')])
-                else:
-                    # if temperature was not selected than default temperature is applied
-                    self.temperature = def_temp
-            except Exception as error:
-                self.temperature = def_temp
-            # Density selecting
-            if len(self.dens_new.text) == 0:
-                # If density is not inputed by user than we collect it from
-                # database
-                self.def_dens = db_editing.select_DefDens(
-                    str(self.tank_name.text.removesuffix('mdo')).strip(' '),
-                    self.name_of_vessel_db)
-
-            else:
-                # if is inputted than put that what user inputted
-                if float(self.dens_new.text) >= 1.1:
-                    try:
-                        self.dens_new.hint_text = "Wrong Density"
-                        self.dens_new.text_color_normal = "#ff2233"
-                    except Exception as error:
-                        logger.debug(traceback.format_exc())
-                else:
-                    self.dens_new.hint_text = "Density (example: 0.9588)"
-                    self.dens_new.text_color_normal = 1, 1, 0.8, 1
-                    self.def_dens = self.dens_new.text
-        except AttributeError as error:
+            self.temperature = self.get_slider_temperature()
+            self.def_dens = self.get_density_value()
+        except (AttributeError, KeyError):
             self.temperature = def_temp
-            if len(self.dens_new.text) == 0:
-                # If density is not inputted by user than we collect it from
-                # database
-                self.def_dens = db_editing.select_DefDens(
-                    str(super.tank_name.text.removesuffix('mdo')).strip(' '),
-                    super.name_of_vessel_db)
-            else:
-                # if is inputted than put that what user inputted
-                if float(self.dens_new.text) >= 1.1:
-                    try:
-                        self.dens_new.hint_text = "Wrong Density"
-                        self.dens_new.text_color_normal = "#ff2233"
-                    except Exception as error:
-                        logger.debug(traceback.format_exc())
+            self.def_dens = db_editing.select_DefDens(self.get_tank_name(), self.name_of_vessel_db)
 
-                else:
-                    self.dens_new.hint_text = "Density (example: 0.9588)"
-                    self.dens_new.text_color_normal = 1, 1, 0.8, 1
-                    self.def_dens = self.dens_new.text
-        except KeyError as error:
-            self.temperature = def_temp
-            if len(self.dens_new.text) == 0:
-                # If density is not inputted by user than we collect it from
-                # database
-                self.def_dens = db_editing.select_DefDens(
-                    str(super.tank_name.text.removesuffix('mdo')).strip(' '),
-                    super.name_of_vessel_db)
+        self.calculate_converted_density()
+
+    def get_slider_temperature(self):
+        try:
+            return str(self.slider_value[self.get_tank_name()])
+        except Exception:
+            return def_temp
+
+    def get_density_value(self):
+        if len(self.dens_new.text) == 0:
+            return db_editing.select_DefDens(self.get_tank_name(), self.name_of_vessel_db)
+        else:
+            if float(self.dens_new.text) >= 1.1:
+                self.dens_new.hint_text = "Wrong Density"
+                self.dens_new.text_color_normal = "#ff2233"
             else:
-                # if is inputted than put that what user inputted
-                if float(self.dens_new.text) >= 1.1:
-                    try:
-                        self.dens_new.hint_text = "Wrong Density"
-                        self.dens_new.text_color_normal = "#ff2233"
-                    except Exception as error:
-                        logger.debug(traceback.format_exc())
-                else:
-                    self.dens_new.hint_text = "Density (example: 0.9588)"
-                    self.dens_new.text_color_normal = 1, 1, 0.8, 1
-                    self.def_dens = self.dens_new.text
+                self.dens_new.hint_text = "Density (example: 0.9588)"
+                self.dens_new.text_color_normal = 1, 1, 0.8, 1
+                return self.dens_new.text
+
+    def calculate_converted_density(self):
         try:
             self.converted_density = ((float(self.def_dens) / 2) * 1000) * 2
         except Exception as error:
             logger.debug(traceback.format_exc())
-        vol_ = vol_coorection.vol_correction_factor_calc(
-            self.converted_density, self.result.text, int(self.temperature))
+        if not str(self.result.text).isdigit():
+            self.result.text = str(self.result.text).removesuffix(' m3')
+        vol_ = vol_coorection.vol_correction_factor_calc(self.converted_density, self.result.text,
+                                                         int(self.temperature))
         self.real_volume = vol_
         self.result_mt.text = f"{str(self.real_volume)} mt"
-        return self.temperature, self.def_dens, self.real_volume
 
     def admin_panel(self):
         self.vessel_name_db = []
