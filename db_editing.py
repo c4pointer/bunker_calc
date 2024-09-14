@@ -1,128 +1,102 @@
-#!/ucheck_same_thread=Falsesr/bin/python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# created by neo
+# created by Oleg Zubak
 # Version-1.0
-# import os
+
 import sqlite3
+from typing import List, Union
 
-# file_location_detect = os.getcwd()
-# try:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/Documents/myapp/bunker_calc.db'), check_same_thread=False)
-# except sqlite3.OperationalError as e:
-#     name_off_app = "BunkerCalc"
-#     conn = sqlite3.connect(
-#         (file_location_detect+'/bunker_calc.db'), )
-conn = sqlite3.connect("viking_ocean.db")
-cur = conn.cursor()
+def connect_to_db(vessel: str) -> sqlite3.Connection:
+    """
+    Establishes a connection to the SQLite database.
 
+    Args:
+        vessel (str): The name of the database file.
 
-def select_DefDens(tk_name, vessel):
-    conn = sqlite3.connect(vessel)
-    cur = conn.cursor()
-    cur.execute("SELECT density FROM '%s' WHERE sound_id='1'" % (tk_name))
-    density = 0
-    for dens in cur:
-        if len(dens) > 0:
-            y = str(dens)
-            density = y.strip('(),')
-        elif dens == 0:
-            density = ("zero set")
-        else:
-            density = ("Error")
-    return density
+    Returns:
+        sqlite3.Connection: A connection object to the database.
+    """
+    return sqlite3.connect(vessel)
 
-def calculation(tk_name: object, sound: object, vessel: object) -> object:
-    '''
-    Takes value from DB
-    '''
-    volume_in_m3 = []
-    try:
-        conn = sqlite3.connect(vessel)
+def select_DefDens(tk_name: str, vessel: str) -> str:
+    """
+    Selects the default density for a given tank.
+
+    Args:
+        tk_name (str): The name of the tank.
+        vessel (str): The name of the database file.
+
+    Returns:
+        str: The density value or an error message.
+    """
+    with connect_to_db(vessel) as conn:
         cur = conn.cursor()
-        cur.execute(
-            "SELECT volume FROM '%s' WHERE sound_id='%s'" %
-            (tk_name, sound))
-        for data in cur:
-            x = str(data)
-            x = x.strip('(),')
-            volume_in_m3.append(x)
-        return volume_in_m3
+        cur.execute(f"SELECT density FROM '{tk_name}' WHERE sound_id='1'")
+        result = cur.fetchone()
 
+    if result:
+        return str(result[0])
+    elif result == (0,):
+        return "zero set"
+    else:
+        return "Error"
+
+def calculation(tk_name: str, sound: str, vessel: str) -> List[str]:
+    """
+    Retrieves the volume for a given tank and sound level.
+
+    Args:
+        tk_name (str): The name of the tank.
+        sound (str): The sound level.
+        vessel (str): The name of the database file.
+
+    Returns:
+        List[str]: A list containing the volume in m3.
+    """
+    try:
+        with connect_to_db(vessel) as conn:
+            cur = conn.cursor()
+            cur.execute(f"SELECT volume FROM '{tk_name}' WHERE sound_id=?", (sound,))
+            result = cur.fetchone()
+        
+        return [str(result[0])] if result else []
     except Exception as e:
-        pass
+        print(f"Error in calculation: {e}")
+        return []
 
-def type_sel(tank: object, vessel: object) -> object:
+def type_sel(tank: str, vessel: str) -> List[str]:
     """
-    Sort tank if the tank don`t have Sounding Table,
-    then we just take the inputed value in textfield
+    Selects the type of tank.
+
+    Args:
+        tank (str): The name of the tank.
+        vessel (str): The name of the database file.
+
+    Returns:
+        List[str]: A list containing the tank type.
     """
-    type_of_tank = []
-    conn = sqlite3.connect(vessel)
-    cur = conn.cursor()
-    cur.execute("SELECT type FROM '" + tank + "' WHERE sound_id='0';")
-    for i in cur:
-        type_of_tank.append(i[0])
+    with connect_to_db(vessel) as conn:
+        cur = conn.cursor()
+        cur.execute(f"SELECT type FROM '{tank}' WHERE sound_id='0'")
+        result = cur.fetchone()
+    
+    return [result[0]] if result else []
 
-    return type_of_tank
-def state_sel(tank: object, vessel: object) -> object:
+def state_sel(tank: str, vessel: str) -> List[int]:
     """
-    Sort tank if the tank by state
-    If state == 1 than means that tank is for MDO total result calc`s
+    Selects the state of the tank.
+
+    Args:
+        tank (str): The name of the tank.
+        vessel (str): The name of the database file.
+
+    Returns:
+        List[int]: A list containing the tank state.
     """
-    state_of_tank = []
-    conn = sqlite3.connect(vessel)
-    cur = conn.cursor()
-    cur.execute(f"SELECT state FROM '" + tank + "' WHERE sound_id='0';")
-    for i in cur:
-        state_of_tank.append(i[0])
+    with connect_to_db(vessel) as conn:
+        cur = conn.cursor()
+        cur.execute(f"SELECT state FROM '{tank}' WHERE sound_id='0'")
+        result = cur.fetchone()
+    
+    return [result[0]] if result else []
 
-    return state_of_tank
-
-# def def_dens_modify(tk_name, new_val):
-#     try:
-#         cur.execute("ALTER TABLE `%s` DROP COLUMN density" % tk_name)
-#         cur.execute(
-#             "ALTER TABLE `%s` ADD density FLOAT DEFAULT %s" % (
-#                 tk_name, new_val)
-#         )
-#         conn.commit()
-
-#     except Exception as e:
-#         print(f"DB Connection error: {e}")
-
-
-# def type_select_tank(tk_names, new_type):
-
-#     try:
-#         # try to know what type of tank is it from
-#         # and if "new_type" == 0 then add new table type
-#         if new_type == 0:
-#             cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk_names)
-#             cur.execute(
-#                 "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (
-#                     tk_names, new_type)
-#             )
-#             conn.commit()
-#         else:
-#             new_type_tk_add(tk_names, new_type)
-
-#     except Exception as e:
-#         print(f"DB Connection error: {e}")
-
-
-# def new_type_tk_add(tk, t):
-#     try:
-#         cur.execute("ALTER TABLE `%s` DROP COLUMN type" % tk)
-#         cur.execute(
-#             "ALTER TABLE `%s` ADD type INT DEFAULT %s" % (tk, t)
-#         )
-
-#         cur.execute("ALTER TABLE `%s` DROP COLUMN volume" % tk)
-#         cur.execute(
-#             "ALTER TABLE `%s` ADD volume FLOAT DEFAULT 0" % tk
-#         )
-#         conn.commit()
-#     except Exception as error:
-#         print(f"DB Connection error on string 87: {error}")
