@@ -1,72 +1,65 @@
-BunkerCalc App
-Overview
+# BunkerCalc App
 
-BunkerCalc is a Python-based application built using the Kivy MD (Material Design) framework. This app is designed to assist marine engineers in calculating the quantity of bunkering fuel required for a given voyage. By providing essential input parameters, the application helps estimate the fuel quantity needed, optimizing fuel management for marine vessels.
-Features
+## Overview
 
-    User-friendly Interface: The app offers an intuitive and easy-to-use interface, making it accessible for marine engineers with varying levels of technical expertise.
+BunkerCalc is a Python-based application built using the Kivy MD (Material Design) framework. It assists marine engineers in calculating the quantity of bunkering fuel required for a given voyage. By providing essential input parameters, the application helps estimate the fuel quantity needed, optimizing fuel management for marine vessels.
 
-    Input Parameters: Users can input relevant voyage details, such as distance, speed, fuel consumption rate, and other factors affecting fuel consumption.
+## Features
 
-    Fuel Quantity Calculation: BunkerCalc utilizes the input parameters to perform calculations and estimate the required bunkering fuel quantity accurately.
+- **User-friendly Interface**: Intuitive and easy-to-use interface accessible for marine engineers of all technical levels.
+- **Input Parameters**: Users can input voyage details such as distance, speed, and fuel consumption rate.
+- **Fuel Quantity Calculation**: Accurately estimates required bunkering fuel quantity based on input parameters.
+- **Optimization Suggestions**: Provides recommendations for efficient fuel management.
 
-    Optimization Suggestions: The app may provide optimization suggestions based on the entered data, allowing users to make informed decisions about fuel management.
+## Requirements
 
-Requirements
+- Python 3.x
+- Kivy MD framework
 
-    Python 3.x
-    Kivy MD framework
+## Installation
 
-Installation
+1. Install Python: [Python Installation Guide](https://www.python.org/downloads/)
 
-    Install Python: Python Installation Guide
+2. Install Kivy MD:
+   ```
+   pip install kivy[base] kivymd
+   ```
 
-    Install Kivy MD:
+3. Clone the BunkerCalc repository:
+   ```
+   git clone https://github.com/yourusername/BunkerCalc.git
+   ```
 
-    bash
+4. Navigate to the project directory:
+   ```
+   cd BunkerCalc
+   ```
 
-pip install kivy[base] kivymd
+5. Run the app:
+   ```
+   python main.py
+   ```
 
-Clone the BunkerCalc repository:
+## Usage
 
-bash
+1. Launch the app.
+2. Enter the required voyage details in the input fields.
+3. Click the "Calculate" button to obtain the estimated bunkering fuel quantity.
+4. Review any optimization suggestions provided by the app.
+5. Make necessary adjustments and repeat the calculation as needed.
 
-git clone https://github.com/yourusername/BunkerCalc.git
+## Contributing
 
-Navigate to the project directory:
+Contributions are welcome! Please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
 
-bash
+## License
 
-cd BunkerCalc
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-Run the app:
+## Acknowledgments
 
-bash
+The BunkerCalc team would like to express gratitude to the Kivy MD community for their excellent framework.
 
-    python main.py
+## Contact
 
-Usage
-
-    Launch the app.
-
-    Enter the required voyage details in the input fields.
-
-    Click the "Calculate" button to obtain the estimated bunkering fuel quantity.
-
-    Review any optimization suggestions provided by the app.
-
-    Make necessary adjustments and repeat the calculation as needed.
-
-Contributing
-
-Contributions are welcome! If you'd like to contribute to the development of BunkerCalc, please follow the guidelines in the CONTRIBUTING.md file.
-License
-
-This project is licensed under the MIT License - see the LICENSE.md file for details.
-Acknowledgments
-
-    The BunkerCalc team would like to express gratitude to the Kivy MD community for their excellent framework.
-
-Contact
-
-For any inquiries or support, please contact the development team at c4point@gmail.com.
+For inquiries or support, please contact the development team at c4point@gmail.com.
